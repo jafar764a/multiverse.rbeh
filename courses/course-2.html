@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Types of Cyber Attacks | RBEH Multiverse</title>
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/light.css" id="light-theme">
+<link rel="stylesheet" href="../css/dark.css" id="dark-theme" disabled>
+<style>
+  /* --- Unified Context Extensions for Lesson Modules --- */
+  .course-layout-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  
+  @media(min-width: 992px) {
+    .course-layout-container {
+      grid-template-columns: 280px 1fr;
+    }
+  }
+
+  /* --- Premium Floating Scroll Indicator Bar --- */
+  .scroll-tracker-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+  }
+  body[data-theme="dark"] .scroll-tracker-container {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .scroll-tracker-fill {
+    height: 100%;
+    width: 0%;
+    background: #e8312f;
+    box-shadow: 0 0 10px rgba(232, 49, 47, 0.6);
+    transition: width 0.1s ease-out;
+  }
+  .scroll-percentage-badge {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 10px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #e8312f;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  body[data-theme="dark"] .scroll-percentage-badge {
+    background: rgba(20, 20, 25, 0.85);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  /* --- Sticky Side Course Matrix Control Panel --- */
+  .matrix-sidebar {
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+  }
+  .matrix-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.01);
+  }
+  body[data-theme="dark"] .matrix-card {
+    background: rgba(20, 20, 25, 0.6);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+  .matrix-title {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.75px;
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+  .matrix-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .matrix-node {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.4;
+    transition: opacity 0.25s ease;
+  }
+  .matrix-node.completed {
+    opacity: 0.7;
+    color: #1fa75a;
+  }
+  .matrix-node.active {
+    opacity: 1;
+    font-weight: 700;
+  }
+  .matrix-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .matrix-node.completed .matrix-circle {
+    background: rgba(31, 167, 90, 0.1);
+    border-color: #1fa75a;
+  }
+  .matrix-node.active .matrix-circle {
+    background: #e8312f;
+    border-color: #e8312f;
+    color: #fff !important;
+    box-shadow: 0 0 12px rgba(232, 49, 47, 0.4);
+  }
+  body[data-theme="dark"] .matrix-node.active .matrix-circle {
+    background: #ff4d4d;
+    border-color: #ff4d4d;
+  }
+
+  /* --- Premium Component Content Architecture Cards --- */
+  .lesson-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.01);
+  }
+  body[data-theme="dark"] .lesson-card {
+    background: rgba(20, 20, 25, 0.5);
+    border-color: rgba(255, 255, 255, 0.04);
+  }
+  .lesson-card h2, .lesson-card h3 {
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .lesson-card p {
+    font-size: 15px;
+    line-height: 1.65;
+    opacity: 0.85;
+  }
+
+  /* Structural Sub-Components Blocks */
+  .premium-badge-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .meta-badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 30px;
+    background: rgba(0, 0, 0, 0.04);
+  }
+  body[data-theme="dark"] .meta-badge {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  
+  .quote-box {
+    background: rgba(232, 49, 47, 0.03);
+    border-left: 4px solid #e8312f;
+    padding: 18px;
+    border-radius: 0 14px 14px 0;
+    margin: 16px 0;
+  }
+  body[data-theme="dark"] .quote-box {
+    background: rgba(255, 77, 77, 0.03);
+    border-left-color: #ff4d4d;
+  }
+
+  .mapping-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 18px 0;
+  }
+  .mapping-item {
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 14px;
+  }
+  body[data-theme="dark"] .mapping-item {
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.04);
+  }
+
+  .warning-accent-box {
+    background: rgba(232, 49, 47, 0.05);
+    border: 1px solid rgba(232, 49, 47, 0.12);
+    border-radius: 12px;
+    padding: 18px;
+    margin: 16px 0;
+  }
+  .success-accent-box {
+    background: rgba(31, 167, 90, 0.06);
+    border: 1px solid rgba(31, 167, 90, 0.12);
+    border-radius: 12px;
+    padding: 18px;
+    margin: 16px 0;
+  }
+
+  .topic-sub-section {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px dashed rgba(0,0,0,0.08);
+  }
+  body[data-theme="dark"] .topic-sub-section {
+    border-top-color: rgba(255,255,255,0.08);
+  }
+
+  .bullet-list {
+    margin-left: 20px;
+    margin-top: 8px;
+  }
+  .bullet-list li {
+    margin-bottom: 6px;
+    font-size: 14px;
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+
+  /* Quiz Node Components */
+  .mcq-node-block {
+    border-top: 1px solid rgba(0,0,0,0.06);
+    padding-top: 20px;
+    margin-top: 20px;
+  }
+  body[data-theme="dark"] .mcq-node-block {
+    border-top-color: rgba(255,255,255,0.06);
+  }
+  .mcq-option-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 14px;
+    background: rgba(0,0,0,0.01);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 10px;
+    margin-top: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  body[data-theme="dark"] .mcq-option-btn {
+    background: rgba(255,255,255,0.01);
+    border-color: rgba(255,255,255,0.06);
+  }
+  .mcq-option-btn:hover {
+    background: rgba(232, 49, 47, 0.05);
+    border-color: rgba(232, 49, 47, 0.2);
+  }
+  body[data-theme="dark"] .mcq-option-btn:hover {
+    background: rgba(255, 77, 77, 0.05);
+    border-color: rgba(255, 77, 77, 0.2);
+  }
+
+  .nav-btn-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<div class="scroll-tracker-container"><div class="scroll-tracker-fill" id="scrollBar"></div></div>
+<div class="scroll-percentage-badge"><span>⚡</span> <span id="scrollPct">0%</span> Completed</div>
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='../index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+        <circle cx="12" cy="11" r="1.6" fill="#fff"/>
+        <rect x="11.2" y="11" width="1.6" height="3" fill="#fff"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+
+  <nav class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="../about.html">About</a>
+    <a href="../contact.html">Contact</a>
+  </nav>
+
+  <div class="nav-actions">
+    <button id="theme-toggle" class="icon-btn">
+      <svg id="theme-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+      </svg>
+    </button>
+    <div class="menu-wrap">
+      <button class="menu-btn" id="menu-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+        </svg>
+        <span>Menu</span>
+      </button>
+      <div class="menu-dropdown" id="menu-dropdown">
+        <a href="../tools.html"><span class="menu-icon">🛠</span> Tools</a>
+        <a href="../course.html" class="active"><span class="menu-icon">📚</span> Course</a>
+        <a href="../cyberlab.html"><span class="menu-icon">🧪</span> Cyber Lab</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="course-layout-container">
+  
+  <aside class="matrix-sidebar">
+    <div class="matrix-card">
+      <div class="matrix-title">Course Progress</div>
+      <div class="matrix-grid">
+        <div class="matrix-node completed"><div class="matrix-circle">1</div> Introduction to Cyber Security</div>
+        <div class="matrix-node active" style="color:#e8312f;"><div class="matrix-circle">2</div> Types of Cyber Attacks</div>
+        <div class="matrix-node"><div class="matrix-circle">3</div> Phishing Awareness</div>
+        <div class="matrix-node"><div class="matrix-circle">4</div> Password Security</div>
+        <div class="matrix-node"><div class="matrix-circle">5</div> Encryption Basics</div>
+        <div class="matrix-node"><div class="matrix-circle">6</div> Safe Browsing Practices</div>
+        <div class="matrix-node"><div class="matrix-circle">7</div> QR Code Scams</div>
+        <div class="matrix-node"><div class="matrix-circle">8</div> Website Security Basics</div>
+        <div class="matrix-node"><div class="matrix-circle">9</div> Social Engineering Attacks</div>
+        <div class="matrix-node"><div class="matrix-circle">10</div> Cyber Security Quiz</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="content-stream-workspace">
+
+    <div class="lesson-card" style="border-color: rgba(232, 49, 47, 0.15); background: linear-gradient(to bottom right, rgba(255,255,255,0.6), rgba(232,49,47,0.02));">
+      <h1 class="hero-title" style="font-size: 34px; line-height: 1.25; margin-bottom: 8px;">Types of <span class="accent">Cyber Attacks</span></h1>
+      <p style="font-size:16px; opacity:0.85;">Understand the most common cyber attacks, how they work, their real-world impact, and how to protect against them through practical examples.</p>
+      <div class="premium-badge-strip">
+        <span class="meta-badge" style="color:#e8312f; background: rgba(232,49,47,0.06); font-weight:700;">Course 2 of 10</span>
+        <span class="meta-badge">📋 Difficulty: Beginner</span>
+        <span class="meta-badge">⏱️ Reading Time: 8–10 Minutes</span>
+        <span class="meta-badge">🏷️ Category: Cyber Security Fundamentals</span>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>⚠️</span> Section 1: Introduction to Threat Vectors</h2>
+      <p>This module analyzes the mechanics behind malicious attack surfaces and unexpected threat vectors targeted by modern adversaries.</p>
+      <div style="margin-top:14px; font-size:14px; line-height:1.6;">
+        <p><strong>Definition of Threat Vectors:</strong> A threat vector is a path, route, or exploit channel by which a cybercriminal or malicious actor gains unauthorized access to a network, server, endpoint, or system to deliver a malicious payload or harvest confidential data assets.</p>
+        
+        <div class="topic-sub-section">
+          <strong>1. Zero-Day Attack</strong>
+          <ul class="bullet-list">
+            <li><strong>GTU Exam Definition:</strong> An attack that exploits a software flaw before the vendor or developers become aware of it and have a chance to deploy a patch.</li>
+            <li><strong>How it Works:</strong> Threat actors discover unpatched bugs in applications, craft precise exploit codes, and hit corporate networks silently before defensive definitions are updated.</li>
+            <li><strong>Real-Life Example:</strong> The Stuxnet worm utilized multiple zero-day exploits simultaneously to compromise isolated industrial computers.</li>
+            <li><strong>Warning Signs:</strong> Unexplained application crashes, unauthorized background process loops, or unusual outward network synchronization.</li>
+            <li><strong>Prevention & Best Practices:</strong> Employ advanced behavior-based heuristics scanning, configure runtime application self-protection, and run zero-trust access controls.</li>
+          </ul>
+        </div>
+
+        <div class="topic-sub-section">
+          <strong>2. Supply Chain Attack</strong>
+          <ul class="bullet-list">
+            <li><strong>GTU Exam Definition:</strong> A cyber security compromise targeting the weakest links or upstream software/hardware vendors within a trusted multi-party network ecosystem.</li>
+            <li><strong>How it Works:</strong> Instead of hacking a heavily defended corporation directly, adversaries compromise a third-party application developer or tool used by that target.</li>
+            <li><strong>Real-Life Example:</strong> The SolarWinds breach inserted backdoor code into legitimate software updates, distributing malware to thousands of trusted systems downstream.</li>
+            <li><strong>Warning Signs:</strong> Unexpected behavioral shifts in verified vendor updates or anomalous code signing modifications.</li>
+            <li><strong>Prevention & Best Practices:</strong> Strictly audit vendor security credentials, implement rigorous integrity monitoring, and run all third-party code with limited privileges.</li>
+          </ul>
+        </div>
+
+        <div class="topic-sub-section">
+          <strong>3. Insider Threat</strong>
+          <ul class="bullet-list">
+            <li><strong>GTU Exam Definition:</strong> A security risk originating from within an organization, usually caused by current or former employees, contractors, or trusted entities who abuse their authorized network access.</li>
+            <li><strong>How it Works:</strong> A disgruntled internal actor knowingly exfiltrates sensitive database dumps, or a careless user accidentally misconfigures a production cloud bucket to be publicly accessible.</li>
+            <li><strong>Real-Life Example:</strong> A data engineer copying customer databases onto personal external flash drives before resigning.</li>
+            <li><strong>Warning Signs:</strong> Accessing sensitive corporate repositories outside normal operating hours or massive volume data downloads.</li>
+            <li><strong>Prevention & Best Practices:</strong> Enforce the Principle of Least Privilege (PoLP), execute detailed user behavior analysis, and record comprehensive audit logs.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🎯</span> Section 2: Malware Attacks (Viruses, Trojans & Ransomware)</h2>
+      <p>An overview of unauthorized system code deployments that disrupt memory environments and user access privileges.</p>
+      <div class="quote-box">
+        <strong>Core Content Formulas and Technical Definitions</strong>
+        <p style="margin-top: 8px; font-size: 14px; line-height: 1.6; opacity: 0.95;">
+          Malware is a broad term for malicious software designed to compromise or damage systems. Below is the operational taxonomy of modern malicious code vectors:
+        </p>
+
+        <div class="topic-sub-section">
+          <strong>1. Virus vs. Worm</strong>
+          <ul class="bullet-list">
+            <li><strong>Definitions & GTU Perspective:</strong> A <em>Virus</em> is parasitic code that requires a human to run a host file to execute. A <em>Worm</em> is a self-replicating standalone entity that automatically crawls networks via protocol vulnerabilities.</li>
+            <li><strong>Real-Life Example:</strong> The ILOVEYOU script required user execution (Virus), whereas the WannaCry tool automatically swept through exposed SMB network ports (Worm).</li>
+            <li><strong>Mitigation:</strong> Isolate macro execution parameters inside office suites and run active host firewall rules.</li>
+          </ul>
+        </div>
+
+        <div class="topic-sub-section">
+          <strong>2. Trojan Horse & Ransomware</strong>
+          <ul class="bullet-list">
+            <li><strong>Definitions & Mechanisms:</strong> A <em>Trojan Horse</em> hides its payload inside an innocent file or utility program. <em>Ransomware</em> uses strong cryptographic algorithms (such as AES+RSA) to lock down file trees, demanding financial compensation for decryption keys.</li>
+            <li><strong>Real-Life Example:</strong> Downloading a fake driver package that covertly deploys file-locking modules across all shared active drives.</li>
+            <li><strong>Mitigation:</strong> Isolate backup volumes from the primary local system mapping and avoid running software binaries from unverified channels.</li>
+          </ul>
+        </div>
+
+        <div class="topic-sub-section">
+          <strong>3. Spyware, Adware & Keyloggers</strong>
+          <ul class="bullet-list">
+            <li><strong>Definitions & Impact:</strong> <em>Spyware</em> stealthily tracks browser metrics and configurations. <em>Adware</em> forcefully populates desktops with repetitive popup windows. <em>Keyloggers</em> capture every physical keystroke to steal plain-text passwords.</li>
+            <li><strong>Real-Life Example:</strong> A browser extension that silently intercepts credit card values during checkout.</li>
+            <li><strong>Mitigation:</strong> Check browser extension permissions regularly and deploy localized anti-spyware engines.</li>
+          </ul>
+        </div>
+
+        <div class="topic-sub-section">
+          <strong>4. Rootkits & Botnets</strong>
+          <ul class="bullet-list">
+            <li><strong>Definitions & Operations:</strong> A <em>Rootkit</em> replaces core operating system files to gain deep kernel access while hiding itself from task managers. A <em>Botnet</em> connects thousands of compromised systems into a unified zombie network controlled via a remote server.</li>
+            <li><strong>Real-Life Example:</strong> Malicious root files hiding administrative backdoors or zombie clusters launching synchronized credential stuffing attacks.</li>
+            <li><strong>Mitigation:</strong> Enforce cryptographically verified Secure Boot sequences and inspect outbound network traffic spikes.</li>
+          </ul>
+        </div>
+
+        <div class="topic-sub-section">
+          <strong>5. Drive-by Download</strong>
+          <ul class="bullet-list">
+            <li><strong>Definition & How it Works:</strong> The unintended installation of malicious software on a user's device that occurs without their active interaction, triggered simply by viewing an infected web page.</li>
+            <li><strong>Real-Life Example:</strong> Visiting a compromised mainstream blog that uses hidden iframe elements to exploit an old browser script engine flaw.</li>
+            <li><strong>Mitigation:</strong> Keep all internet browsers updated and turn off automatic code execution scripts on unknown pages.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🎣</span> Section 3: Social Engineering & Phishing Mechanics</h2>
+      <p>How malicious operations leverage identity deception to gather credentials and exploit network vectors.</p>
+      <div class="warning-accent-box">
+        <strong style="color:#e8312f;">Threat Warning Model & Deception Verification Matrices:</strong>
+        <div style="margin-top: 10px; font-size:14px; line-height:1.6;">
+          <p>Social Engineering exploits human psychology—using panic, curiosity, or greed—instead of technical bugs. Here are the specific phishing and engineering styles you must protect against:</p>
+          
+          <div class="topic-sub-section">
+            <strong>1. Phishing Taxonomy (Spear Phishing, Whaling)</strong>
+            <ul class="bullet-list">
+              <li><strong>Phishing:</strong> Mass email blasts sent out randomly to trick users with generic traps like "Your account is locked."</li>
+              <li><strong>Spear Phishing:</strong> Highly customized attacks targeting a specific person, using their actual name, title, and coworker details.</li>
+              <li><strong>Whaling:</strong> Spear phishing aimed specifically at high-profile executives like the CEO or CFO to authorize large wire transfers.</li>
+              <li><strong>Real-Life Example:</strong> An attacker posing as a supply chain vendor to email a customized, urgent unpaid invoice directly to a billing manager.</li>
+            </ul>
+          </div>
+
+          <div class="topic-sub-section">
+            <strong>2. Alternate Channels (Smishing, Vishing, Quishing)</strong>
+            <ul class="bullet-list">
+              <li><strong>Smishing (SMS Phishing):</strong> Urgent text alerts containing links to fake package tracking pages or account recovery portals.</li>
+              <li><strong>Vishing (Voice Phishing):</strong> High-pressure phone scams using spoofed caller IDs or AI voice clones to extract banking OTPs.</li>
+              <li><strong>Quishing (QR Code Scams):</strong> Swapping real QR codes on public poster frames or restaurant tables with malicious stickers that open phishing sites.</li>
+            </ul>
+          </div>
+
+          <div class="topic-sub-section">
+            <strong>3. Watering Hole Attack</strong>
+            <ul class="bullet-list">
+              <li><strong>GTU Exam Definition:</strong> A strategy where an attacker compromises a specific, trusted website frequently visited by a target group or company, rather than launching a direct attack.</li>
+              <li><strong>How it Works:</strong> The attacker profiles their target's browsing habits, infects a local site they trust, and waits for them to visit and catch the payload.</li>
+              <li><strong>Real-Life Example:</strong> Injecting malicious scripts into a regional defense contractor discussion board to target engineering companies.</li>
+              <li><strong>Mitigation:</strong> Implement strict internet gateway filtering and inspect external resource requests carefully.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>💥</span> Section 4: Network Layer Inundation (DoS & DDoS)</h2>
+      <p>Understanding distributed traffic spikes intended to block network services and crash hardware targets.</p>
+      <div class="mapping-container">
+        <div class="mapping-item">
+          <strong>DoS Attack</strong> 
+          <div style="margin-top:8px; font-size:13px; line-height:1.5;">
+            <strong>Definition:</strong> Denial of Service via a single source system stream.<br>
+            <strong>Metrics & Vectors:</strong> Employs structured point-to-point traffic protocols like a single high-bandwidth ping-of-death command loop or manual TCP SYN packet flood saturation routines.<br>
+            <strong>Warning Signs:</strong> Localized service timeouts, high target memory spikes, and specific single-IP log filling.<br>
+            <strong>Mitigation:</strong> Simple source IP blackholing, standard connection rate limiting, and configuring baseline infrastructure firewall blocking metrics.
+          </div>
+        </div>
+        <div class="mapping-item">
+          <strong>DDoS Attack</strong> 
+          <div style="margin-top:8px; font-size:13px; line-height:1.5;">
+            <strong>Definition:</strong> Distributed Denial of Service using coordinated global botnets.<br>
+            <strong>Metrics & Vectors:</strong> Traffic spikes often surge beyond hundreds of gigabits per second, leveraging distributed amplification techniques like DNS reflection or NTP amplification.<br>
+            <strong>Warning Signs:</strong> Rapidly skyrocketing network usage, high multi-region request failures, and widespread load balancer drops.<br>
+            <strong>Mitigation:</strong> Anycast routing frameworks, cloud-based scrubbing centers, and automated anomaly-driven traffic distribution.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🕵️‍♂️</span> Section 5: Interception & Technical Exploits (MitM, Injection & Hijacking)</h2>
+      <p>Analyzing unauthorized communication eavesdropping and data manipulation between linked devices.</p>
+      <div class="success-accent-box">
+        <strong style="color:#1fa75a;">Mitigation Parameter & Exploit Prevention Models:</strong>
+        <div style="margin-top: 10px; font-size:14px; line-height:1.6;">
+          <p>Technical network exploits rely on weak input handling, missing encryption, or flawed network trust relationships. Here is how these attacks operate and how to stop them:</p>
+
+          <div class="topic-sub-section">
+            <strong>1. Man-in-the-Middle (MitM) & Spoofing Frameworks</strong>
+            <ul class="bullet-list">
+              <li><strong>ARP Spoofing:</strong> Flooding a local network with fake ARP messages to link an attacker's MAC address with a legitimate gateway's IP address, intercepting local traffic.</li>
+              <li><strong>DNS Spoofing:</strong> Poisoning a recursive DNS resolver's cache with fraudulent IP mappings, routing users away from real sites onto fake ones.</li>
+              <li><strong>Session Hijacking:</strong> Stealing or intercepting active web session tokens or cookies to impersonate an authenticated user without needing their password.</li>
+              <li><strong>Mitigation:</strong> Mandate end-to-end encrypted HTTPS configurations, enforce Static ARP inspection rules, and deploy DNSSEC validation layers.</li>
+            </ul>
+          </div>
+
+          <div class="topic-sub-section">
+            <strong>2. Application Exploits (SQL Injection & Cross-Site Scripting)</strong>
+            <ul class="bullet-list">
+              <li><strong>SQL Injection (SQLi):</strong> Inserting malicious SQL statements into web entry forms to bypass login walls, exposing or modifying underlying backend databases.</li>
+              <li><strong>Cross-Site Scripting (XSS):</strong> Injecting malicious scripts into trusted websites, which then run inside an unsuspecting visitor's browser to harvest tokens or hijack sessions.</li>
+              <li><strong>Mitigation:</strong> Utilize strictly parameterized queries, execute rigid input sanitization, and deploy precise Content Security Policies (CSP).</li>
+            </ul>
+          </div>
+
+          <div class="topic-sub-section">
+            <strong>3. Password Attacks (Brute Force, Dictionary, Credential Stuffing)</strong>
+            <ul class="bullet-list">
+              <li><strong>Brute Force:</strong> Systematically testing every possible combination of alphanumeric characters until the correct password is found.</li>
+              <li><strong>Dictionary Attack:</strong> Using pre-arranged lists of common words, phrases, and leaked passwords rather than guessing randomly.</li>
+              <li><strong>Credential Stuffing:</strong> Automating the injection of leaked username and password pairs from previous third-party breaches across multiple websites, exploiting password reuse.</li>
+              <li><strong>Mitigation:</strong> Implement automated account lockout rules, mandate strong Multi-Factor Authentication (MFA), and use cryptographic password hashing salts.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-card" style="border-color: rgba(232,49,47,0.12); background: rgba(232,49,47,0.005);">
+      <h2 style="font-size:20px; color:#e8312f;">🎯 Deep Dive Insights</h2>
+      
+      <p style="margin-top:12px;"><strong>✅ Learning Objectives:</strong> Identify common exploit classes, understand vector distribution methods, and deploy defensive validation architectures across endpoints.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Key Highlights:</strong> Differentiating automated script threats from targeted social exploitation models helps prioritize patch cycles effectively.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Quick Facts:</strong> A significant portion of security incidents begin via unauthorized entry points established through unpatched asset applications.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Did You Know?:</strong> Ransomware exploits use standard symmetric and asymmetric encryption principles to turn a powerful security tool into an attack weapon.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Best Security Practices:</strong> Keep system binaries up to date, isolate unknown file extensions, enforce zero-trust endpoint profiles, and run automated local file system sweeps.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Summary:</strong> Recognizing the structural differences between attack types allows groups to balance preventative firewalls with internal containment structures.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Key Takeaways:</strong> Attackers always choose the path of least resistance. Hardening your human verification checks closes the most common avenues for network intrusions.</p>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>📝</span> Mini Knowledge Check</h2>
+      <p style="opacity:0.7; font-size:13px;">Test your knowledge below before continuing to the next module.</p>
+      
+      <div class="mcq-node-block">
+        <p><strong>1. Which attack variant targets availability by flooding a target infrastructure with distributed request streams?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) Phishing Identity Spoofing</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) Distributed Denial of Service (DDoS)</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>2. What differentiates a Trojan attack pattern from a standard hardware virus?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">A) It disguises itself as legitimate host software to trick users.</button>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">B) It modifies physical network adapter hardware.</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>3. Which phase represents the core risk element during an active Man-in-the-Middle (MitM) exploit?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) Rapid automated password guessing</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) Unauthorized communication interception and data manipulation</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>4. Why do modern social engineering attacks consistently target human behaviors over software source code?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">A) Bypassing human verification is often easier than breaking hardened cryptographic controls.</button>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">B) Software source code cannot be read by web browsers.</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>5. What is the fundamental purpose behind deploying a multi-layered endpoint patch cycle strategy?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) Reducing local system storage and tracking network usage</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) Eradicating known code vulnerabilities before threat groups exploit them</button>
+      </div>
+    </div>
+
+    <div class="nav-btn-row">
+      <button class="btn btn-secondary" onclick="window.location.href='course-1.html'">&larr; Previous Lesson</button>
+      <button class="btn btn-secondary" onclick="window.location.href='../course.html'">Back To Courses</button>
+      <button class="btn btn-primary" onclick="window.location.href='course-3.html'">Next Lesson &rarr;</button>
+    </div>
+
+  </main>
+</div>
+
+<footer style="text-align: center; padding: 40px 24px; opacity: 0.5; font-size: 13px; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 80px;">
+  &copy; 2026 RBEH Multiverse Ecosystem. All Content Protection Bounds Applied.
+</footer>
+
+<script src="../js/theme.js"></script>
+<script src="../js/script.js"></script>
+<script>
+  // Dynamic Scroll Progress Calculation System
+  window.addEventListener('scroll', () => {
+    const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = Math.min(Math.max(Math.round((winScroll / height) * 100), 0), 100);
+    
+    document.getElementById('scrollBar').style.width = scrolled + '%';
+    document.getElementById('scrollPct').innerText = scrolled + '%';
+  });
+</script>
+</body>
+</html>

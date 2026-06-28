@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Engineering Attacks | RBEH Multiverse</title>
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/light.css" id="light-theme">
+<link rel="stylesheet" href="../css/dark.css" id="dark-theme" disabled>
+<style>
+  /* --- Unified Context Extensions for Lesson Modules --- */
+  .course-layout-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  
+  @media(min-width: 992px) {
+    .course-layout-container {
+      grid-template-columns: 280px 1fr;
+    }
+  }
+
+  /* --- Premium Floating Scroll Indicator Bar --- */
+  .scroll-tracker-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+  }
+  body[data-theme="dark"] .scroll-tracker-container {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .scroll-tracker-fill {
+    height: 100%;
+    width: 0%;
+    background: #e8312f;
+    box-shadow: 0 0 10px rgba(232, 49, 47, 0.6);
+    transition: width 0.1s ease-out;
+  }
+  .scroll-percentage-badge {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 10px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #e8312f;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  body[data-theme="dark"] .scroll-percentage-badge {
+    background: rgba(20, 20, 25, 0.85);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  /* --- Sticky Side Course Matrix Control Panel --- */
+  .matrix-sidebar {
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+  }
+  .matrix-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.01);
+  }
+  body[data-theme="dark"] .matrix-card {
+    background: rgba(20, 20, 25, 0.6);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+  .matrix-title {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.75px;
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+  .matrix-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .matrix-node {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.4;
+    transition: opacity 0.25s ease;
+  }
+  .matrix-node.completed {
+    opacity: 0.7;
+    color: #1fa75a;
+  }
+  .matrix-node.active {
+    opacity: 1;
+    font-weight: 700;
+  }
+  .matrix-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .matrix-node.completed .matrix-circle {
+    background: rgba(31, 167, 90, 0.1);
+    border-color: #1fa75a;
+  }
+  .matrix-node.active .matrix-circle {
+    background: #e8312f;
+    border-color: #e8312f;
+    color: #fff !important;
+    box-shadow: 0 0 12px rgba(232, 49, 47, 0.4);
+  }
+  body[data-theme="dark"] .matrix-node.active .matrix-circle {
+    background: #ff4d4d;
+    border-color: #ff4d4d;
+  }
+
+  /* --- Premium Component Content Architecture Cards --- */
+  .lesson-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.01);
+  }
+  body[data-theme="dark"] .lesson-card {
+    background: rgba(20, 20, 25, 0.5);
+    border-color: rgba(255, 255, 255, 0.04);
+  }
+  .lesson-card h2, .lesson-card h3 {
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .lesson-card p {
+    font-size: 15px;
+    line-height: 1.65;
+    opacity: 0.85;
+    margin-bottom: 12px;
+  }
+  .lesson-card p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Structural Sub-Components Blocks */
+  .premium-badge-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .meta-badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 30px;
+    background: rgba(0, 0, 0, 0.04);
+  }
+  body[data-theme="dark"] .meta-badge {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  
+  .quote-box {
+    background: rgba(232, 49, 47, 0.03);
+    border-left: 4px solid #e8312f;
+    padding: 18px;
+    border-radius: 0 14px 14px 0;
+    margin: 16px 0;
+  }
+  body[data-theme="dark"] .quote-box {
+    background: rgba(255, 77, 77, 0.03);
+    border-left-color: #ff4d4d;
+  }
+
+  .comparison-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 18px 0;
+  }
+  .comparison-item {
+    border-radius: 12px;
+    padding: 20px;
+    font-size: 14px;
+  }
+  .comparison-item.attack-vector {
+    background: rgba(232, 49, 47, 0.04);
+    border: 1px solid rgba(232, 49, 47, 0.1);
+  }
+
+  .warning-accent-box {
+    background: rgba(232, 49, 47, 0.05);
+    border: 1px solid rgba(232, 49, 47, 0.12);
+    border-radius: 12px;
+    padding: 18px;
+    margin: 16px 0;
+  }
+  .success-accent-box {
+    background: rgba(31, 167, 90, 0.06);
+    border: 1px solid rgba(31, 167, 90, 0.12);
+    border-radius: 12px;
+    padding: 18px;
+    margin: 16px 0;
+  }
+
+  /* Timeline Elements */
+  .timeline-wrapper {
+    position: relative;
+    padding-left: 24px;
+    border-left: 2px solid rgba(0,0,0,0.06);
+    margin: 20px 0 10px 8px;
+  }
+  body[data-theme="dark"] .timeline-wrapper {
+    border-left-color: rgba(255,255,255,0.06);
+  }
+  .timeline-step {
+    position: relative;
+    margin-bottom: 24px;
+  }
+  .timeline-step:last-child {
+    margin-bottom: 0;
+  }
+  .timeline-step::before {
+    content: '';
+    position: absolute;
+    left: -31px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e8312f;
+    border: 2px solid #fff;
+  }
+  body[data-theme="dark"] .timeline-step::before {
+    border-color: #09090b;
+    background: #ff4d4d;
+  }
+
+  /* Quiz Node Components */
+  .mcq-node-block {
+    border-top: 1px solid rgba(0,0,0,0.06);
+    padding-top: 20px;
+    margin-top: 20px;
+  }
+  body[data-theme="dark"] .mcq-node-block {
+    border-top-color: rgba(255,255,255,0.06);
+  }
+  .mcq-option-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 14px;
+    background: rgba(0,0,0,0.01);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 10px;
+    margin-top: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  body[data-theme="dark"] .mcq-option-btn {
+    background: rgba(255,255,255,0.01);
+    border-color: rgba(255,255,255,0.06);
+  }
+  .mcq-option-btn:hover {
+    background: rgba(232, 49, 47, 0.05);
+    border-color: rgba(232, 49, 47, 0.2);
+  }
+  body[data-theme="dark"] .mcq-option-btn:hover {
+    background: rgba(255, 77, 77, 0.05);
+    border-color: rgba(255, 77, 77, 0.2);
+  }
+
+  .nav-btn-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<div class="scroll-tracker-container"><div class="scroll-tracker-fill" id="scrollBar"></div></div>
+<div class="scroll-percentage-badge"><span>⚡</span> <span id="scrollPct">0%</span> Completed</div>
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='../index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+        <circle cx="12" cy="11" r="1.6" fill="#fff"/>
+        <rect x="11.2" y="11" width="1.6" height="3" fill="#fff"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+
+  <nav class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="../about.html">About</a>
+    <a href="../contact.html">Contact</a>
+  </nav>
+
+  <div class="nav-actions">
+    <button id="theme-toggle" class="icon-btn">
+      <svg id="theme-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+      </svg>
+    </button>
+    <div class="menu-wrap">
+      <button class="menu-btn" id="menu-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+        </svg>
+        <span>Menu</span>
+      </button>
+      <div class="menu-dropdown" id="menu-dropdown">
+        <a href="../tools.html"><span class="menu-icon">🛠</span> Tools</a>
+        <a href="../course.html" class="active"><span class="menu-icon">📚</span> Course</a>
+        <a href="../cyberlab.html"><span class="menu-icon">🧪</span> Cyber Lab</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="course-layout-container">
+  
+  <aside class="matrix-sidebar">
+    <div class="matrix-card">
+      <div class="matrix-title">Course Progress</div>
+      <div class="matrix-grid">
+        <div class="matrix-node completed"><div class="matrix-circle">1</div> Introduction to Cyber Security</div>
+        <div class="matrix-node completed"><div class="matrix-circle">2</div> Types of Cyber Attacks</div>
+        <div class="matrix-node completed"><div class="matrix-circle">3</div> Phishing Awareness</div>
+        <div class="matrix-node completed"><div class="matrix-circle">4</div> Password Security</div>
+        <div class="matrix-node completed"><div class="matrix-circle">5</div> Encryption Basics</div>
+        <div class="matrix-node completed"><div class="matrix-circle">6</div> Safe Browsing Practices</div>
+        <div class="matrix-node completed"><div class="matrix-circle">7</div> QR Code Scams</div>
+        <div class="matrix-node completed"><div class="matrix-circle">8</div> Website Security Basics</div>
+        <div class="matrix-node active" style="color:#e8312f;"><div class="matrix-circle">9</div> Social Engineering Attacks</div>
+        <div class="matrix-node"><div class="matrix-circle">10</div> Cyber Security Quiz</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="content-stream-workspace">
+
+    <div class="lesson-card" style="border-color: rgba(232, 49, 47, 0.15); background: linear-gradient(to bottom right, rgba(255,255,255,0.6), rgba(232,49,47,0.02));">
+      <h1 class="hero-title" style="font-size: 34px; line-height: 1.25; margin-bottom: 8px;">Social Engineering <span class="accent">Attacks</span></h1>
+      <p style="font-size:16px; opacity:0.85;">Learn how cybercriminals manipulate human psychology to steal information, gain unauthorized access, and perform cyber attacks through real-world examples and practical cyber security awareness.</p>
+      <div class="premium-badge-strip">
+        <span class="meta-badge" style="color:#e8312f; background: rgba(232,49,47,0.06); font-weight:700;">Course 9 of 10</span>
+        <span class="meta-badge">📋 Difficulty: Beginner</span>
+        <span class="meta-badge">⏱️ Reading Time: 8–10 Minutes</span>
+        <span class="meta-badge">🏷️ Category: Human Security & Cyber Awareness</span>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🧠</span> Section 1: Hacking the Human Operating System</h2>
+      <p>While security engineers build complex firewalls and encryption protocols, malicious actors often completely bypass these technical layers by targeting human psychology instead.</p>
+      
+      <div class="quote-box">
+        <strong>GTU Exam-Friendly Definition:</strong>
+        <p style="margin-top: 6px; font-style: normal; font-size: 14.5px;"><em>"Social Engineering is defined as the collection of manipulative methodologies that exploit cognitive vulnerabilities and human behavioral patterns—such as trust, fear, urgency, or greed—to trick individuals into breaking security protocols or revealing confidential access details."</em></p>
+      </div>
+
+      <div class="success-accent-box">
+        <strong style="color:#1fa75a;">💡 Easy Trick to Remember: The "Human Firewall" Rule</strong>
+        <p style="font-size:14px; margin-top: 4px;">Hardware firewalls check data packets; <strong>human firewalls</strong> verify intent. When an unexpected message triggers intense emotion—like panic or excitement—take a deep breath and verify the identity of the sender through an official channel before taking action.</p>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>⚙️</span> Section 2: Lifecycle of a Social Engineering Exploit</h2>
+      <p>Social engineering exploits rarely happen out of the blue. Threat actors usually follow a structured approach to gain their target's trust:</p>
+      
+      <div class="timeline-wrapper">
+        <div class="timeline-step">
+          <strong>1. Information Gathering (Reconnaissance)</strong>
+          <p style="font-size:14px; opacity:0.8; margin-top:4px;">The attacker scans public social media channels and corporate directories to map out organizational hierarchies, friendships, and personal habits.</p>
+        </div>
+        <div class="timeline-step">
+          <strong>2. Psychological Hook Execution</strong>
+          <p style="font-size:14px; opacity:0.8; margin-top:4px;">The actor initiates contact using a manufactured persona (pretext) that builds instant rapport or creates a sense of high urgency.</p>
+        </div>
+        <div class="timeline-step">
+          <strong>3. Information Extraction</strong>
+          <p style="font-size:14px; opacity:0.8; margin-top:4px;">Once the target drops their guard, the attacker subtly extracts sensitive credentials, triggers a malicious link click, or moves funds.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>📂</span> Section 3: Taxonomy of Social Engineering Threats</h2>
+      <p>Social engineering takes many forms depending on the delivery method, communications channel, and target audience.</p>
+      
+      <div class="comparison-container">
+        <div class="comparison-item attack-vector">
+          <strong>📧 Phishing, Spear Phishing & Whaling</strong>
+          <p style="margin-top: 4px; font-size:13.5px;"><strong>Phishing:</strong> Broad, untargeted emails sent out en masse. <br><strong>Spear Phishing:</strong> Highly customized messages tailored to a specific person. <br><strong>Whaling:</strong> High-profile scams targeting senior executives or system administrators.</p>
+        </div>
+        <div class="comparison-item attack-vector">
+          <strong>📞 Vishing & Smishing Channels</strong>
+          <p style="margin-top: 4px; font-size:13.5px;"><strong>Vishing:</strong> Voice-based phishing calls where scammers impersonate bank personnel or support agents. <br><strong>Smishing:</strong> Text message scams containing urgent tracking links or fake fraud alerts.</p>
+        </div>
+      </div>
+
+      <div class="comparison-container">
+        <div class="comparison-item attack-vector">
+          <strong>📦 Baiting & Quid Pro Quo</strong>
+          <p style="margin-top: 4px; font-size:13.5px;"><strong>Baiting:</strong> Leaving an infected USB drive labeled "Executive Salaries" in a public hallway for someone to find. <br><strong>Quid Pro Quo:</strong> Offering a fake service, like a tech support checkup, in exchange for login credentials.</p>
+        </div>
+        <div class="comparison-item attack-vector">
+          <strong>🚶 Pretexting & Physical Tailgating</strong>
+          <p style="margin-top: 4px; font-size:13.5px;"><strong>Pretexting:</strong> Fabricating an elaborate story to trick a target into sharing data. <br><strong>Tailgating:</strong> Physically following an employee through a secure doorway as it closes behind them.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🚨</span> Section 4: Identifying Psychological Red Flags</h2>
+      <p>Because these attacks target human emotion rather than technical flaws, staying safe requires recognizing behavioral warning signs:</p>
+      
+      <div class="warning-accent-box">
+        <strong style="color:#e8312f;">Critical Behavioral Patterns to Spot:</strong>
+        <ul style="margin-left: 20px; font-size: 14px; opacity: 0.9; display: flex; flex-direction: column; gap: 4px; margin-top: 6px;">
+          <li><strong>Artificial Urgency:</strong> Demands immediate action to avoid severe fines, account suspension, or legal trouble.</li>
+          <li><strong>Abnormal Communication Channels:</strong> An executive or coworker reaching out via an unverified personal email address or chat line.</li>
+          <li><strong>Bypassing Standard Procedures:</strong> Requesting you to skip regular approval pipelines or authorization steps just this once.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🛡️</span> Section 5: Human Security Controls</h2>
+      <p>Building a strong personal defense system comes down to setting solid boundaries and enforcing strict verification steps across your digital communications.</p>
+      
+      <p><strong>Essential Defense Checkpoints:</strong></p>
+      <ul style="margin-left: 20px; font-size: 14.5px; opacity: 0.85; display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
+        <li><strong>Verify Through Secondary Channels:</strong> If a manager requests an urgent wire transfer, verify the request by calling their official number directly.</li>
+        <li><strong>Implement Multi-Factor Authentication (MFA):</strong> Ensure that even if a threat actor tricks you into sharing your password, they cannot gain account entry without a secondary hardware key or physical device confirmation code.</li>
+        <li><strong>Adopt a Skeptical Mindset:</strong> Never assume a caller's identity based solely on phone display name data, as caller IDs can be easily spoofed.</li>
+      </ul>
+    </div>
+
+    <div class="lesson-card" style="border-color: rgba(232,49,47,0.12); background: rgba(232,49,47,0.005);">
+      <h2 style="font-size:20px; color:#e8312f;">🎯 Deep Dive Insights</h2>
+      
+      <p style="margin-top:12px;"><strong>✅ Learning Objectives:</strong> Define social engineering principles, map the attack lifecycle, identify common social engineering variations (such as Vishing, Smishing, and Baiting), and apply psychological defense steps across your daily workflows.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Key Highlights:</strong> Even the most secure software architecture can be compromised if an employee is tricked into giving away administrator access credentials.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Quick Facts:</strong> Industry reports consistently show that the vast majority of successful enterprise network breaches involve some form of social engineering or phishing during the initial entry stage.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Did You Know?:</strong> One of the oldest social engineering tactics involved attackers impersonating utility workers or delivery personnel to slip past security desks and gain physical access to facility floors.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Best Security Practices:</strong> Keep your personal life private on public social media accounts, look out for manufactured urgency in messages, verify sender identities using official communication lines, and use hardware-backed MFA keys whenever possible.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Summary:</strong> Social engineering success relies entirely on manipulating human emotions like trust and fear. Developing a habits-based verification approach keeps your data safe from psychological manipulation tactics.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Key Takeaways:</strong> When an unexpected email or message pressures you to act immediately, take a moment to step back. Pausing to verify the sender is your strongest defense against social engineering scams.</p>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>📝</span> Mini Knowledge Check</h2>
+      <p style="opacity:0.7; font-size:13px;">Test your understanding of psychological manipulation vectors before moving on to the final evaluation workspace.</p>
+      
+      <div class="mcq-node-block">
+        <p><strong>1. Which core element differentiates a social engineering exploit path from a standard network utility software exploit?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) It focuses entirely on cracking structural cryptographic code blocks.</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) It manipulates human psychology and trust patterns rather than exploiting code vulnerabilities.</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>2. If an attacker designs an email campaign explicitly tailored to compromise a high-profile corporate officer, the attack is classified as:</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">A) Whaling</button>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">B) Smishing</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>3. What type of attack vector involves leaving an unverified, malware-loaded storage drive in a public area hoping an employee plugs it into a network machine?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) Tailgating</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) Baiting</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>4. You receive an urgent text message claiming your bank account will be suspended within an hour unless you click a link and confirm your identity. This is likely an example of:</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">A) A Smishing attack using artificial urgency to bypass logical critical thinking.</button>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">B) A routine automated security update notice sent out by database operations.</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>5. What is the most reliable way to handle an unexpected, urgent phone request from "Internal Corporate IT" asking for your password or verification codes?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) Provide the information quickly to avoid disciplinary action.</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) Politely decline, hang up, and call the IT helpdesk back directly using an official internal phone extension number.</button>
+      </div>
+    </div>
+
+    <div class="nav-btn-row">
+      <button class="btn btn-secondary" onclick="window.location.href='course-8.html'">&larr; Previous Lesson</button>
+      <button class="btn btn-secondary" onclick="window.location.href='../course.html'">Back To Courses</button>
+      <button class="btn btn-primary" onclick="window.location.href='quiz.html'">Next Lesson &rarr;</button>
+    </div>
+
+  </main>
+</div>
+
+<footer style="text-align: center; padding: 40px 24px; opacity: 0.5; font-size: 13px; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 80px;">
+  &copy; 2026 RBEH Multiverse Ecosystem. All Content Protection Bounds Applied.
+</footer>
+
+<script src="../js/theme.js"></script>
+<script src="../js/script.js"></script>
+<script>
+  // Dynamic Scroll Progress Calculation System
+  window.addEventListener('scroll', () => {
+    const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = Math.min(Math.max(Math.round((winScroll / height) * 100), 0), 100);
+    
+    document.getElementById('scrollBar').style.width = scrolled + '%';
+    document.getElementById('scrollPct').innerText = scrolled + '%';
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phishing Awareness | RBEH Multiverse</title>
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/light.css" id="light-theme">
+<link rel="stylesheet" href="../css/dark.css" id="dark-theme" disabled>
+<style>
+  /* --- Unified Context Extensions for Lesson Modules --- */
+  .course-layout-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  
+  @media(min-width: 992px) {
+    .course-layout-container {
+      grid-template-columns: 280px 1fr;
+    }
+  }
+
+  /* --- Premium Floating Scroll Indicator Bar --- */
+  .scroll-tracker-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+  }
+  body[data-theme="dark"] .scroll-tracker-container {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .scroll-tracker-fill {
+    height: 100%;
+    width: 0%;
+    background: #e8312f;
+    box-shadow: 0 0 10px rgba(232, 49, 47, 0.6);
+    transition: width 0.1s ease-out;
+  }
+  .scroll-percentage-badge {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 10px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #e8312f;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  body[data-theme="dark"] .scroll-percentage-badge {
+    background: rgba(20, 20, 25, 0.85);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  /* --- Sticky Side Course Matrix Control Panel --- */
+  .matrix-sidebar {
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+  }
+  .matrix-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.01);
+  }
+  body[data-theme="dark"] .matrix-card {
+    background: rgba(20, 20, 25, 0.6);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+  .matrix-title {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.75px;
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+  .matrix-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .matrix-node {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.4;
+    transition: opacity 0.25s ease;
+  }
+  .matrix-node.completed {
+    opacity: 0.7;
+    color: #1fa75a;
+  }
+  .matrix-node.active {
+    opacity: 1;
+    font-weight: 700;
+  }
+  .matrix-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .matrix-node.completed .matrix-circle {
+    background: rgba(31, 167, 90, 0.1);
+    border-color: #1fa75a;
+  }
+  .matrix-node.active .matrix-circle {
+    background: #e8312f;
+    border-color: #e8312f;
+    color: #fff !important;
+    box-shadow: 0 0 12px rgba(232, 49, 47, 0.4);
+  }
+  body[data-theme="dark"] .matrix-node.active .matrix-circle {
+    background: #ff4d4d;
+    border-color: #ff4d4d;
+  }
+
+  /* --- Premium Component Content Architecture Cards --- */
+  .lesson-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.01);
+  }
+  body[data-theme="dark"] .lesson-card {
+    background: rgba(20, 20, 25, 0.5);
+    border-color: rgba(255, 255, 255, 0.04);
+  }
+  .lesson-card h2, .lesson-card h3 {
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .lesson-card p {
+    font-size: 15px;
+    line-height: 1.65;
+    opacity: 0.85;
+  }
+
+  /* Structural Sub-Components Blocks */
+  .premium-badge-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .meta-badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 30px;
+    background: rgba(0, 0, 0, 0.04);
+  }
+  body[data-theme="dark"] .meta-badge {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  
+  .quote-box {
+    background: rgba(232, 49, 47, 0.03);
+    border-left: 4px solid #e8312f;
+    padding: 18px;
+    border-radius: 0 14px 14px 0;
+    margin: 16px 0;
+  }
+  body[data-theme="dark"] .quote-box {
+    background: rgba(255, 77, 77, 0.03);
+    border-left-color: #ff4d4d;
+  }
+
+  .mapping-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 18px 0;
+  }
+  .mapping-item {
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 14px;
+  }
+  body[data-theme="dark"] .mapping-item {
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.04);
+  }
+
+  .warning-accent-box {
+    background: rgba(232, 49, 47, 0.05);
+    border: 1px solid rgba(232, 49, 47, 0.12);
+    border-radius: 12px;
+    padding: 18px;
+    margin: 16px 0;
+  }
+  .success-accent-box {
+    background: rgba(31, 167, 90, 0.06);
+    border: 1px solid rgba(31, 167, 90, 0.12);
+    border-radius: 12px;
+    padding: 18px;
+    margin: 16px 0;
+  }
+
+  /* Quiz Node Components */
+  .mcq-node-block {
+    border-top: 1px solid rgba(0,0,0,0.06);
+    padding-top: 20px;
+    margin-top: 20px;
+  }
+  body[data-theme="dark"] .mcq-node-block {
+    border-top-color: rgba(255,255,255,0.06);
+  }
+  .mcq-option-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 14px;
+    background: rgba(0,0,0,0.01);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 10px;
+    margin-top: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  body[data-theme="dark"] .mcq-option-btn {
+    background: rgba(255,255,255,0.01);
+    border-color: rgba(255,255,255,0.06);
+  }
+  .mcq-option-btn:hover {
+    background: rgba(232, 49, 47, 0.05);
+    border-color: rgba(232, 49, 47, 0.2);
+  }
+  body[data-theme="dark"] .mcq-option-btn:hover {
+    background: rgba(255, 77, 77, 0.05);
+    border-color: rgba(255, 77, 77, 0.2);
+  }
+
+  .nav-btn-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<div class="scroll-tracker-container"><div class="scroll-tracker-fill" id="scrollBar"></div></div>
+<div class="scroll-percentage-badge"><span>⚡</span> <span id="scrollPct">0%</span> Completed</div>
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='../index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+        <circle cx="12" cy="11" r="1.6" fill="#fff"/>
+        <rect x="11.2" y="11" width="1.6" height="3" fill="#fff"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+
+  <nav class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="../about.html">About</a>
+    <a href="../contact.html">Contact</a>
+  </nav>
+
+  <div class="nav-actions">
+    <button id="theme-toggle" class="icon-btn">
+      <svg id="theme-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+      </svg>
+    </button>
+    <div class="menu-wrap">
+      <button class="menu-btn" id="menu-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+        </svg>
+        <span>Menu</span>
+      </button>
+      <div class="menu-dropdown" id="menu-dropdown">
+        <a href="../tools.html"><span class="menu-icon">🛠</span> Tools</a>
+        <a href="../course.html" class="active"><span class="menu-icon">📚</span> Course</a>
+        <a href="../cyberlab.html"><span class="menu-icon">🧪</span> Cyber Lab</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="course-layout-container">
+  
+  <aside class="matrix-sidebar">
+    <div class="matrix-card">
+      <div class="matrix-title">Course Progress</div>
+      <div class="matrix-grid">
+        <div class="matrix-node completed"><div class="matrix-circle">1</div> Introduction to Cyber Security</div>
+        <div class="matrix-node completed"><div class="matrix-circle">2</div> Types of Cyber Attacks</div>
+        <div class="matrix-node active" style="color:#e8312f;"><div class="matrix-circle">3</div> Phishing Awareness</div>
+        <div class="matrix-node"><div class="matrix-circle">4</div> Password Security</div>
+        <div class="matrix-node"><div class="matrix-circle">5</div> Encryption Basics</div>
+        <div class="matrix-node"><div class="matrix-circle">6</div> Safe Browsing Practices</div>
+        <div class="matrix-node"><div class="matrix-circle">7</div> QR Code Scams</div>
+        <div class="matrix-node"><div class="matrix-circle">8</div> Website Security Basics</div>
+        <div class="matrix-node"><div class="matrix-circle">9</div> Social Engineering Attacks</div>
+        <div class="matrix-node"><div class="matrix-circle">10</div> Cyber Security Quiz</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="content-stream-workspace">
+
+    <div class="lesson-card" style="border-color: rgba(232, 49, 47, 0.15); background: linear-gradient(to bottom right, rgba(255,255,255,0.6), rgba(232,49,47,0.02));">
+      <h1 class="hero-title" style="font-size: 34px; line-height: 1.25; margin-bottom: 8px;">Phishing <span class="accent">Awareness</span></h1>
+      <p style="font-size:16px; opacity:0.85;">Learn how phishing attacks work, how to recognize fake emails, websites, messages, QR scams, and how to stay safe from online fraud using real-world examples.</p>
+      <div class="premium-badge-strip">
+        <span class="meta-badge" style="color:#e8312f; background: rgba(232,49,47,0.06); font-weight:700;">Course 3 of 10</span>
+        <span class="meta-badge">📋 Difficulty: Beginner</span>
+        <span class="meta-badge">⏱️ Reading Time: 8–10 Minutes</span>
+        <span class="meta-badge">🏷️ Category: Cyber Security Awareness</span>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🎣</span> Section 1: Introduction to Phishing</h2>
+      <p>An explanation of social engineering mechanisms where attackers use deceptive templates to impersonate trusted platforms.</p>
+      <div style="margin-top: 14px; font-size: 15px; line-height: 1.65; opacity: 0.9;">
+        <p><strong>What is Phishing?</strong> Phishing is a type of cyber attack where malicious actors pretend to be reputable entities or trusted sources to manipulate targets into handing over valuable data. This structural compromise usually targets high-value credentials, financial infrastructure, personal identification documentation, or corporate proprietary maps.</p>
+        <p style="margin-top: 10px;"><strong>The Threat Vector & Psychology:</strong> Unlike strict software vulnerabilities, phishing relies heavily on human psychological manipulation. Attackers use social engineering mechanics to create templates that exactly mimic banks, utilities, or administrative systems. By triggering immediate panic, curiosity, or financial greed, they trick users into performing unsafe actions, bypassing traditional system perimeter defenses entirely.</p>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>📧</span> Section 2: Spotting Fake Emails & Domain Spoofing</h2>
+      <p>How to break down email header elements, locate mismatching domains, and catch urgency-driven sender requests.</p>
+      <div class="quote-box">
+        <strong>Key Definition: Email Envelope & Header Mismatch</strong>
+        <p style="margin-top: 8px; font-size: 14px; line-height: 1.6;">Domain spoofing maps fraudulent sender records directly to public-facing layout elements. To expose malicious routing configurations, inspect the raw sender strings. If the visual display label shows an authorized corporate entity name but the underlying <code>From:</code> or <code>Return-Path</code> parameter points to an external tracker address like <code>support@security-update-alert-portal.com</code>, the transaction represents a targeted exploit payload.</p>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🌐</span> Section 3: Deceptive Websites & URL Dissection</h2>
+      <p>Understanding deceptive characters (look-alike domains) and spotting visual inconsistencies on malicious landing portals.</p>
+      <div class="warning-accent-box">
+        <strong style="color:#e8312f;">Threat Warning Model: Internationalized Domain Attacks (IDN Homograph)</strong>
+        <p style="margin-top: 8px; font-size: 14px; line-height: 1.6;">Attackers frequently execute homograph attacks by replacing basic Latin ASCII characters with lookalike Cyrillic or Greek symbols (e.g., swapping a standard "o" with an alternate script symbol). This makes fraudulent addresses look identical to legitimate ones at first glance. To detect these traps, carefully inspect the browser's link preview matrix, check for subdomains positioned in reverse sequence (e.g., <code>accounts.google.com.attackerdomain.xyz</code>), and verify that active SSL/TLS certificates match the authorized enterprise vendor precisely.</p>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>📱</span> Section 4: Smishing, Vishing & Message Lures</h2>
+      <p>Analyzing cross-channel delivery vectors including text alerts (Smishing), malicious phone channels (Vishing), and chat logs.</p>
+      <div class="mapping-container">
+        <div class="mapping-item">
+          <strong>Smishing Vector (SMS Phishing)</strong> 
+          <p style="margin-top: 6px; font-size: 13px; opacity: 0.9; line-height: 1.5;">• <strong>Mechanism:</strong> Delivery of urgent text messages claiming fake package tracking problems, bank locks, or government fines containing a compressed track link.<br>• <strong>Warning Indicator:</strong> Delivery via unverified 10-digit mobile phone channels or unknown automated shortcodes requiring instant credential synchronization.<br>• <strong>Mitigation:</strong> Never click on active short links in text messages. Manually input official addresses into an independent browser frame instead.</p>
+        </div>
+        <div class="mapping-item">
+          <strong>Vishing Vector (Voice Phishing)</strong> 
+          <p style="margin-top: 6px; font-size: 13px; opacity: 0.9; line-height: 1.5;">• <strong>Mechanism:</strong> Exploiting voice communication networks with deepfake synthesized voices or high-pressure support center impersonators.<br>• <strong>Warning Indicator:</strong> Demands for temporary validation numbers, credit card CVV codes, or immediate multi-factor authentication (MFA) token override parameters.<br>• <strong>Mitigation:</strong> Disconnect immediately. Dial the verified customer response infrastructure line listed explicitly on the back of your physical banking cards.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🔳</span> Section 5: QR Code Scams (Quishing)</h2>
+      <p>How malicious operations embed dangerous target redirection URLs inside physical or digital matrix code blocks.</p>
+      <div class="success-accent-box">
+        <strong style="color:#1fa75a;">Mitigation Parameter: Defensive Scanning Architecture</strong>
+        <p style="margin-top: 8px; font-size: 14px; line-height: 1.6;">To nullify malicious QR redirection matrices (Quishing), implement rigorous endpoint validation policies. Always verify that physical codes found on parking payment pillars or menus are not sticker overlays hiding original links. Utilize scanning software that shows a secure link preview, revealing the full target domain name before launching your browser. Finally, never type passwords, financial records, or multi-factor authentication data into any web page opened through a public QR scan.</p>
+      </div>
+    </div>
+
+    <div class="lesson-card" style="border-color: rgba(232,49,47,0.12); background: rgba(232,49,47,0.005);">
+      <h2 style="font-size:20px; color:#e8312f;">🎯 Deep Dive Insights</h2>
+      
+      <p style="margin-top:12px;"><strong>✅ Learning Objectives:</strong> Uncover the structural indicators of social lures, audit inbound URLs using raw text observation, and stop automated zero-day link exploits.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Key Highlights:</strong> Legitimate financial or infrastructure teams rarely require quick verification protocols using auxiliary tracking links.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Quick Facts:</strong> Deceptive sender headers account for a massive percentage of early network perimeter warning flags raised by security systems.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Did You Know?:</strong> Attackers use homograph scripts to replace basic ASCII letters with lookalike symbols to trick users into trusting a web address.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Best Security Practices:</strong> Inspect lookalike character mappings, avoid untrusted visual code scans, verify out-of-band alerts directly, and use dedicated browser link previews.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Summary:</strong> Building a strong defense against phishing depends on staying aware and checking email headers, communication channels, and URLs carefully before interacting.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Key Takeaways:</strong> Technical security tools work best when users can easily spot and report deceptive urgency tricks used in phishing campaigns.</p>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>📝</span> Mini Knowledge Check</h2>
+      <p style="opacity:0.7; font-size:13px;">Test your knowledge below before continuing to the next module.</p>
+      
+      <div class="mcq-node-block">
+        <p><strong>1. Which element is most useful for verifying the true origin of a suspicious system message?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) The display logo image placed in the body container</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) The structural domain string inside the sender email header</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>2. What behavior is a common red flag used by phishing actors to stop users from verifying an email?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">A) Creating artificial urgency or threats of account suspension</button>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">B) Providing alternative phone numbers to support staff</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>3. What security threat is associated with scanning unverified QR codes (Quishing) in public locations?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) Automatic localized battery drainage spikes</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) Silent redirection to malicious credential-harvesting landing pages</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>4. How can you safely verify an alert claiming your bank account has been locked?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">A) Navigate to the official bank portal independently via a trusted bookmark or URL entry.</button>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">B) Use the urgent login tracking link provided within the message container.</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>5. What is the main vulnerability exploited by standard multi-channel social engineering attacks?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) Weak multi-layered firewall rules</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) Human trust, curiosity, or panic reactions</button>
+      </div>
+    </div>
+
+    <div class="nav-btn-row">
+      <button class="btn btn-secondary" onclick="window.location.href='course-2.html'">&larr; Previous Lesson</button>
+      <button class="btn btn-secondary" onclick="window.location.href='../course.html'">Back To Courses</button>
+      <button class="btn btn-primary" onclick="window.location.href='course-4.html'">Next Lesson &rarr;</button>
+    </div>
+
+  </main>
+</div>
+
+<footer style="text-align: center; padding: 40px 24px; opacity: 0.5; font-size: 13px; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 80px;">
+  &copy; 2026 RBEH Multiverse Ecosystem. All Content Protection Bounds Applied.
+</footer>
+
+<script src="../js/theme.js"></script>
+<script src="../js/script.js"></script>
+<script>
+  // Dynamic Scroll Progress Calculation System
+  window.addEventListener('scroll', () => {
+    const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = Math.min(Math.max(Math.round((winScroll / height) * 100), 0), 100);
+    
+    document.getElementById('scrollBar').style.width = scrolled + '%';
+    document.getElementById('scrollPct').innerText = scrolled + '%';
+  });
+</script>
+</body>
+</html>

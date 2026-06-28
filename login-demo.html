@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fake vs Real Login Page Demo | RBEH Multiverse</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/light.css" id="light-theme">
+<link rel="stylesheet" href="css/dark.css" id="dark-theme" disabled>
+<style>
+  /* Seamless RBEH Ecosystem Layout Extensions */
+  .demo-split-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 32px;
+    margin-top: 40px;
+  }
+  .pane-card {
+    background: var(--card-bg, rgba(255, 255, 255, 0.65));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+  }
+  [data-theme="dark"] .pane-card {
+    background: rgba(20, 20, 20, 0.6);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  .pane-card.danger-active {
+    box-shadow: 0 0 24px rgba(232, 49, 47, 0.25);
+    border-color: #e8312f;
+  }
+  .pane-card.success-active {
+    box-shadow: 0 0 24px rgba(34, 197, 94, 0.25);
+    border-color: #22c55e;
+  }
+  .mock-window {
+    border-radius: 8px;
+    background: var(--bg-primary, #ffffff);
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+    margin-top: 16px;
+    overflow: hidden;
+  }
+  [data-theme="dark"] .mock-window {
+    background: #141414;
+  }
+  .mock-header-bar {
+    background: var(--bg-secondary, #f3f4f6);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+  }
+  [data-theme="dark"] .mock-header-bar {
+    background: #1f1f1f;
+  }
+  .mock-address-box {
+    flex-grow: 1;
+    background: var(--card-bg, #ffffff);
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-family: monospace;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .hotspot-dashed {
+    border-bottom: 2px dashed #ff4d4d;
+    cursor: help;
+  }
+  .hotspot-dashed-secure {
+    border-bottom: 2px dashed #22c55e;
+    cursor: help;
+  }
+  .badge-indicator {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .badge-indicator.red { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; }
+  .badge-indicator.green { background: #dcfce7; color: #22c55e; border: 1px solid #86efac; }
+  
+  .score-meter-wrap {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 16px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+  }
+  [data-theme="dark"] .score-meter-wrap { background: rgba(255, 255, 255, 0.02); }
+
+  .matrix-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+  }
+  .matrix-item.flagged-red { opacity: 1; color: #e8312f; font-weight: 600; }
+  .matrix-item.flagged-green { opacity: 1; color: #22c55e; font-weight: 600; }
+  
+  .quiz-option {
+    padding: 12px 16px;
+    background: var(--bg-secondary, #f3f4f6);
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
+    border-radius: 8px;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  [data-theme="dark"] .quiz-option { background: #1f1f1f; }
+  .quiz-option:hover { background: rgba(232, 49, 47, 0.05); }
+</style>
+</head>
+<body data-theme="light">
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+        <circle cx="12" cy="11" r="1.6" fill="#fff"/>
+        <rect x="11.2" y="11" width="1.6" height="3" fill="#fff"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <div class="nav-actions">
+    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">
+      <svg id="theme-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+    </button>
+    <div class="menu-wrap">
+      <button class="menu-btn" id="menu-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <span>Menu</span>
+      </button>
+      <div class="menu-dropdown" id="menu-dropdown">
+        <a href="tools.html"><span class="menu-icon">🛠</span> Tools</a>
+        <a href="course.html"><span class="menu-icon">📚</span> Course</a>
+        <a href="cyberlab.html" class="active"><span class="menu-icon">🧪</span> Cyber Lab</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="hero" style="padding-bottom: 20px;">
+  <section class="hero-left">
+    <h1 class="hero-title">Fake vs Real<br><span class="accent">Login Page Demo</span></h1>
+    <p class="hero-desc">Learn how to identify fake login pages by comparing them with genuine login pages. Understand common phishing tricks and security indicators used by trusted websites.</p>
+    <div class="hero-buttons">
+      <button class="btn btn-primary" onclick="document.getElementById('comparison-arena').scrollIntoView({ behavior: 'smooth' });">
+        ▶ Start Comparison
+      </button>
+      <button class="btn btn-secondary" onclick="window.location.href='courses/course-3.html'">
+        📚 Learn Phishing
+      </button>
+    </div>
+  </section>
+
+  <section class="hero-center">
+    <div class="shield-wrap">
+      <div class="shield-glow" style="background: radial-gradient(circle, rgba(232,49,47,0.15) 0%, transparent 70%);"></div>
+      <svg class="shield-svg" viewBox="0 0 200 220">
+        <rect x="40" y="40" width="120" height="140" rx="8" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+        <circle cx="100" cy="90" r="18" fill="none" stroke="#e8312f" stroke-width="2"/>
+        <path d="M85 140 H115 M100 125 V145" stroke="currentColor" stroke-width="2"/>
+      </svg>
+    </div>
+  </section>
+
+  <section class="hero-right">
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="terminal-title"><span>user@rbehLab: ~ login-audit</span></div>
+        <div class="terminal-status"><span class="dot" style="background-color: #22c55e;"></span> Analyzer Sandbox</div>
+      </div>
+      <div class="terminal-body">
+        <p><span class="prompt">user@rbeh:~$</span> ./verify_login_vectors</p>
+        <p class="output">&gt; Initializing visual structural mapping arrays...</p>
+        <p class="output" style="color: #ff4d4d;">&gt; Intercepted Deceptive URL Structure Nodes.</p>
+        <p class="prompt-line"><span class="prompt">user@rbeh:~$</span> <span class="cursor"></span></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div style="padding: 0 48px; max-width: 1400px; margin: 0 auto; padding-bottom: 80px;">
+  
+  <div class="pane-card" style="border-left: 4px solid #e8312f; background: rgba(232,49,47,0.03); margin-bottom: 24px;">
+    <h3 style="color: #e8312f; font-size: 15px; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+      ⚠️ Educational Simulation
+    </h3>
+    <p style="font-size: 13.5px; opacity: 0.85; line-height: 1.5;">
+      This comparison is created only for cyber security awareness and education. Both login pages are completely simulated environments. No entered usernames or passwords are stored, aggregated, or transmitted anywhere. Everything execution remains strictly localized within your browser.
+    </p>
+  </div>
+
+  <section id="comparison-arena" style="padding: 20px 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <h2 style="font-size: 22px; font-weight: 700;">Deceptive Signature Inspector</h2>
+        <p style="font-size: 14px; opacity: 0.6;">Click the underlined tracking links inside the windows to see telemetry evaluations.</p>
+      </div>
+      <button class="btn btn-primary" id="compare-trigger-btn" onclick="executeComparison()">Compare Both Pages</button>
+    </div>
+
+    <div id="inspector-explanation-box" class="pane-card" style="margin-top: 24px; border-left: 4px solid #3b82f6; background: rgba(59,130,246,0.02);">
+      <strong>Inspector Panel:</strong> <span id="inspector-body-text">Select any highlighted active item below to deconstruct its functional authenticity.</span>
+    </div>
+
+    <div class="demo-split-grid">
+      
+      <div class="pane-card" id="fake-pane-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-size: 16px; font-weight: 700; color: #e8312f;">🚨 Fake Login Page</h3>
+          <span class="badge-indicator red" id="badge-fake">Deceptive Target</span>
+        </div>
+
+        <div class="mock-window">
+          <div class="mock-header-bar">
+            <div class="mock-address-box" onclick="inspectElement('Suspicious URL Domain', 'Attackers register domains using cheap alternative TLDs (.xyz, .info, .net) or alter strings (secure-google-login) to clone branding endpoints without authority.')">
+              <span style="color: #ef4444;">⚠️ Not Secure</span>
+              <span class="hotspot-dashed" id="fake-url-node">http://secure-google-login.xyz</span>
+            </div>
+          </div>
+          <div style="padding: 32px 24px; display: flex; flex-direction: column; align-items: center;" onclick="event.preventDefault();">
+            
+            <div style="width:100%; background: #fee2e2; border: 1px solid #fca5a5; padding: 8px; border-radius: 6px; font-size: 11px; color: #ef4444; font-weight: bold; margin-bottom: 16px; text-align: center;" class="hotspot-dashed" onclick="inspectElement('Urgency Manipulator', 'Phishing workflows engineer false urgency blocks to disrupt calm validation analysis, threatening instant account termination.')">
+              ⚠️ Your account will be suspended in 24 hours. Verify now.
+            </div>
+
+            <div style="font-size: 22px; font-weight: 800; color: #7f8c8d; letter-spacing: -0.5px;" class="hotspot-dashed" onclick="inspectElement('Fake Branding Assets', 'Look for minor rendering tracking alignments, asymmetric dimensions, or legacy typography assets variations.')">
+              Gooogle Connect
+            </div>
+            
+            <div style="width: 100%; max-width: 280px; margin-top: 16px;">
+              <div style="margin-bottom: 12px;">
+                <input type="text" placeholder="Email or Username" style="width:100%; padding: 8px; border-radius: 4px; border:1px solid #ccc; font-size:13px;" disabled>
+              </div>
+              <div style="margin-bottom: 12px;">
+                <input type="password" placeholder="Password" style="width:100%; padding: 8px; border-radius: 4px; border:1px solid #ccc; font-size:13px;" disabled>
+              </div>
+              
+              <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:12px; opacity:0.7;">
+                <label><input type="checkbox" disabled> Remeber me</label>
+                <span>Forgot password?</span>
+              </div>
+
+              <button class="btn btn-primary" style="width: 100%; padding: 8px; font-size: 13px; background: #ef4444; border-color: #ef4444;" onclick="inspectElement('Unsecured Processing Form', 'This button maps transaction payloads insecurely to custom backend matrices completely disjointed from official account nodes.')">Sign In Button</button>
+            </div>
+
+            <div style="margin-top: 24px; font-size: 11px; opacity: 0.4; text-align: center;">
+              ©2026 Gogle Inc. All rights reserved. Missing Privacy Links.
+            </div>
+          </div>
+        </div>
+
+        <div class="score-meter-wrap" id="score-fake-wrap" style="display:none;">
+          <div style="width: 44px; height: 44px; border-radius: 50%; border: 4px solid #e8312f; display:flex; align-items:center; justify-content:center; font-weight:900; color:#e8312f; font-size:13px;">10%</div>
+          <div>
+            <div style="font-weight:700; font-size:13px;">Critical Threat Score</div>
+            <div style="font-size:11px; opacity:0.6;">Deficient validation profiles detected.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane-card" id="real-pane-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-size: 16px; font-weight: 700; color: #22c55e;">✅ Genuine Login Page</h3>
+          <span class="badge-indicator green" id="badge-real">Verified Account Platform</span>
+        </div>
+
+        <div class="mock-window">
+          <div class="mock-header-bar">
+            <div class="mock-address-box" onclick="inspectElement('HTTPS Secure Handshake', 'The structural prefix indicates an active TLS session where transport encryption eliminates local payload sniffing vulnerabilities.')">
+              <span style="color: #22c55e;">🔒 HTTPS</span>
+              <span class="hotspot-dashed-secure" id="real-url-node">https://accounts.google.com</span>
+            </div>
+          </div>
+          <div style="padding: 32px 24px; display: flex; flex-direction: column; align-items: center;" onclick="event.preventDefault();">
+            
+            <div style="font-size: 22px; font-weight: 800; color: #4285f4;" class="hotspot-dashed-secure" onclick="inspectElement('Official Brand Validation', 'Legitimate login environments deliver crisp vector logotypes matching formal trademark configurations perfectly.')">
+              Google
+            </div>
+            <p style="font-size:13px; opacity:0.7; margin-top:4px; margin-bottom:16px;">Sign in to continue to your service</p>
+
+            <div style="width: 100%; max-width: 280px;">
+              <div style="margin-bottom: 12px;">
+                <input type="text" placeholder="Email or phone" style="width:100%; padding: 8px; border-radius: 4px; border:1px solid var(--border-color, #ccc); background:transparent; color:inherit; font-size:13px;" disabled>
+              </div>
+              <div style="margin-bottom: 12px;">
+                <input type="password" placeholder="Enter your password" style="width:100%; padding: 8px; border-radius: 4px; border:1px solid var(--border-color, #ccc); background:transparent; color:inherit; font-size:13px;" disabled>
+              </div>
+
+              <div style="margin-bottom: 12px; padding: 6px 10px; background: rgba(34,197,94,0.06); border-radius: 6px; font-size: 11px; display: flex; align-items: center; gap: 6px;" class="hotspot-dashed-secure" onclick="inspectElement('Two-Factor Protection Layer', 'Authentic systems enforce multi-factor challenges (TOTP tokens, security keys) which render leaked static parameters useless to intercepting parties.')">
+                <span style="color:#22c55e;">🛡️</span> 2FA Protocol Layer Active
+              </div>
+
+              <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:16px;">
+                <span style="color:#4285f4; cursor:pointer;">Create account</span>
+                <button class="btn btn-primary" style="padding: 6px 16px; font-size: 13px; background: #4285f4; border-color: #4285f4;">Next</button>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display:flex; gap:12px; font-size: 11px; color:#4285f4;" class="hotspot-dashed-secure" onclick="inspectElement('Corporate Compliance Anchors', 'Validated processing architectures maintain persistent structural linkages to verified terms, support channels, and data disclosure profiles.')">
+              <span>Help Center</span>
+              <span>Privacy Policy</span>
+              <span>Terms</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="score-meter-wrap" id="score-real-wrap" style="display:none;">
+          <div style="width: 44px; height: 44px; border-radius: 50%; border: 4px solid #22c55e; display:flex; align-items:center; justify-content:center; font-weight:900; color:#22c55e; font-size:13px;">95%</div>
+          <div>
+            <div style="font-weight:700; font-size:13px;">Trust Compliance Rating</div>
+            <div style="font-size:11px; opacity:0.6;">All key security certificates verified.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="pane-card" style="margin-top: 32px;">
+      <h3 style="font-size: 15px; font-weight: 700;">Validation Protocol Ledger Checklist</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 16px;">
+        <div class="matrix-item" id="ledger-1">⬜ Check HTTPS Encryption Status</div>
+        <div class="matrix-item" id="ledger-2">⬜ Verify Domain Extension Identity</div>
+        <div class="matrix-item" id="ledger-3">⬜ Scan Interface Alignment & Typos</div>
+        <div class="matrix-item" id="ledger-4">⬜ Audit Address Bar String Structure</div>
+        <div class="matrix-item" id="ledger-5">⬜ Check Binding Privacy Disclosures</div>
+        <div class="matrix-item" id="ledger-6">⬜ Verify Explicit Root Certificate</div>
+        <div class="matrix-item" id="ledger-7">⬜ Avoid Sudden Deadline Pressure</div>
+        <div class="matrix-item" id="ledger-8">⬜ Enable Adaptive Multi-Factor Auth</div>
+      </div>
+    </div>
+
+    <div class="pane-card" style="margin-top: 32px; background: rgba(0,0,0,0.01);">
+      <h3 style="font-size: 16px; font-weight: 700;">🧩 Sandbox Mini-Quiz Checkpoint</h3>
+      <p style="font-size: 13.5px; opacity:0.8; margin-top:4px;">Based on the visual structural layout items verified above, which specific profile card is safe for credentials entry?</p>
+      
+      <div style="margin-top: 12px;">
+        <div class="quiz-option" onclick="processQuizAnswer('A')"><strong>Option A:</strong> The left layout operating under http://secure-google-login.xyz</div>
+        <div class="quiz-option" onclick="processQuizAnswer('B')"><strong>Option B:</strong> The right layout running via https://accounts.google.com</div>
+      </div>
+      <div id="quiz-feedback-box" style="margin-top:14px; font-size:13.5px; display:none; padding:10px; border-radius:6px;"></div>
+    </div>
+
+    <div class="pane-card" style="margin-top: 32px;">
+      <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px;">📚 Core Educational Discovery Vault</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px;">
+        <div>
+          <h4 style="font-size: 14px; font-weight: 700; color: #e8312f; margin-bottom: 6px;">Why Fake Logins Work</h4>
+          <p style="font-size: 13px; opacity: 0.75; line-height: 1.5;">Phishing forms exploit visual trust familiarity. By replicating stylesheets, brand images, and standard buttons, attackers weaponize immediate pattern recognition to steal information before a deeper inspection happens.</p>
+        </div>
+        <div>
+          <h4 style="font-size: 14px; font-weight: 700; color: #e8312f; margin-bottom: 6px;">How Systems Are Copied</h4>
+          <p style="font-size: 13px; opacity: 0.75; line-height: 1.5;">Cybercriminals use automated tools to copy source code scripts from real targets. They alter only the form's submission handler path, directing entered data packets straight to their server instead of official authentication nodes.</p>
+        </div>
+        <div>
+          <h4 style="font-size: 14px; font-weight: 700; color: #22c55e; margin-bottom: 6px;">Defensive Measures</h4>
+          <p style="font-size: 13px; opacity: 0.75; line-height: 1.5;">Always bookmark critical login dashboards directly. Use hardware-backed Multi-Factor Authentication (2FA) keys—even if a fake page captures your static password, attackers cannot pass the dynamic, time-sensitive verification token barrier.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 16px; margin-top: 32px; flex-wrap: wrap;">
+      <button class="btn btn-secondary" onclick="resetComparisonDemo()">🔄 Compare Again</button>
+      <button class="btn btn-secondary" onclick="window.location.href='cyberlab.html'">🏠 Back to Cyber Lab</button>
+      <button class="btn btn-primary" onclick="window.location.href='courses/course-3.html'">📚 Learn Phishing Pathways</button>
+    </div>
+
+  </section>
+</div>
+
+<script src="js/theme.js"></script>
+<script src="js/script.js"></script>
+<script>
+  // Core Inspector Sandbox Functional Logic Layer
+  function inspectElement(title, explanation) {
+    const outputCard = document.getElementById('inspector-explanation-box');
+    document.getElementById('inspector-body-text').innerHTML = `<strong>${title}:</strong> ${explanation}`;
+    outputCard.style.display = 'block';
+    outputCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function executeComparison() {
+    // Add thematic visual indicators to structural page panels
+    document.getElementById('fake-pane-card').className = 'pane-card danger-active';
+    document.getElementById('real-pane-card').className = 'pane-card success-active';
+    
+    // Render validation states visible
+    document.getElementById('badge-fake').style.display = 'inline-block';
+    document.getElementById('badge-real').style.display = 'inline-block';
+    document.getElementById('score-fake-wrap').style.display = 'flex';
+    document.getElementById('score-real-wrap').style.display = 'flex';
+
+    // Highlight and translate target cross-check items
+    const dangerItems = ['ledger-1', 'ledger-2', 'ledger-3', 'ledger-4', 'ledger-7'];
+    const safeItems = ['ledger-5', 'ledger-6', 'ledger-8'];
+
+    dangerItems.forEach(id => {
+      const el = document.getElementById(id);
+      el.innerText = '❌ ' + el.innerText.substring(2);
+      el.className = 'matrix-item flagged-red';
+    });
+
+    safeItems.forEach(id => {
+      const el = document.getElementById(id);
+      el.innerText = '✅ ' + el.innerText.substring(2);
+      el.className = 'matrix-item flagged-green';
+    });
+  }
+
+  function processQuizAnswer(selection) {
+    const feedback = document.getElementById('quiz-feedback-box');
+    feedback.style.display = 'block';
+    if(selection === 'B') {
+      feedback.style.background = 'rgba(34,197,94,0.1)';
+      feedback.style.color = '#22c55e';
+      feedback.innerHTML = "<strong>Correct!</strong> Option B is authentic because it connects through an encrypted HTTPS layer directly to the official core domain string (google.com) and includes strict verification features like multi-factor authentication (2FA).";
+    } else {
+      feedback.style.background = 'rgba(232,49,47,0.1)';
+      feedback.style.color = '#e8312f';
+      feedback.innerHTML = "<strong>Incorrect.</strong> Option A is a simulated threat node using an unsecured connection protocol over an unauthorized TLD configuration designed to pass off as legitimate branding.";
+    }
+  }
+
+  function resetComparisonDemo() {
+    document.getElementById('fake-pane-card').className = 'pane-card';
+    document.getElementById('real-pane-card').className = 'pane-card';
+    document.getElementById('badge-fake').style.display = 'none';
+    document.getElementById('badge-real').style.display = 'none';
+    document.getElementById('score-fake-wrap').style.display = 'none';
+    document.getElementById('score-real-wrap').style.display = 'none';
+    document.getElementById('quiz-feedback-box').style.display = 'none';
+
+    const defaultLedger = [
+      { id: 'ledger-1', label: 'Check HTTPS Encryption Status' },
+      { id: 'ledger-2', label: 'Verify Domain Extension Identity' },
+      { id: 'ledger-3', label: 'Scan Interface Alignment & Typos' },
+      { id: 'ledger-4', label: 'Audit Address Bar String Structure' },
+      { id: 'ledger-5', label: 'Check Binding Privacy Disclosures' },
+      { id: 'ledger-6', label: 'Verify Explicit Root Certificate' },
+      { id: 'ledger-7', label: 'Avoid Sudden Deadline Pressure' },
+      { id: 'ledger-8', label: 'Enable Adaptive Multi-Factor Auth' }
+    ];
+
+    defaultLedger.forEach(item => {
+      const el = document.getElementById(item.id);
+      el.innerText = '⬜ ' + item.label;
+      el.className = 'matrix-item';
+    });
+
+    document.getElementById('inspector-body-text').innerText = "Select any highlighted active item below to deconstruct its functional authenticity.";
+  }
+</script>
+</body>
+</html>

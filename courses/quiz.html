@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Final Certification Exam | RBEH Multiverse</title>
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/light.css" id="light-theme">
+<link rel="stylesheet" href="../css/dark.css" id="dark-theme" disabled>
+<style>
+  /* Professional Exam Environment Layout Matrix */
+  .exam-container {
+    max-width: 1200px;
+    margin: 40px auto 100px;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 32px;
+  }
+  @media (max-width: 968px) {
+    .exam-container { grid-template-columns: 1fr; }
+  }
+  .exam-card {
+    background: var(--card-bg, rgba(255, 255, 255, 0.65));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.02);
+    transition: all 0.3s ease;
+  }
+  [data-theme="dark"] .exam-card {
+    background: rgba(20, 20, 20, 0.6);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  .sticky-sidebar {
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+  }
+  .progress-bar-track {
+    width: 100%;
+    height: 8px;
+    background: rgba(0,0,0,0.05);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  [data-theme="dark"] .progress-bar-track { background: rgba(255,255,255,0.05); }
+  .progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: #e8312f;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .option-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 24px 0;
+  }
+  .option-btn {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    background: var(--bg-secondary, #f9fafb);
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    font-size: 14.5px;
+    font-weight: 500;
+    color: inherit;
+    transition: all 0.2s ease;
+  }
+  [data-theme="dark"] .option-btn { background: #1a1a1a; }
+  .option-btn:hover {
+    background: rgba(232, 49, 47, 0.03);
+    border-color: #e8312f;
+  }
+  .option-btn.selected {
+    background: rgba(232, 49, 47, 0.08);
+    border-color: #e8312f;
+    box-shadow: 0 0 12px rgba(232,49,47,0.1);
+  }
+  .nav-btn-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+  .question-grid-map {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .map-dot {
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--border-color, rgba(0,0,0,0.08));
+    background: transparent;
+    cursor: pointer;
+    color: inherit;
+    transition: all 0.2s ease;
+  }
+  .map-dot.answered { background: rgba(34,197,94,0.15); border-color: #22c55e; }
+  .map-dot.review { background: rgba(234,179,8,0.15); border-color: #eab308; }
+  .map-dot.current { border-color: #e8312f; box-shadow: 0 0 0 2px rgba(232,49,47,0.2); }
+  .metric-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .badge-easy { background: #dcfce7; color: #16a34a; }
+  .badge-med { background: #fef9c3; color: #ca8a04; }
+  .badge-hard { background: #fee2e2; color: #ef4444; }
+  .analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+        <circle cx="12" cy="11" r="1.6" fill="#fff"/>
+        <rect x="11.2" y="11" width="1.6" height="3" fill="#fff"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <div class="nav-actions">
+    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">
+      <svg id="theme-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+      </svg>
+    </button>
+    <div class="menu-wrap">
+      <button class="menu-btn" id="menu-btn">
+        <span>Menu</span>
+      </button>
+      <div class="menu-dropdown" id="menu-dropdown">
+        <a href="tools.html">🛠 Tools</a>
+        <a href="course.html" class="active">📚 Course</a>
+        <a href="cyberlab.html">🧪 Cyber Lab</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="hero" id="setup-view" style="padding-bottom: 60px;">
+  <section class="hero-left">
+    <span style="font-weight:700; color:#e8312f; font-size:12px; letter-spacing:1px; text-transform:uppercase;">RBEH Capstone Core</span>
+    <h1 class="hero-title">Final Certification<br><span class="accent">Security Exam</span></h1>
+    <p class="hero-desc">Validate your knowledge baseline against industry-standard engineering thresholds. This comprehensive examination covers all 9 foundational learning vectors and hands-on laboratory modules.</p>
+    <div style="margin: 24px 0 32px;">
+      <input type="text" id="candidate-name" placeholder="Enter Full Name for Certificate Generation" style="padding:14px 18px; border-radius:8px; width:100%; max-width:400px; font-size:14px; border:1px solid var(--border-color, rgba(0,0,0,0.15)); background:transparent; color:inherit;">
+    </div>
+    <div class="hero-buttons">
+      <button class="btn btn-primary" onclick="initializeCertificationExam()">▶ Initialize Exam Matrix</button>
+    </div>
+  </section>
+  <section class="hero-right">
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="terminal-title">exam_engine_v4.2.sh</div>
+        <div class="terminal-status"><span class="dot" style="background-color:#eab308;"></span> Cryptographically Sealed</div>
+      </div>
+      <div class="terminal-body">
+        <p><span class="prompt">rbeh_eval:~$</span> ./verify_bank_integrity</p>
+        <p class="output">&gt; Parsing 100 structural taxonomy vectors...</p>
+        <p class="output" style="color:#22c55e;">&gt; Complete asset load compliant. Shuffling rules generated.</p>
+        <p class="output">&gt; Exam Profile: 50 Questions | 60 Minute Countdown Timer.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="exam-container" id="exam-workspace" style="display: none;">
+  <div>
+    <div class="exam-card">
+      <div class="progress-bar-track"><div class="progress-bar-fill" id="exam-progress-bar"></div></div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <span style="font-size:13px; font-weight:600; opacity:0.6;" id="question-index-label">Question -- of 50</span>
+        <div style="display:flex; gap:8px;" id="badge-container"></div>
+      </div>
+      <h2 style="font-size:18px; font-weight:600; line-height:1.5; margin-bottom:8px;" id="question-text-box">Loading taxonomy validation vector...</h2>
+      <p style="font-size:12px; opacity:0.5; margin-bottom:24px;" id="question-topic-label">Vector Domain: General Security Core</p>
+      
+      <div class="option-wrapper" id="options-box"></div>
+      
+      <div class="nav-btn-grid">
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-secondary" style="padding:10px 18px;" onclick="navigatePreviousQuestion()">&larr; Prev</button>
+          <button class="btn btn-secondary" style="padding:10px 18px;" onclick="navigateNextQuestion()">Next &rarr;</button>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-secondary" style="padding:10px 18px; color:#eab308; border-color:rgba(234,179,8,0.3);" onclick="toggleFlagForReview()">🔖 Mark Review</button>
+          <button class="btn btn-primary" style="padding:10px 24px; background:#e8312f;" onclick="triggerExamSubmission(false)">Finish Exam</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sticky-sidebar">
+    <div class="exam-card" style="padding:20px;">
+      <div style="text-align:center; margin-bottom:20px;">
+        <p style="font-size:11px; font-weight:700; opacity:0.5; text-transform:uppercase; letter-spacing:0.5px;">Remaining Timeline</p>
+        <h2 style="font-size:32px; font-weight:700; font-family:monospace; margin-top:4px;" id="timer-box">60:00</h2>
+      </div>
+      <hr style="border:0; border-top:1px solid var(--border-color, rgba(0,0,0,0.08)); margin-bottom:16px;">
+      <h4 style="font-size:12px; font-weight:700; text-transform:uppercase; opacity:0.6; margin-bottom:12px;">Matrix Map Tracking</h4>
+      <div class="question-grid-map" id="exam-grid-map"></div>
+    </div>
+  </div>
+</div>
+
+<div style="max-width:1000px; margin:40px auto 100px; padding:0 24px; display:none;" id="results-workspace">
+  <div class="exam-card" style="text-align:center; padding:48px 32px;">
+    <span style="font-size:48px;" id="result-emoji">🎓</span>
+    <h1 style="font-size:28px; font-weight:700; margin-top:12px;" id="result-headline">Assessment Matrix Finalized</h1>
+    <p style="font-size:15px; opacity:0.7; margin-top:4px;" id="result-candidate-string">Candidate Reference Record Evaluation</p>
+    
+    <div style="font-size:64px; font-weight:800; color:#e8312f; margin:24px 0 8px;" id="result-grade-box">A+</div>
+    <p style="font-size:13px; font-weight:700; text-transform:uppercase; opacity:0.5;" id="result-score-summary">Scored 0 / 50 (0%)</p>
+
+    <div class="analysis-grid">
+      <div class="exam-card" style="padding:16px; text-align:left;">
+        <span style="font-size:11px; opacity:0.5; font-weight:700; text-transform:uppercase;">Timeline Speed</span>
+        <h3 style="font-size:18px; font-weight:700; margin-top:4px;" id="metrics-speed">--:--</h3>
+      </div>
+      <div class="exam-card" style="padding:16px; text-align:left;">
+        <span style="font-size:11px; opacity:0.5; font-weight:700; text-transform:uppercase;">Core Accuracy</span>
+        <h3 style="font-size:18px; font-weight:700; margin-top:4px;" id="metrics-accuracy">0%</h3>
+      </div>
+      <div class="exam-card" style="padding:16px; text-align:left;">
+        <span style="font-size:11px; opacity:0.5; font-weight:700; text-transform:uppercase;">Strongest Framework Vector</span>
+        <h3 style="font-size:13px; font-weight:700; margin-top:4px; color:#22c55e;" id="metrics-strongest">Analyzing...</h3>
+      </div>
+      <div class="exam-card" style="padding:16px; text-align:left;">
+        <span style="font-size:11px; opacity:0.5; font-weight:700; text-transform:uppercase;">Weakest Delta Gap</span>
+        <h3 style="font-size:13px; font-weight:700; margin-top:4px; color:#ef4444;" id="metrics-weakest">Analyzing...</h3>
+      </div>
+    </div>
+
+    <div class="exam-card" style="margin-top:24px; padding:20px; text-align:left;">
+      <h3 style="font-size:14px; font-weight:700; text-transform:uppercase; opacity:0.6; margin-bottom:12px;">Difficulty Performance Distribution</h3>
+      <div style="display:flex; justify-content:space-between; font-size:13px; opacity:0.85;" id="difficulty-distribution-box"></div>
+    </div>
+
+    <div style="display:flex; gap:12px; justify-content:center; margin-top:32px; flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="toggleReviewModeWindow()">Toggle Taxonomy Review Mode</button>
+      <button class="btn btn-secondary" onclick="window.location.reload()">Retake Assessment Matrix</button>
+      <button class="btn btn-secondary" onclick="window.location.href='course.html'">Return to Course Hub</button>
+    </div>
+  </div>
+
+  <div id="review-ledger-box" style="display:none; margin-top:40px;">
+    <h2 style="font-size:18px; font-weight:700; margin-bottom:20px;">Comprehensive Taxonomy Audit Trail</h2>
+    <div id="ledger-target-wrapper" style="display:flex; flex-direction:column; gap:20px;"></div>
+  </div>
+</div>
+
+<script src="../js/theme.js"></script>
+<script src="../js/script.js"></script>
+<script>
+  // Complete 100 UNIQUE Cyber Security Question Database
+  const masterQuestionBank = [
+    // Course 1: Intro to Cyber Security (1-10)
+    { id: 1, c: 1, topic: "Introduction to Cyber Security", q: "Which core parameter of the CIA Triad ensures data remains fully shielded from unauthorized viewing or discovery?", o: ["Integrity", "Confidentiality", "Availability", "Non-repudiation"], a: 1, d: "Easy", e: "Confidentiality ensures that sensitive data access is granted exclusively to authorized identities, mitigating disclosure attacks." },
+    { id: 2, c: 1, topic: "Introduction to Cyber Security", q: "What security element does updating file attributes to reflect unauthorized changes represent a breach against?", o: ["Availability", "Authenticity", "Integrity", "Utility"], a: 2, d: "Easy", e: "Integrity protection mechanisms ensure that data has not been altered, manipulated, or destroyed by unauthorized elements." },
+    { id: 3, c: 1, topic: "Introduction to Cyber Security", q: "A distributed denial-of-service (DDoS) attack directly undermines which primary element of the defensive posture?", o: ["Confidentiality", "Accountability", "Availability", "Traceability"], a: 2, d: "Easy", e: "DDoS attacks saturate endpoint request capacity to compromise access pipelines, undermining the metric of Availability." },
+    { id: 4, c: 1, topic: "Introduction to Cyber Security", q: "Which operational mechanism enforces cryptographically secure verification that a specific sender initiated a data packet stream?", o: ["Symmetric Token Mapping", "Non-repudiation", "System Partitioning", "Data Redundancy Checking"], a: 1, d: "Medium", e: "Non-repudiation guarantees that the author of an active data validation token or signature cannot deny structural authenticity." },
+    { id: 5, c: 1, topic: "Introduction to Cyber Security", q: "In standard defensive architectural paradigms, what does the implementation strategy 'Defense in Depth' specify?", o: ["Deploying single strong firewall rules", "Layering redundant independent countermeasure modules", "Relying exclusively on host antivirus nodes", "Restricting system execution solely to cloud platforms"], a: 1, d: "Medium", e: "Defense in depth layers diverse defensive arrays sequentially across endpoints, network perimeters, and internal segments." },
+    { id: 6, c: 1, topic: "Introduction to Cyber Security", q: "Which specialized role identifies system interface parameters vulnerabilities with authorization before reporting findings directly to system owners?", o: ["Black Hat Operator", "White Hat Analyst", "Script Kiddie Asset", "State-Sponsored Advanced Threat Element"], a: 1, d: "Easy", e: "White hat security analysts use infrastructure verification strategies ethically with explicit written alignment." },
+    { id: 7, c: 1, topic: "Introduction to Cyber Security", q: "What does the term 'Attack Surface' accurately quantify across an operating infrastructure ecosystem?", o: ["The size of physical server frames", "The summation of network communication endpoints and interfaces available for exploitation", "The total count of threat actors targeting active assets", "The capacity threshold of a perimeter hardware device"], a: 1, d: "Medium", e: "An attack surface encompasses every accessible network endpoint, application API, code component, or user vector exposed to exploit vectors." },
+    { id: 8, c: 1, topic: "Introduction to Cyber Security", q: "Which foundational concept restricts user domain visibility and execution privileges strictly to parameters required for a designated workflow?", o: ["Implicit Trust Authorization", "Least Privilege", "Network Token Swapping", "Directory Synchronization Matrix"], a: 1, d: "Medium", e: "The Principle of Least Privilege states identities should possess only the absolute baseline system level permissions required to complete core tasks." },
+    { id: 9, c: 1, topic: "Introduction to Cyber Security", q: "What standard lifecycle framework outlines structural tracking phases of a system configuration from compilation to decommissioning stages?", o: ["OSI Reference Pipeline", "OWASP Evaluation Sheet", "NIST Security Lifecycle Architecture", "Symmetric Execution Model"], a: 2, d: "Hard", e: "NIST risk management blueprints guide professionals through categorization, implementation, assessment, and persistent monitoring stages safely." },
+    { id: 10, c: 1, topic: "Introduction to Cyber Security", q: "An operator leverages a software code flaw unknown to the vendor application engineering staff. What classification does this trace against?", o: ["Regression Defect", "Zero-Day Vulnerability", "Side-Channel Vector", "Brute-Force Residue"], a: 1, d: "Hard", e: "Zero-day threats exploit programmatic logic flaws before public discovery, documentation, patch builds, or reference signature updates exist." },
+
+    // Course 2: Types of Cyber Attacks (11-20)
+    { id: 11, c: 2, topic: "Types of Cyber Attacks", q: "Which classification of malicious logic runs autonomously to spread lateral copies across interconnected routing protocols without human actions?", o: ["Macro Virus Core", "Network Worm Module", "Trojan Utility Pack", "Rootkit Interface Hook"], a: 1, d: "Medium", e: "Worms replicate dynamically over network interfaces by systematically exploiting active communication protocol flaws." },
+    { id: 12, c: 2, topic: "Types of Cyber Attacks", q: "What primary execution strategy isolates a standard 'Trojan Horse' deployment wrapper vector from alternative categories?", o: ["It targets database configurations through raw statements", "It disguises malicious code inside benign-looking packages", "It directly alters physical BIOS flash arrays", "It intercepts wireless air-interface channels automatically"], a: 1, d: "Easy", e: "Trojans use social engineering contexts, wrapping structural payloads inside utility configurations, game code, or fake performance drivers." },
+    { id: 13, c: 2, topic: "Types of Cyber Attacks", q: "What attack pattern intercepts a localized active data session by placing an interrogation tool directly between a workstation node and the destination portal?", o: ["Cross-Site Component Traversal", "Man-in-the-Middle (MitM) Attack", "Buffer Overflow Stack Smash", "Horizontal Directory Harvesting"], a: 1, d: "Medium", e: "MitM operations occur when threat vectors insert interception capabilities between validation points to parse, manipulate, or log session packets." },
+    { id: 14, c: 2, topic: "Types of Cyber Attacks", q: "An infrastructure node is suddenly inundated with structured ICMP echo request floods from thousands of global endpoints. What pattern does this denote?", o: ["SQL Statement Tampering", "Distributed Denial of Service (DDoS)", "Reflective Directory Parsing", "Cross-Origin Interface Hijacking"], a: 1, d: "Easy", e: "DDoS strategies combine botnet arrays to flood system memory networks, exhausting interface capabilities through data overwhelm." },
+    { id: 15, c: 2, topic: "Types of Cyber Attacks", q: "What target asset parameter does a 'Buffer Overflow' attack architecture seek to disrupt or write instructions into?", o: ["Physical Drive Sector Alignments", "System RAM Boundary Stack Layers", "The External Firewall Interface Map", "Cryptographic Salt Token Databases"], a: 1, d: "Hard", e: "Buffer overflows send data volumes larger than a memory variable's allocation, corrupting the adjacent stack to execute shellcode parameters." },
+    { id: 16, c: 2, topic: "Types of Cyber Attacks", q: "Which mechanism executes when a rogue entity systematically feeds pre-compiled structural dictionary entries into an active authentication route?", o: ["Brute-Force Mapping Attack", "Session Token Fixation Pattern", "DNS Cache Poisoning Route", "Logic Bomb Trigger Sequence"], a: 0, d: "Easy", e: "Brute force and dictionary mechanisms automate verification validation permutations against processing pathways to find account keys." },
+    { id: 17, c: 2, topic: "Types of Cyber Attacks", q: "What malicious routine remains completely dormant inside system memory parameters until specific logic markers or dates trigger execution?", o: ["Spyware Logger Module", "Logic Bomb Vector", "Adware Redirect Script", "Polymorphic Dropper Shell"], a: 1, d: "Medium", e: "Logic bombs append verification conditions into custom code libraries, activating specific destructive parameters only when precise criteria match." },
+    { id: 18, c: 2, topic: "Types of Cyber Attacks", q: "How does a 'Polymorphic' threat vector bypass classic signature-based endpoint antivirus file monitors effectively?", o: ["By altering its internal file extension tracking arrays", "By dynamically rewriting its code shape or decryption routine every generation", "By executing exclusively inside cloud virtual routers", "By dropping administrative access flags"], a: 1, d: "Hard", e: "Polymorphic malware rewrites its file structure and decryption routines systematically to mutate its digital hash signature while preserving operational functionality." },
+    { id: 19, c: 2, topic: "Types of Cyber Attacks", q: "What occurs during a 'DNS Cache Poisoning' execution layer across local resolution lookup structures?", o: ["The target database files are entirely purged", "Rogue domain IP mappings are inserted into resolver memory", "The target firewall blocks administrative ports", "Browser cookie caches are systematically exported"], a: 1, d: "Hard", e: "DNS cache poisoning injects spoofed routing parameters into intermediate name server profiles, redirecting standard web traffic towards malicious servers." },
+    { id: 20, c: 2, topic: "Types of Cyber Attacks", q: "An attacker changes data packet header configurations to present a spoofed source validation location parameter. What is this called?", o: ["Replay Capturing", "Spoofing / Masking Vector", "Data Sanitization Fault", "Lateral Escalation Pivot"], a: 1, d: "Medium", e: "Spoofing masks packet origins by synthesizing identity flags, network addresses, or interface attributes within header objects." },
+
+    // Course 3: Phishing Awareness (21-30)
+    { id: 21, c: 3, topic: "Phishing Awareness", q: "Which term isolates a highly custom phishing operation targeting a specific executive profile using tailored background context?", o: ["Smishing Stream", "Spear Phishing / Whaling", "Watering Hole Routine", "Vishing Campaign Vector"], a: 1, d: "Easy", e: "Whaling explicitly targets high-profile corporate leaders, using rich contextual details to exploit organizational hierarchies." },
+    { id: 22, c: 3, topic: "Phishing Awareness", q: "What communications structure is leveraged when an operative deploys text message routes containing malicious URLs?", o: ["Vishing Matrix", "Smishing Core", "Pharming Traversal", "Spear Injection Layer"], a: 1, d: "Easy", e: "Smishing involves SMS vectors, using text paths to bypass common enterprise mail spam filters." },
+    { id: 23, c: 3, topic: "Phishing Awareness", q: "How does a 'Pharming' threat vector capture a candidate user profile's session credentials without requiring a link click?", o: ["By monitoring keyboard noise patterns", "By modifying host files or poisoning DNS configurations to redirect legitimate domain queries", "By physically tapping copper ethernet lines", "By generating brute-force automated login attacks"], a: 1, d: "Hard", e: "Pharming poisons name resolution routes to quietly steer users to lookalike fake sites, even when the user types the exact correct web address." },
+    { id: 24, c: 3, topic: "Phishing Awareness", q: "Which attribute inside an inbound email header should a professional examine first to check for address spoofing anomalies?", o: ["The total character word count metrics", "The DKIM/SPF alignment verification parameters", "The attachment metadata size tracking strings", "The signature block image formatting resolution"], a: 1, d: "Hard", e: "SPF (Sender Policy Framework) and DKIM (DomainKeys Identified Mail) evaluate verification records to check if sender domains match verified hosts." },
+    { id: 25, c: 3, topic: "Phishing Awareness", q: "What pattern does an inbound notice exhibit when it demands immediate corporate fund movements to stop account deletion?", o: ["Technical Data Inundation", "Urgency and Psychological Coercion Frameworks", "Least Privilege Routing Rules", "Cryptographic Key Rotation Protocols"], a: 1, d: "Easy", e: "Phishing designs use artificial urgency or panic-inducing triggers to bypass standard verification checks." },
+    { id: 26, c: 3, topic: "Phishing Awareness", q: "You notice an email redirection address mapping to 'security-update-rbeh.com' instead of 'rbeh.com'. What is this strategy?", o: ["Subdomain Token Splitting", "Look-alike Domain / Typosquatting Matrix", "Reverse-Proxy Interception Flow", "Asymmetric Protocol Negotiation"], a: 1, d: "Medium", e: "Typosquatting or look-alike structures craft domain strings that closely mimic real addresses to deceive users." },
+    { id: 27, c: 3, topic: "Phishing Awareness", q: "What defensive measure completely blocks suspicious incoming email batches by checking external threat signature feeds?", o: ["Secure Email Gateway (SEG) Array", "Local RAM Drive Partitioning", "Asymmetric Key Handshake Protocols", "Browser Sandboxing Profiles"], a: 0, d: "Medium", e: "SEGs parse incoming emails, analyzing hyperlinks, matching heuristic rules, and dropping payloads before they hit inbox stores." },
+    { id: 28, c: 3, topic: "Phishing Awareness", q: "What vulnerability risk is introduced when a user permits an incoming email attachment to execute 'Macros'?", o: ["The storage driver is reformatted into NTFS rules", "Embedded code sequences run locally within the application workflow environment", "The physical network gateway drops its routing paths", "Asymmetric key storage parameters are randomized"], a: 1, d: "Hard", e: "Office application macro scripts compile directly inside productivity suites, serving as vectors for dropping secondary malware files." },
+    { id: 29, c: 3, topic: "Phishing Awareness", q: "What indicator flags a social engineering call route where an operator tries to harvest information over the phone?", o: ["Smishing Core", "Vishing Campaign", "Spear Slicing Layer", "Pharming Protocol"], a: 1, d: "Easy", e: "Vishing (Voice Phishing) uses phone infrastructure or spoofed Caller ID lines to mimic internal administrators." },
+    { id: 30, c: 3, topic: "Phishing Awareness", q: "What action is most appropriate when an email requests verification of your password via an unsecured link?", o: ["Authenticate through the target frame to log details", "Forward the file structure to team members for distributed testing", "Report the vector string to security teams and delete the entry", "Update the host file mapping manually"], a: 2, d: "Easy", e: "Suspicious or unverified messages should be flagged through institutional report tools and deleted to mitigate detonation risks." },
+
+    // Course 4: Password Security (31-40)
+    { id: 31, c: 4, topic: "Password Security", q: "Which implementation metric provides the strongest defense against automated brute force credential guessing routines?", o: ["Altering background color themes monthly", "Enforcing Account Lockout / Threshold Rate-Limiting Constraints", "Storing raw cleartext lists on local shared drives", "Restricting username formats to numeric blocks"], a: 1, d: "Easy", e: "Enforcing lockout limits stops rapid brute-force testing sequences after a preconfigured number of bad attempts." },
+    { id: 32, c: 4, topic: "Password Security", q: "What design strategy increases overall password entropy values effectively?", o: ["Reusing old corporate keys with appended sequence digits", "Expanding the absolute string length and character set variability", "Limiting characters to basic ASCII options", "Storing keys inside encrypted browser caches"], a: 1, d: "Medium", e: "Password entropy increases with length and character variety, raising the computing resources needed to crack it." },
+    { id: 33, c: 4, topic: "Password Security", q: "How does a 'Rainbow Table' mechanism crack cryptographically processed password values?", o: ["By running brute force loops inside live RAM memory chips", "By referencing pre-computed databases of plaintext words and their matching hashes", "By listening to acoustic keyboard echo variations", "By intercepting wireless public routing nodes"], a: 1, d: "Hard", e: "Rainbow tables are pre-computed lookup lists that resolve password hash strings back to their plaintext originals, bypassing raw hash computation time." },
+    { id: 34, c: 4, topic: "Password Security", q: "What variable value should be appended to plaintext entries before hashing to nullify Rainbow Table lookups?", o: ["Symmetric Variable Map", "Cryptographic Salt Token", "Reverse-Proxy Header Flag", "Global Static Validation Byte"], a: 1, d: "Hard", e: "A cryptographic salt injects unique random strings into plaintext data before processing, ensuring identical inputs generate unique hashes." },
+    { id: 35, c: 4, topic: "Password Security", q: "Which factor category does an SMS-based verification token or hardware generator step match within Multi-Factor Authentication (MFA)?", o: ["Something you are parameters", "Something you have asset", "Something you maintain mentally", "Somewhere you reside physically"], a: 1, d: "Easy", e: "MFA possession metrics validate access through control of physical assets, like registered mobile numbers or hardware tokens." },
+    { id: 36, c: 4, topic: "Password Security", q: "Why is the practice of utilizing identical passwords across multiple online applications considered high risk?", o: ["It causes server timeouts on the secondary networks", "Credential stuffing exploits on one portal compromise all matching platforms", "It automatically invalidates browser encryption cookies", "It triggers immediate local antivirus detections"], a: 1, d: "Medium", e: "Credential stuffing exploits automated scripts to test leaked combinations across diverse global applications, targeting account reuse patterns." },
+    { id: 37, c: 4, topic: "Password Security", q: "What core architecture does an enterprise 'Password Manager' use to protect its stored credential database?", o: ["An unencrypted localized plain text spreadsheet", "Zero-Knowledge Encryption with a Master Derivation Key", "Symmetric public cleartext token streams", "A distributed public blockchain log tracking ledger"], a: 1, d: "Medium", e: "Reputable credential managers use zero-knowledge frameworks, encrypting vault records locally with keys derived from a master password." },
+    { id: 38, c: 4, topic: "Password Security", q: "Which hash algorithm category is considered obsolete for secure credential protection due to structural collision risks?", o: ["Argon2id Core Matrix", "MD5 / SHA-1 Frameworks", "bcrypt Derivation Engine", "PBKDF2 Secure Layer"], a: 1, d: "Hard", e: "MD5 and SHA-1 have structural collision vulnerabilities, allowing different strings to yield identical hashes, making them unfit for modern validation." },
+    { id: 39, c: 4, topic: "Password Security", q: "What authentication factor does a biometric fingerprint validation loop represent?", o: ["Something you maintain inherently", "Something you are attribute", "Something you hold physically", "Somewhere your identity operates"], a: 1, d: "Easy", e: "Biometric validation elements evaluate unique physiological traits like fingerprints, retina patterns, or facial geometry signatures." },
+    { id: 40, c: 4, topic: "Password Security", q: "What secure design property does the 'PBKDF2' derivation strategy add to authentication setups?", o: ["It reduces the password character requirements", "It forces key stretching computations through thousands of iterations to slow down cracking tools", "It exposes plaintext values directly to perimeter web routers", "It automates background password rotation without user interaction"], a: 1, d: "Hard", e: "PBKDF2 uses key-stretching mechanisms, looping hash computations thousands of times to increase the compute cost for cracking tools." },
+
+    // Course 5: Encryption Basics (41-50)
+    { id: 41, c: 5, topic: "Encryption Basics", q: "Which operational rule defines a classical 'Symmetric' cryptographic configuration?", o: ["It utilizes distinct asymmetric public and private keys", "It uses a single shared secret key for both encryption and decryption tasks", "It completely eliminates the need for mathematical computations", "It operates exclusively on physical hardware smartcards"], a: 1, d: "Easy", e: "Symmetric cryptographic setups use the exact same shared key asset to perform both data enciphering and deciphering actions." },
+    { id: 42, c: 5, topic: "Encryption Basics", q: "In Asymmetric Public Key Cryptography frameworks, which key should be kept completely private to safeguard sensitive data?", o: ["The Public Key Asset", "The Private Key Asset", "The Shared Session Key Array", "The Symmetric Core Flag"], a: 1, d: "Easy", e: "Asymmetric models distribute public keys openly while keeping the corresponding private key secure to decrypt incoming payloads." },
+    { id: 43, c: 5, topic: "Encryption Basics", q: "What is the primary architectural goal of a one-way Cryptographic Hash Function?", o: ["To safely convert data cipher text back into readable text format", "To generate unique, fixed-length digital fingerprints from arbitrary inputs without reversal capability", "To compress video files for storage efficiency", "To allocate dynamic IP assignments across internal routing ports"], a: 1, d: "Medium", e: "Cryptographic hash routines map variable inputs into fixed-size strings, structured mathematically to prevent practical reverse-engineering." },
+    { id: 44, c: 5, topic: "Encryption Basics", q: "Which industry standard algorithm is widely trusted for secure symmetric block cipher operations?", o: ["RSA Cryptography Standard", "Advanced Encryption Standard (AES)", "MD5 Hash Routine Module", "Diffie-Hellman Parameter Sync"], a: 1, d: "Medium", e: "AES is a robust symmetric block cipher standard used globally to secure sensitive data-at-rest profiles." },
+    { id: 45, c: 5, topic: "Encryption Basics", q: "What performance bottleneck does the 'Diffie-Hellman' mathematical framework resolve?", o: ["It automates localized hard drive formatting tasks", "It allows two distinct parties to securely establish a shared secret key over an untrusted channel", "It scans inbound mail attachments for hidden macro triggers", "It compresses system log tables cleanly"], a: 1, d: "Hard", e: "The Diffie-Hellman key exchange protocol lets entities generate matching secret tokens across open channels without transmitting the key itself." },
+    { id: 46, c: 5, topic: "Encryption Basics", q: "What occurs during a cryptographic 'Collision' condition inside a hashing module?", o: ["The target computer operating system crashes immediately", "Two distinct plaintext inputs yield the exact same output hash string", "The data volume exceeds available storage limits", "The private key standard scales past bit boundaries"], a: 1, d: "Hard", e: "A hashing collision happens when different data inputs generate identical output hashes, undermining the uniqueness of the digital fingerprint." },
+    { id: 47, c: 5, topic: "Encryption Basics", q: "Which tracking status characterizes 'Data in Transit' across an infrastructure network layout?", o: ["Data records committed into persistent database tables", "Information packets traversing communication networks or interface pathways", "Assets loaded into localized system CPU caches", "Information backups written into offline cold storage media"], a: 1, d: "Easy", e: "Data in transit describes information moving actively across network lines, requiring transport-layer protection protocols like TLS." },
+    { id: 48, c: 5, topic: "Encryption Basics", q: "What protection benefit does 'Forward Secrecy' add to transport layer communication channels?", o: ["It speeds up asset downloading streams", "Compromising a long-term master key does not compromise past session key records", "It removes the requirement for public key exchanges", "It forces automated password resets every hour"], a: 1, d: "Hard", e: "Forward Secrecy generates unique, ephemeral session keys for each connection instance, shielding past logs if a master key is leaked later." },
+    { id: 49, c: 5, topic: "Encryption Basics", q: "Which asymmetric algorithm relies on the mathematical complexity of prime number factorization for its security posture?", o: ["Blowfish Cipher Array", "RSA Cryptosystem Standard", "SHA-256 Digest Engine", "Chacha20 Stream System"], a: 1, d: "Hard", e: "The RSA security architecture depends on the compute-heavy challenge of factoring large prime numbers into component elements." },
+    { id: 50, c: 5, topic: "Encryption Basics", q: "What does a 'Digital Signature' prove about a received code module?", o: ["The file will execute without causing system errors", "The payload origin is verified and the content was not altered in transit", "The software package is available free of licensing costs", "The target code runs exclusively inside web browser sandboxes"], a: 1, d: "Medium", e: "Digital signatures combine asymmetric encryption with hashing to confirm both author authenticity and structural data integrity." },
+
+    // Course 6: Safe Browsing Practices (51-60)
+    { id: 51, c: 6, topic: "Safe Browsing Practices", q: "What enhancement does the 'HTTPS' protocol provide compared to classic 'HTTP' communication streams?", o: ["It increases maximum page rendering speeds", "It secures the connection layout using transport layer encryption (TLS)", "It guarantees the website content is free of malware components", "It forces the application to load inside a separate browser tab"], a: 1, d: "Easy", e: "HTTPS wraps standard HTTP traffic inside an encrypted TLS tunnel, preventing data interception or manipulation across local networks." },
+    { id: 52, c: 6, topic: "Safe Browsing Practices", q: "What type of data tracking asset is a website 'Cookie' primarily categorized as?", o: ["An executable virus loader module", "A small text file tracking state variables, session IDs, or preferences locally", "A system database script modifying browser source code", "A hardware component managing network packet routes"], a: 1, d: "Easy", e: "Cookies are data blocks stored by the browser to track session states, logins, or customized site settings." },
+    { id: 53, c: 6, topic: "Safe Browsing Practices", q: "What structural security vulnerability exists when a browser connects over an unencrypted Public Wi-Fi access point?", o: ["The system RAM is automatically wiped clean", "Data streams can be captured via packet sniffing tools on the same network", "The computer display drivers stop updating", "Browser history entries are immediately published online"], a: 1, d: "Easy", e: "Unsecured public networks allow attackers to capture cleartext traffic via intermediate packet interception tools." },
+    { id: 54, c: 6, topic: "Safe Browsing Practices", q: "What security mechanism does a 'Virtual Private Network' (VPN) establish for an endpoint?", o: ["It increases local processor clock rates", "It routes traffic through a cryptographically encrypted tunnel to mask routing parameters", "It automatically removes junk files from the browser cache", "It scans local hard drives for outdated application builds"], a: 1, d: "Medium", e: "A VPN builds an encrypted tunnel to a remote gateway, shielding traffic details from intermediate network snoopers." },
+    { id: 55, c: 6, topic: "Safe Browsing Practices", q: "What security value does the 'Incognito / Private Browsing' viewport setting provide?", o: ["It hides your public IP address from destination servers", "It avoids committing history and cookies to local storage after closing the session", "It completely blocks outbound network profiling scripts", "It patches vulnerabilities in the underlying host system"], a: 1, d: "Medium", e: "Private browsing mode discards temporary session history, local cache data, and tracking cookies once the window is closed." },
+    { id: 56, c: 6, topic: "Safe Browsing Practices", q: "Which browser security policy restricts script assets on a page from reading data fields on a different domain?", o: ["Content Delivery Matrix (CDM)", "Same-Origin Policy (SOP)", "Cross-Origin Token Mapping (COTM)", "Asymmetric Session Sharing Rules"], a: 1, d: "Hard", e: "The Same-Origin Policy stops scripts from one web source from accessing sensitive data structures on an unrelated domain." },
+    { id: 57, c: 6, topic: "Safe Browsing Practices", q: "What exploit model describes a 'Drive-by Download' vector over an infected web portal?", o: ["A download that requires multiple user confirmation clicks", "Automated file drops onto user devices without explicit actions via browser vulnerabilities", "A routine that runs exclusively when a user connects external USB thumb drives", "A file transfer configuration that relies on peer-to-peer torrent connections"], a: 1, d: "Medium", e: "Drive-by downloads leverage browser or plugin vulnerabilities to drop and execute code payloads without user consent." },
+    { id: 58, c: 6, topic: "Safe Browsing Practices", q: "What core verification is validated when a browser displays a padlock icon alongside a URL?", o: ["The target website content is completely accurate", "The destination domain owns a valid SSL/TLS certificate issued by a trusted Authority", "The system firewall has blocked all inbound connection attempts", "The localized browser framework has enabled anti-keylogging defenses"], a: 1, d: "Medium", e: "The browser padlock shows the link uses HTTPS and that a trusted Certificate Authority has validated the domain identity." },
+    { id: 59, c: 6, topic: "Safe Browsing Practices", q: "What security enhancement does enforcing 'HTTP Strict Transport Security' (HSTS) add to a web domain?", o: ["It minifies application JavaScript code components automatically", "It forces the browser to interact with the target domain exclusively over secure HTTPS channels", "It blocks all tracking pixels from rendering inside layout templates", "It restricts administrative login permissions to corporate networks"], a: 1, d: "Hard", e: "HSTS headers instruct browsers to automatically upgrade all connection attempts to HTTPS, preventing protocol downgrade attacks." },
+    { id: 60, c: 6, topic: "Safe Browsing Practices", q: "Which tracking technique maps user actions across multiple web platforms using unique invisible 1x1 image fields?", o: ["Database Query Injections", "Tracking Pixels / Web Beacons", "Cross-Site Scripting Exploits", "Reverse Proxy Session Logging"], a: 1, d: "Hard", e: "Web beacons or tracking pixels load transparent microscopic images, sending session metadata back to profiling servers." },
+
+    // Course 7: QR Code Scams (61-70)
+    { id: 61, c: 7, topic: "QR Code Scams", q: "What type of data payload do standard Quick Response (QR) codes natively contain for scanner interpretation?", o: ["An executable compiled desktop program component", "A formatted string of characters, most commonly translating into a web URL", "An encrypted operating system firmware restoration image", "A hardware instruction file modifying router interface logic"], a: 1, d: "Easy", e: "QR codes are two-dimensional matrices that store text data strings, which mobile scanning engines typically parse as hyperlinks." },
+    { id: 62, c: 7, topic: "QR Code Scams", q: "What attack pattern characterizes 'Quishing' operations across social landscapes?", o: ["Flooding public charging kiosks with power fluctuations", "Using malicious QR codes to steer victims toward credential harvesting portals", "Intercepting wireless data streams via rogue hardware accessories", "Altering database query strings inside enterprise application panels"], a: 1, d: "Easy", e: "Quishing leverages QR codes to mask phishing URLs, tricking users into navigating to credential harvesting setups." },
+    { id: 63, c: 7, topic: "QR Code Scams", q: "Why do threat actors often place physical stickers containing malicious QR codes over legitimate public venue signs?", o: ["To boost the scanning resolution under low-light environments", "To bypass digital email filters and exploit physical trust vectors", "To encrypt the target data payloads using asymmetric algorithms", "To trigger automated hardware reboots on matching client smartphones"], a: 1, d: "Medium", e: "Physical QR code replacements bypass email perimeter security filters by leveraging real-world presence to exploit user trust." },
+    { id: 64, c: 7, topic: "QR Code Scams", q: "Which operational practice offers the safest way to evaluate a scanned QR code destination link?", o: ["Enabling instant automated browser redirection options", "Using a secure scanner application that previews the full target URL string before loading it", "Scanning codes exclusively on corporate laptop configurations", "Clearing browser history records before interacting with the matrix"], a: 1, d: "Medium", e: "Previewing the full destination URL lets you check for domain anomalies and typosquatting structures before launching the site." },
+    { id: 65, c: 7, topic: "QR Code Scams", q: "What risk is introduced when a QR code scanning engine processes a malicious embedded command string?", o: ["The phone display screen panel color space shifts permanently", "The device may execute unintended actions like joining rogue Wi-Fi hubs or drafting preformatted messages", "The internal lithium battery cells drain completely within minutes", "The subscriber identity SIM card is permanently wiped"], a: 1, d: "Hard", e: "Advanced QR formats can initiate automated smartphone actions, such as parsing contacts, drafting SMS strings, or connecting to unverified Wi-Fi loops." },
+    { id: 66, c: 7, topic: "QR Code Scams", q: "Can a standard QR code matrix structure be infected directly with a traditional computer virus payload?", o: ["Yes, if the matrix block pixels use custom color schemas", "No, it only stores flat data strings; risk arises from how the scanner handles the parsed URL link", "Yes, the virus executes inside the optical camera sensor array", "No, because all QR codes are inherently encrypted by default global standards"], a: 1, d: "Medium", e: "QR matrices hold static data strings rather than active malware binaries; threat vectors rely on the scanner opening malicious web addresses." },
+    { id: 67, c: 7, topic: "QR Code Scams", q: "What vector is targeted when a rogue QR code initiates an unverified point-of-sale interaction?", o: ["Financial Transaction Hijacking", "Database Query Inundation", "Asymmetric Key Length Truncation", "Kernel Space Privilege Escalation"], a: 0, d: "Easy", e: "Rogue checkout codes swap payment destinations with hacker wallets, intercepting peer-to-peer point-of-sale fund flows." },
+    { id: 68, c: 7, topic: "QR Code Scams", q: "Which architectural approach mitigates quishing risk within corporate campus networks?", o: ["Banning the use of smartphones during business hours", "Deploying endpoint security management clients that parse and filter QR link targets", "Altering local perimeter firewall routing paths daily", "Transitioning all network infrastructure back to analog structures"], a: 1, d: "Hard", e: "Enterprise mobile device policies can enforce secure scanning utilities that filter parsed URLs through cloud reputation engines." },
+    { id: 69, c: 7, topic: "QR Code Scams", q: "What indicator flags a QR code poster in a public transport hub as highly suspicious?", o: ["The matrix graphic uses a custom brand logo overlay", "The code module is printed on a glossy adhesive sticker covering a pre-existing sign", "The grid dimension layout spans multiple pixel blocks", "The scanner engine requires more than three seconds to parse the target alignment fields"], a: 1, d: "Easy", e: "Adhesive overlays placed on top of permanent informational displays often indicate tamper activity by malicious actors." },
+    { id: 70, c: 7, topic: "QR Code Scams", q: "What type of technical asset is a dynamic QR code where the target destination can be modified later?", o: ["A hardcoded read-only matrix", "A short-URL redirect service managed via an administration portal", "An asymmetric cryptographic validation vector", "A localized database query statement hook"], a: 1, d: "Hard", e: "Dynamic QR codes link to intermediate redirect short-links, allowing actors to alter the final destination path after the code is printed." },
+
+    // Course 8: Website Security Basics (71-80)
+    { id: 71, c: 8, topic: "Website Security Basics", q: "What structural coding mistake allows an operator to perform a 'SQL Injection' (SQLi) attack against a web app?", o: ["Using complex Cascading Style Sheets formatting rules", "Failing to sanitize and validate input fields before appending them directly into database queries", "Hosting application components across distributed cloud container pods", "Configuring session timeout parameters past thirty minutes"], a: 1, d: "Medium", e: "SQLi happens when user inputs are directly concatenated into database query strings, allowing rogue commands to run in the database backend." },
+    { id: 72, c: 8, topic: "Website Security Basics", q: "What exploit model occurs during a Cross-Site Scripting (XSS) attack vector pattern?", o: ["An operative floods the server with millions of synchronous connection attempts", "Malicious JavaScript payloads are injected into trusted websites and execute inside a victim's browser", "Database records are deleted via raw administrative shell queries", "The network firewall shuts down available communication paths"], a: 1, d: "Medium", e: "XSS injections force web apps to return unverified script payloads to user browsers, allowing attackers to access session tokens or cookies." },
+    { id: 73, c: 8, topic: "Website Security Basics", q: "Which defense mechanism completely blocks malicious web payloads by evaluating request attributes before they hit an application?", o: ["Web Application Firewall (WAF)", "Local Storage Encryption Wrapper", "Asymmetric Public Key Infrastructure", "Address Resolution Protocol Monitor"], a: 0, d: "Medium", e: "A WAF monitors layer-7 application traffic, checking signature patterns to block exploits like SQLi and XSS at the perimeter." },
+    { id: 74, c: 8, topic: "Website Security Basics", q: "What role do modern 'Certificate Authorities' (CAs) fulfill within the global website ecosystem?", o: ["They design custom user authentication interfaces for businesses", "They function as independent trusted entities that verify domain identities and issue cryptographic SSL/TLS certificates", "They monitor hard drives for malware footprints", "They allocate public IP addressing spaces to internet host providers"], a: 1, d: "Medium", e: "CAs act as trusted roots in the public key infrastructure, certifying that a website's cryptographic key belongs to its verified domain owner." },
+    { id: 75, c: 8, topic: "Website Security Basics", q: "What type of data validation technique converts user input strings into strict plain text literals?", o: ["Session Key Generation", "Input Sanitization and Parameterization", "Database Replication Mapping", "Asymmetric Key Length Truncation"], a: 1, d: "Hard", e: "Input sanitization and parameterized inputs strip out or escape executable code characters, stopping database engines from treating user input as command instructions." },
+    { id: 76, c: 8, topic: "Website Security Basics", q: "Which HTTP header parameter provides explicit controls over what external resources a browser page can safely execute?", o: ["Content-Security-Policy (CSP)", "User-Agent-String-Override", "Cache-Control-Max-Age", "Strict-X-Frame-Options-Legacy"], a: 0, d: "Hard", e: "CSP headers let site administrators restrict the source domains for scripts, stylesheets, and images, creating a strong barrier against XSS attacks." },
+    { id: 77, c: 8, topic: "Website Security Basics", q: "What vulnerability is introduced if an administrative control portal uses default factory login configurations?", o: ["The application database performance slows down", "An attacker can gain full system entry by referencing widely available default documentation lists", "The web server drops its network interface assignments", "Browser sessions time out immediately upon successful verification"], a: 1, d: "Easy", e: "Leaving default factory credentials active exposes portals to simple automated scans that check interfaces against standard documentation lists." },
+    { id: 78, c: 8, topic: "Website Security Basics", q: "What type of cross-site exploit tricks an authenticated user into quietly executing unwanted actions on an application they currently trust?", o: ["Cross-Site Request Forgery (CSRF)", "SQL Statement Concatenation", "Man-in-the-Middle Route Interception", "Zero-Knowledge Database Traversal"], a: 0, d: "Hard", e: "CSRF exploits active browser session states to trick users into submitting unauthorized status updates or state changes to trusted sites." },
+    { id: 79, c: 8, topic: "Website Security Basics", q: "Which file inside a web directory provides explicit indexing crawling rules to public automation engines?", o: ["index.html", "robots.txt", "config.json", "styles.css"], a: 1, d: "Easy", e: "The robots.txt file outlines crawling parameters for search engines, though it does not serve as a secure access control mechanism." },
+    { id: 80, c: 8, topic: "Website Security Basics", q: "What operational metric does a 'Penetration Test' measure for a web asset environment?", o: ["The total data throughput limits under seasonal traffic conditions", "A realistic evaluation of defensive controls by safely simulating real-world attack vectors", "The absolute line count across backend code repositories", "The migration speed of local files moving to remote cloud storage tiers"], a: 1, d: "Medium", e: "Penetration testing checks the real-world strength of an organization's defenses by actively trying to exploit infrastructure gaps in a controlled manner." },
+
+    // Course 9: Social Engineering (81-90)
+    { id: 81, c: 9, topic: "Social Engineering", q: "What core human attribute do social engineering threat campaigns target to compromise technical systems?", o: ["Hardware processor clock cycles", "Psychological behavior quirks, trust habits, and cognitive blindspots", "Network perimeter router firewall rules", "Cryptographic asymmetric public key lengths"], a: 1, d: "Easy", e: "Social engineering targets human psychology rather than software code flaws, using persuasion or deception to manipulate targets." },
+    { id: 82, c: 9, topic: "Social Engineering", q: "What tactic is an operative using when they physically follow an authorized employee through a secure security access gate?", o: ["Watering Hole Traversal", "Tailgating / Piggybacking", "Pharming Redirection Network", "Credential Stuffing Routing Layer"], a: 1, d: "Easy", e: "Tailgating involves closely following an authorized individual through physical barriers to breach secure areas without credentials." },
+    { id: 83, c: 9, topic: "Social Engineering", q: "An actor invents a complex scenario about a server emergency to trick a helpdesk agent into resetting a key. What is this?", o: ["SQL Parametric Manipulation", "Pretexting / Persona Manipulation", "Side-Channel Attack Interception", "Denial of Service Cascade"], a: 1, d: "Medium", e: "Pretexting creates a fabricated situation or identity to manipulate targets into handing over information or system access." },
+    { id: 84, c: 9, topic: "Social Engineering", q: "What pattern describes a 'Baiting' social engineering campaign vector?", o: ["Sending continuous high-volume spam mail alerts to exhaust system storage", "Leaving compromised physical media like USB drives in public locations for victims to find and connect", "Modifying application database code statements", "Sniffing active local area network packets"], a: 1, d: "Easy", e: "Baiting plays on curiosity or greed by planting malware-infected items, like USB sticks, in public spaces for targets to hook up to their systems." },
+    { id: 85, c: 9, topic: "Social Engineering", q: "Which strategy involves an attacker infecting a niche domain frequently used by a target demographic group?", o: ["Spear Injection Pipeline", "Watering Hole Attack", "Dictionary Mapping Sequence", "Reverse Proxy Mirror Layer"], a: 1, d: "Hard", e: "Watering hole setups infect specific websites trusted by a target group to quietly compromise their systems when they visit." },
+    { id: 86, c: 9, topic: "Social Engineering", q: "What defensive measure best counters institutional pretexting operations?", o: ["Increasing perimeter network bandwidth capacity", "Enforcing strict independent identity verification protocols for all internal requests", "Updating local desktop screen resolution matrices", "Migrating database instances across secondary cloud availability zones"], a: 1, d: "Medium", e: "Strong out-of-band verification workflows prevent manipulation by forcing all requests to clear separate identity checks." },
+    { id: 87, c: 9, topic: "Social Engineering", q: "What tactic uses an offer of free technical tools or assistance to extract sensitive network configuration parameters from a user?", o: ["Quid Pro Quo Matrix", "Buffer Overflow Slicing", "Cryptographic Salt Generation", "DNS Cache Poisoning Route"], a: 0, d: "Medium", e: "Quid pro quo tactics offer a service or benefit, like technical help, in exchange for sensitive access details or credentials." },
+    { id: 88, c: 9, topic: "Social Engineering", q: "What behavior is an attacker leveraging when they dress as a utility inspector to slip past a reception desk?", o: ["Asymmetric Key Exchange Protocol", "Authority and Identity Impersonation Frameworks", "Least Privilege Architecture Controls", "Input Validation Error Handling Faults"], a: 1, d: "Easy", e: "Impersonating authority figures exploits social habits of compliance to bypass standard security checks." },
+    { id: 89, c: 9, topic: "Social Engineering", q: "An operator looks over an employee's shoulder to capture their terminal entry pin code. What is this?", o: ["Pharming Routing Sequence", "Shoulder Surfing", "SQL Injection Mapping", "Session Token Fixation Layer"], a: 1, d: "Easy", e: "Shoulder surfing uses direct observation to steal passwords, PINs, or confidential information right off user screens." },
+    { id: 90, c: 9, topic: "Social Engineering", q: "What corporate security mechanism helps identify human behavioral vulnerabilities before an attacker exploits them?", o: ["Deploying redundant hardware firewalls", "Running simulated phishing and social engineering assessment loops", "Enforcing hard drive disk defragmentation routines", "Migrating application containers to separate network segments"], a: 1, d: "Medium", e: "Controlled social engineering simulations help highlight team vulnerability gaps, allowing organizations to fix bad habits safely." },
+
+    // Cyber Lab Interactive Demos (91-100)
+    { id: 91, c: 10, topic: "Cyber Lab Demos", q: "Inside the Cyber Lab phishing simulator dashboard, what data format gets exposed to operators when fields are submitted without sanitization rules?", o: ["Cryptographically salted SHA-256 tokens", "Plain cleartext string values", "Compressed binary data structures", "Asymmetric private key parameters"], a: 1, d: "Easy", e: "Unsanitized input forms capture and display user keystrokes as raw cleartext strings, making them highly vulnerable to disclosure." },
+    { id: 92, c: 10, topic: "Cyber Lab Demos", q: "When analyzing fake vs real login portals in the lab, what structural parameter often reveals a spoofed asset?", o: ["The font sizing styles across paragraph elements", "The fully qualified domain name string in the browser address bar", "The choice of background design images", "The text alignment properties within option elements"], a: 1, d: "Medium", e: "The browser address bar holds the definitive domain name record, exposing look-alike URLs that fake interfaces cannot hide." },
+    { id: 93, c: 10, topic: "Cyber Lab Demos", q: "What does an automated password cracking simulator tool optimize to guess target hashes quickly?", o: ["The physical hard drive disk rotation velocity", "The number of automated password generation combinations processed per second", "The resolution of the terminal text rendering module", "The system network interface maximum transmission unit configuration"], a: 1, d: "Medium", e: "Cracking engines focus on hash generation speeds, running massive word combinations through algorithms every second to check for matches." },
+    { id: 94, c: 10, topic: "Cyber Lab Demos", q: "What defensive event loop handles malware containment during the lab's interactive kill-chain simulation?", o: ["Dynamic Memory Allocation Resets", "Automated Signature Identification & Sandbox File Quarantine Actions", "Hard Drive Partition Formatting Commands", "Public Network Interface Reset Operations"], a: 1, d: "Medium", e: "Antivirus systems match file properties against known signature feeds to isolate and quarantine threats inside secure software sandboxes." },
+    { id: 95, c: 10, topic: "Cyber Lab Demos", q: "What risk pattern does a QR scanner lab demo illustrate when parsing altered layout matrices?", o: ["Optical camera sensor distortion exploits", "Hidden URL redirection strings pointing to unverified malicious frameworks", "Automated local system file synchronization tasks", "Cryptographic key degradation faults"], a: 1, d: "Easy", e: "Modified QR codes trick scanner apps into displaying malicious link paths, pointing users toward credential harvesting setups." },
+    { id: 96, c: 10, topic: "Cyber Lab Demos", q: "What design choice lets a secure web portal pass authentication parameters without exposing passwords over open lines?", o: ["Plaintext cookie serialization routines", "Cryptographic token hashing combined with secure TLS transport tunnels", "Storing active credentials within local storage variables", "Altering server port configurations dynamically every minute"], a: 1, d: "Hard", e: "Secure portals use one-way salted hashing and TLS tunnels to verify identity assertions safely without transmitting raw passwords." },
+    { id: 97, c: 10, topic: "Cyber Lab Demos", q: "In the malware simulation module, how do network worms pivot to separate virtual machines?", o: ["By waiting for an administrative user to forward file attachments manually", "By scanning network spaces for open, unpatched communication port vulnerabilities", "By writing log files into temporary browser caches", "By changing local desktop stylesheet parameters"], a: 1, d: "Hard", e: "Worms move laterally by scanning networks for unpatched port flaws, injecting payloads directly without needing manual user clicks." },
+    { id: 98, c: 10, topic: "Cyber Lab Demos", q: "What architectural asset prevents a web app from executing raw database commands entered into input boxes?", o: ["Using complex CSS animations", "Enforcing strict input parameterization within database connection routines", "Increasing the physical RAM available to the server node", "Storing credentials inside plain text files"], a: 1, d: "Hard", e: "Parameterized inputs treat user data strictly as literals, stopping database engines from compiling input text as SQL commands." },
+    { id: 99, c: 10, topic: "Cyber Lab Demos", q: "What primary metric does a cracking simulation track to show the structural value of password length updates?", o: ["The compute time scale expansion needed to traverse the key entropy space", "The line count across local configuration files", "The changes in terminal font styling rules", "The downloading speeds across local network segments"], a: 0, d: "Medium", e: "Longer passwords expand the mathematical search space exponentially, drastically increasing the compute time cracking tools need to find a match." },
+    { id: 100, c: 10, topic: "Cyber Lab Demos", q: "What event rule defines a successful browser sandbox defense during file execution tests?", o: ["Allowing application scripts to modify system registry variables", "Restricting the execution context entirely to isolated web document memory limits", "Reformatting physical system storage drives automatically", "Disabling multi-factor authentication protocols platform-wide"], a: 1, d: "Hard", e: "Browser sandboxing isolates script execution contexts within tight document limits, preventing code from accessing the underlying host system storage or core processes." }
+  ];
+
+  // Exam Engine Operational State Variables
+  let sessionActiveQuestions = [];
+  let currentActiveQuestionIndex = 0;
+  let userSelectedAnswersMap = {}; // index -> optionIndex
+  let flaggedForReviewSet = new Set(); // indices marked for review
+  let countdownTimerRef = null;
+  let calculationSecondsElapsed = 0;
+  const examTotalDurationSeconds = 3600; // 60 Minutes
+
+  function initializeCertificationExam() {
+    const candidateField = document.getElementById("candidate-name");
+    // Normalize and fallback names cleanly
+    if (!candidateField.value.trim()) {
+      candidateField.value = "Anonymous Security Candidate";
+    }
+
+    // 1. Stratified Random Sampling Routine: Select 5 questions from each of the 10 course modules
+    let finalizedPaperArray = [];
+    for (let currentCourseId = 1; currentCourseId <= 10; currentCourseId++) {
+      let filteredPool = masterQuestionBank.filter(item => item.c === currentCourseId);
+      // Shuffle individual pool arrays
+      shuffleGenericArray(filteredPool);
+      // Extract top 5 elements
+      finalizedPaperArray = finalizedPaperArray.concat(filteredPool.slice(0, 5));
+    }
+
+    // 2. Comprehensive Shuffling Pass over paper array to mixed cross-topic presentations
+    shuffleGenericArray(finalizedPaperArray);
+    sessionActiveQuestions = finalizedPaperArray;
+
+    // 3. Option Shuffling Loop
+    sessionActiveQuestions.forEach(questionObj => {
+      // Build index-tracked objects to preserve accurate index references back to answer keys
+      let optionsMappedArray = questionObj.o.map((optionText, idx) => {
+        return { text: optionText, originalIndex: idx };
+      });
+      shuffleGenericArray(optionsMappedArray);
+      
+      // Re-map questions properties dynamically for runtime presentation mapping layers
+      questionObj.presentationOptions = optionsMappedArray;
+    });
+
+    // 4. Interface state transition
+    document.getElementById("setup-view").style.display = "none";
+    document.getElementById("exam-workspace").style.display = "grid";
+
+    // 5. Initialize layout tracking helpers
+    renderTrackingGridMatrixMap();
+    renderCurrentQuestionState();
+    startExamCountdownTimer();
+  }
+
+  function shuffleGenericArray(targetArray) {
+    for (let currentSwapIdx = targetArray.length - 1; currentSwapIdx > 0; currentSwapIdx--) {
+      const selectedRandomPivot = Math.floor(Math.random() * (currentSwapIdx + 1));
+      [targetArray[currentSwapIdx], targetArray[selectedRandomPivot]] = [targetArray[selectedRandomPivot], targetArray[currentSwapIdx]];
+    }
+  }
+
+  function renderTrackingGridMatrixMap() {
+    const targetGridContainer = document.getElementById("exam-grid-map");
+    targetGridContainer.innerHTML = "";
+    
+    for (let idx = 0; idx < sessionActiveQuestions.length; idx++) {
+      const dotNode = document.createElement("button");
+      dotNode.className = "map-dot";
+      dotNode.innerText = idx + 1;
+      dotNode.id = `grid-dot-${idx}`;
+      
+      // Bind direct shortcut jumpers cleanly
+      dotNode.onclick = () => {
+        currentActiveQuestionIndex = idx;
+        renderCurrentQuestionState();
+      };
+      
+      targetGridContainer.appendChild(dotNode);
+    }
+    synchronizeGridMapStyles();
+  }
+
+  function synchronizeGridMapStyles() {
+    for (let idx = 0; idx < sessionActiveQuestions.length; idx++) {
+      const targetDot = document.getElementById(`grid-dot-${idx}`);
+      if (!targetDot) continue;
+
+      // Base reset loop
+      targetDot.className = "map-dot";
+
+      if (userSelectedAnswersMap[idx] !== undefined) {
+        targetDot.classList.add("answered");
+      }
+      if (flaggedForReviewSet.has(idx)) {
+        targetDot.classList.add("review");
+      }
+      if (idx === currentActiveQuestionIndex) {
+        targetDot.classList.add("current");
+      }
+    }
+  }
+
+  function renderCurrentQuestionState() {
+    const activeQuestionData = sessionActiveQuestions[currentActiveQuestionIndex];
+    
+    // Update Counter Label & Progress Metrics
+    document.getElementById("question-index-label").innerText = `Question ${currentActiveQuestionIndex + 1} of ${sessionActiveQuestions.length}`;
+    const computationPercentageProgress = ((currentActiveQuestionIndex + 1) / sessionActiveQuestions.length) * 100;
+    document.getElementById("exam-progress-bar").style.width = `${computationPercentageProgress}%`;
+
+    // Render Difficulty Badges Component Arrays
+    const badgeContainer = document.getElementById("badge-container");
+    badgeContainer.innerHTML = "";
+    const badgeNode = document.createElement("span");
+    badgeNode.className = `metric-badge badge-${activeQuestionData.d.toLowerCase().substring(0,4)}`;
+    badgeNode.innerText = activeQuestionData.d;
+    badgeContainer.appendChild(badgeNode);
+
+    // Context strings
+    document.getElementById("question-text-box").innerText = activeQuestionData.q;
+    document.getElementById("question-topic-label").innerText = `Vector Domain: ${activeQuestionData.topic}`;
+
+    // Populating Option Selection Button List Interface Node
+    const targetOptionsBox = document.getElementById("options-box");
+    targetOptionsBox.innerHTML = "";
+
+    activeQuestionData.presentationOptions.forEach((optionObj) => {
+      const optBtn = document.createElement("button");
+      optBtn.className = "option-btn";
+      optBtn.innerText = optionObj.text;
+
+      // Check for user response history cache state records match configurations
+      if (userSelectedAnswersMap[currentActiveQuestionIndex] === optionObj.originalIndex) {
+        optBtn.classList.add("selected");
+      }
+
+      optBtn.onclick = () => {
+        userSelectedAnswersMap[currentActiveQuestionIndex] = optionObj.originalIndex;
+        // Re-sync UI layouts instantly
+        renderCurrentQuestionState();
+        synchronizeGridMapStyles();
+      };
+
+      targetOptionsBox.appendChild(optBtn);
+    });
+
+    synchronizeGridMapStyles();
+  }
+
+  function navigatePreviousQuestion() {
+    if (currentActiveQuestionIndex > 0) {
+      currentActiveQuestionIndex--;
+      renderCurrentQuestionState();
+    }
+  }
+
+  function navigateNextQuestion() {
+    if (currentActiveQuestionIndex < sessionActiveQuestions.length - 1) {
+      currentActiveQuestionIndex++;
+      renderCurrentQuestionState();
+    }
+  }
+
+  function toggleFlagForReview() {
+    if (flaggedForReviewSet.has(currentActiveQuestionIndex)) {
+      flaggedForReviewSet.delete(currentActiveQuestionIndex);
+    } else {
+      flaggedForReviewSet.add(currentActiveQuestionIndex);
+    }
+    synchronizeGridMapStyles();
+  }
+
+  function startExamCountdownTimer() {
+    const elementTimerBox = document.getElementById("timer-box");
+    calculationSecondsElapsed = 0;
+
+    countdownTimerRef = setInterval(() => {
+      calculationSecondsElapsed++;
+      let currentRemainingTimeSeconds = examTotalDurationSeconds - calculationSecondsElapsed;
+
+      if (currentRemainingTimeSeconds <= 0) {
+        clearInterval(countdownTimerRef);
+        elementTimerBox.innerText = "00:00";
+        triggerExamSubmission(true); // Forced timeout completion pass
+      } else {
+        let computeMinutes = Math.floor(currentRemainingTimeSeconds / 60);
+        let computeSeconds = currentRemainingTimeSeconds % 60;
+        elementTimerBox.innerText = `${computeMinutes.toString().padStart(2, '0')}:${computeSeconds.toString().padStart(2, '0')}`;
+      }
+    }, 1000);
+  }
+
+  function triggerExamSubmission(isForcedTimeout = false) {
+    if (!isForcedTimeout) {
+      const pendingCount = sessionActiveQuestions.length - Object.keys(userSelectedAnswersMap).length;
+      if (pendingCount > 0) {
+        if (!confirm(`You have left ${pendingCount} unanswered taxonomy profiles. Are you sure you want to seal this evaluation session?`)) {
+          return;
+        }
+      }
+    }
+
+    // Terminate ticker process instantly
+    clearInterval(countdownTimerRef);
+
+    // Initial Core Analytics counters variables setup
+    let metricCountCorrect = 0;
+    let metricCountWrong = 0;
+    let metricCountSkipped = 0;
+
+    // Course module analytics aggregation trackers
+    let resultsMapByCourse = {}; // courseId -> { total: 0, correct: 0 }
+    let resultsMapByDifficulty = {}; // diffString -> { total: 0, correct: 0 }
+
+    for (let idx = 1; idx <= 10; idx++) {
+      resultsMapByCourse[idx] = { total: 0, correct: 0, name: "" };
+    }
+    ["Easy", "Medium", "Hard"].forEach(level => {
+      resultsMapByDifficulty[level] = { total: 0, correct: 0 };
+    });
+
+    sessionActiveQuestions.forEach((question, index) => {
+      const userChoice = userSelectedAnswersMap[index];
+      
+      // Update course name contextual trace maps records safely
+      resultsMapByCourse[question.c].name = question.topic;
+      resultsMapByCourse[question.c].total++;
+      resultsMapByDifficulty[question.d].total++;
+
+      if (userChoice === undefined) {
+        metricCountSkipped++;
+      } else if (userChoice === question.a) {
+        metricCountCorrect++;
+        resultsMapByCourse[question.c].correct++;
+        resultsMapByDifficulty[question.d].correct++;
+      } else {
+        metricCountWrong++;
+      }
+    });
+
+    // Score calculations
+    const finalCalculatedPercentage = Math.round((metricCountCorrect / sessionActiveQuestions.length) * 100);
+    
+    // Determine target grade scaling profiles criteria
+    let gradeString = "Fail";
+    let statusString = "Unsuccessful Assessment Target Passed";
+    let emojiSelector = "❌";
+    
+    if (finalCalculatedPercentage >= 95) { gradeString = "A+"; statusString = "Distinguished Security Fellow"; emojiSelector = "🏆"; }
+    else if (finalCalculatedPercentage >= 90) { gradeString = "A"; statusString = "Certified Multiverse Architect"; emojiSelector = "🌟"; }
+    else if (finalCalculatedPercentage >= 80) { gradeString = "B+"; statusString = "Advanced Security Practitioner"; emojiSelector = "🛡️"; }
+    else if (finalCalculatedPercentage >= 70) { gradeString = "B"; statusString = "Operational Engineering Associate"; emojiSelector = "🟢"; }
+    else if (finalCalculatedPercentage >= 60) { gradeString = "C"; statusString = "Baseline Core Certified Compliance Specialist"; emojiSelector = "⚡"; }
+
+    // Render results telemetry matrix views arrays
+    document.getElementById("exam-workspace").style.display = "none";
+    document.getElementById("results-workspace").style.display = "block";
+
+    document.getElementById("result-emoji").innerText = emojiSelector;
+    document.getElementById("result-grade-box").innerText = gradeString;
+    document.getElementById("result-grade-box").style.color = finalCalculatedPercentage >= 60 ? "#22c55e" : "#ef4444";
+    
+    const inputCandidateName = document.getElementById("candidate-name").value;
+    document.getElementById("result-headline").innerText = `Certification Profile: ${statusString}`;
+    document.getElementById("result-candidate-string").innerText = `Issued to Cryptographic Asset Holder: ${inputCandidateName}`;
+    document.getElementById("result-score-summary").innerText = `Scored ${metricCountCorrect} Correct | ${metricCountWrong} Faults | ${metricCountSkipped} Skipped Profiles (${finalCalculatedPercentage}%)`;
+
+    // Formatting speed evaluation profiles parameters strings
+    let displayMinutesElapsed = Math.floor(calculationSecondsElapsed / 60);
+    let displaySecondsElapsed = calculationSecondsElapsed % 60;
+    document.getElementById("metrics-speed").innerText = `${displayMinutesElapsed}m ${displaySecondsElapsed}s`;
+    document.getElementById("metrics-accuracy").innerText = `${finalCalculatedPercentage}%`;
+
+    // Process strongest vs weakest category components vectors logic limits
+    let highestRatioValue = -1;
+    let lowestRatioValue = 999;
+    let nameStrongestTopicStr = "General Baseline Core";
+    let nameWeakestTopicStr = "General Delta Framework";
+
+    Object.keys(resultsMapByCourse).forEach(cId => {
+      let data = resultsMapByCourse[cId];
+      if(data.total > 0) {
+        let currentRatio = data.correct / data.total;
+        if(currentRatio > highestRatioValue) {
+          highestRatioValue = currentRatio;
+          nameStrongestTopicStr = data.name;
+        }
+        if(currentRatio < lowestRatioValue) {
+          lowestRatioValue = currentRatio;
+          nameWeakestTopicStr = data.name;
+        }
+      }
+    });
+
+    document.getElementById("metrics-strongest").innerText = nameStrongestTopicStr;
+    document.getElementById("metrics-weakest").innerText = nameWeakestTopicStr;
+
+    // Render structured difficulty breakdowns metrics tables layouts
+    let diffBoxMarkup = "";
+    Object.keys(resultsMapByDifficulty).forEach(level => {
+      let dData = resultsMapByDifficulty[level];
+      let dPct = dData.total > 0 ? Math.round((dData.correct / dData.total) * 100) : 0;
+      diffBoxMarkup += `<div style="text-align:left;"><strong>${level}:</strong> ${dData.correct}/${dData.total} (${dPct}%)</div>`;
+    });
+    document.getElementById("difficulty-distribution-box").innerHTML = diffBoxMarkup;
+
+    // Populate compilation review records arrays
+    compileComprehensiveAuditTrailLedger();
+  }
+
+  function compileComprehensiveAuditTrailLedger() {
+    const ledgerBoxContainer = document.getElementById("ledger-target-wrapper");
+    ledgerBoxContainer.innerHTML = "";
+
+    sessionActiveQuestions.forEach((question, index) => {
+      const userChoiceIdx = userSelectedAnswersMap[index];
+      const auditCardWrapper = document.createElement("div");
+      auditCardWrapper.className = "exam-card";
+      auditCardWrapper.style.padding = "20px";
+      auditCardWrapper.style.marginTop = "12px";
+
+      let userResponseTextString = "No input sequence detected (Skipped Parameter Analysis).";
+      let statusIndicatorColorStyle = "#eab308"; // Default warning yellow for skipped paths
+
+      if (userChoiceIdx !== undefined) {
+        userResponseTextString = question.presentationOptions.find(o => o.originalIndex === userChoiceIdx).text;
+        if (userChoiceIdx === question.a) {
+          statusIndicatorColorStyle = "#22c55e"; // Correct assertion green
+        } else {
+          statusIndicatorColorStyle = "#ef4444"; // Fault logic breach red
+        }
+      }
+
+      const accurateSolutionTextString = question.o[question.a];
+
+      auditCardWrapper.style.borderLeft = `4px solid ${statusIndicatorColorStyle}`;
+      auditCardWrapper.innerHTML = `
+        <h4 style="font-size:14.5px; font-weight:600; margin-bottom:8px;">Q${index + 1}: ${question.q}</h4>
+        <p style="font-size:12px; opacity:0.5; margin-bottom:12px;">Core Tracking Framework Focus Area: ${question.topic}</p>
+        <div style="font-size:13px; line-height:1.5; margin-bottom:6px;">❌ Your Assertion Vector: <span style="font-weight:600; color:${statusIndicatorColorStyle};">${userResponseTextString}</span></div>
+        <div style="font-size:13px; line-height:1.5; margin-bottom:12px;">✔️ Correct Cryptographic Answer Key: <span style="font-weight:600; color:#22c55e;">${accurateSolutionTextString}</span></div>
+        <div style="font-size:12.5px; opacity:0.8; padding:10px; background:rgba(0,0,0,0.02); border-radius:6px; font-style:italic;"><strong>Analysis Explanation Log:</strong> ${question.e}</div>
+      `;
+
+      ledgerBoxContainer.appendChild(auditCardWrapper);
+    });
+  }
+
+  function toggleReviewModeWindow() {
+    const targetBoxNode = document.getElementById("review-ledger-box");
+    if(targetBoxNode.style.display === "none") {
+      targetBoxNode.style.display = "block";
+      targetBoxNode.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      targetBoxNode.style.display = "none";
+    }
+  }
+</script>
+</body>
+</html>

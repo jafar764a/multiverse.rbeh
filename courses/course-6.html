@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safe Browsing Practices | RBEH Multiverse</title>
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/light.css" id="light-theme">
+<link rel="stylesheet" href="../css/dark.css" id="dark-theme" disabled>
+<style>
+  /* --- Unified Context Extensions for Lesson Modules --- */
+  .course-layout-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  
+  @media(min-width: 992px) {
+    .course-layout-container {
+      grid-template-columns: 280px 1fr;
+    }
+  }
+
+  /* --- Premium Floating Scroll Indicator Bar --- */
+  .scroll-tracker-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+  }
+  body[data-theme="dark"] .scroll-tracker-container {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .scroll-tracker-fill {
+    height: 100%;
+    width: 0%;
+    background: #e8312f;
+    box-shadow: 0 0 10px rgba(232, 49, 47, 0.6);
+    transition: width 0.1s ease-out;
+  }
+  .scroll-percentage-badge {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 10px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #e8312f;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  body[data-theme="dark"] .scroll-percentage-badge {
+    background: rgba(20, 20, 25, 0.85);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  /* --- Sticky Side Course Matrix Control Panel --- */
+  .matrix-sidebar {
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+  }
+  .matrix-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.01);
+  }
+  body[data-theme="dark"] .matrix-card {
+    background: rgba(20, 20, 25, 0.6);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+  .matrix-title {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.75px;
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+  .matrix-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .matrix-node {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.4;
+    transition: opacity 0.25s ease;
+  }
+  .matrix-node.completed {
+    opacity: 0.7;
+    color: #1fa75a;
+  }
+  .matrix-node.active {
+    opacity: 1;
+    font-weight: 700;
+  }
+  .matrix-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .matrix-node.completed .matrix-circle {
+    background: rgba(31, 167, 90, 0.1);
+    border-color: #1fa75a;
+  }
+  .matrix-node.active .matrix-circle {
+    background: #e8312f;
+    border-color: #e8312f;
+    color: #fff !important;
+    box-shadow: 0 0 12px rgba(232, 49, 47, 0.4);
+  }
+  body[data-theme="dark"] .matrix-node.active .matrix-circle {
+    background: #ff4d4d;
+    border-color: #ff4d4d;
+  }
+
+  /* --- Premium Component Content Architecture Cards --- */
+  .lesson-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.01);
+  }
+  body[data-theme="dark"] .lesson-card {
+    background: rgba(20, 20, 25, 0.5);
+    border-color: rgba(255, 255, 255, 0.04);
+  }
+  .lesson-card h2, .lesson-card h3 {
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .lesson-card p {
+    font-size: 15px;
+    line-height: 1.65;
+    opacity: 0.85;
+    margin-bottom: 12px;
+  }
+  .lesson-card p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Structural Sub-Components Blocks */
+  .premium-badge-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .meta-badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 30px;
+    background: rgba(0, 0, 0, 0.04);
+  }
+  body[data-theme="dark"] .meta-badge {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  
+  .quote-box {
+    background: rgba(232, 49, 47, 0.03);
+    border-left: 4px solid #e8312f;
+    padding: 18px;
+    border-radius: 0 14px 14px 0;
+    margin: 16px 0;
+  }
+  body[data-theme="dark"] .quote-box {
+    background: rgba(255, 77, 77, 0.03);
+    border-left-color: #ff4d4d;
+  }
+
+  .comparison-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 18px 0;
+  }
+  .comparison-item {
+    border-radius: 12px;
+    padding: 20px;
+    font-size: 14px;
+  }
+  .comparison-item.http {
+    background: rgba(232, 49, 47, 0.04);
+    border: 1px solid rgba(232, 49, 47, 0.1);
+  }
+  .comparison-item.https {
+    background: rgba(31, 167, 90, 0.04);
+    border: 1px solid rgba(31, 167, 90, 0.1);
+  }
+
+  .warning-accent-box {
+    background: rgba(232, 49, 47, 0.05);
+    border: 1px solid rgba(232, 49, 47, 0.12);
+    border-radius: 12px;
+    padding: 18px;
+    margin: 16px 0;
+  }
+  .success-accent-box {
+    background: rgba(31, 167, 90, 0.06);
+    border: 1px solid rgba(31, 167, 90, 0.12);
+    border-radius: 12px;
+    padding: 18px;
+    margin: 16px 0;
+  }
+
+  /* Timeline Elements */
+  .timeline-wrapper {
+    position: relative;
+    padding-left: 24px;
+    border-left: 2px solid rgba(0,0,0,0.06);
+    margin: 20px 0 10px 8px;
+  }
+  body[data-theme="dark"] .timeline-wrapper {
+    border-left-color: rgba(255,255,255,0.06);
+  }
+  .timeline-step {
+    position: relative;
+    margin-bottom: 24px;
+  }
+  .timeline-step:last-child {
+    margin-bottom: 0;
+  }
+  .timeline-step::before {
+    content: '';
+    position: absolute;
+    left: -31px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e8312f;
+    border: 2px solid #fff;
+  }
+  body[data-theme="dark"] .timeline-step::before {
+    border-color: #09090b;
+    background: #ff4d4d;
+  }
+
+  /* Quiz Node Components */
+  .mcq-node-block {
+    border-top: 1px solid rgba(0,0,0,0.06);
+    padding-top: 20px;
+    margin-top: 20px;
+  }
+  body[data-theme="dark"] .mcq-node-block {
+    border-top-color: rgba(255,255,255,0.06);
+  }
+  .mcq-option-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 14px;
+    background: rgba(0,0,0,0.01);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 10px;
+    margin-top: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  body[data-theme="dark"] .mcq-option-btn {
+    background: rgba(255,255,255,0.01);
+    border-color: rgba(255,255,255,0.06);
+  }
+  .mcq-option-btn:hover {
+    background: rgba(232, 49, 47, 0.05);
+    border-color: rgba(232, 49, 47, 0.2);
+  }
+  body[data-theme="dark"] .mcq-option-btn:hover {
+    background: rgba(255, 77, 77, 0.05);
+    border-color: rgba(255, 77, 77, 0.2);
+  }
+
+  .nav-btn-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<div class="scroll-tracker-container"><div class="scroll-tracker-fill" id="scrollBar"></div></div>
+<div class="scroll-percentage-badge"><span>⚡</span> <span id="scrollPct">0%</span> Completed</div>
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='../index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+        <circle cx="12" cy="11" r="1.6" fill="#fff"/>
+        <rect x="11.2" y="11" width="1.6" height="3" fill="#fff"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+
+  <nav class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="../about.html">About</a>
+    <a href="../contact.html">Contact</a>
+  </nav>
+
+  <div class="nav-actions">
+    <button id="theme-toggle" class="icon-btn">
+      <svg id="theme-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+      </svg>
+    </button>
+    <div class="menu-wrap">
+      <button class="menu-btn" id="menu-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+        </svg>
+        <span>Menu</span>
+      </button>
+      <div class="menu-dropdown" id="menu-dropdown">
+        <a href="../tools.html"><span class="menu-icon">🛠</span> Tools</a>
+        <a href="../course.html" class="active"><span class="menu-icon">📚</span> Course</a>
+        <a href="../cyberlab.html"><span class="menu-icon">🧪</span> Cyber Lab</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="course-layout-container">
+  
+  <aside class="matrix-sidebar">
+    <div class="matrix-card">
+      <div class="matrix-title">Course Progress</div>
+      <div class="matrix-grid">
+        <div class="matrix-node completed"><div class="matrix-circle">1</div> Introduction to Cyber Security</div>
+        <div class="matrix-node completed"><div class="matrix-circle">2</div> Types of Cyber Attacks</div>
+        <div class="matrix-node completed"><div class="matrix-circle">3</div> Phishing Awareness</div>
+        <div class="matrix-node completed"><div class="matrix-circle">4</div> Password Security</div>
+        <div class="matrix-node completed"><div class="matrix-circle">5</div> Encryption Basics</div>
+        <div class="matrix-node active" style="color:#e8312f;"><div class="matrix-circle">6</div> Safe Browsing Practices</div>
+        <div class="matrix-node"><div class="matrix-circle">7</div> QR Code Scams</div>
+        <div class="matrix-node"><div class="matrix-circle">8</div> Website Security Basics</div>
+        <div class="matrix-node"><div class="matrix-circle">9</div> Social Engineering Attacks</div>
+        <div class="matrix-node"><div class="matrix-circle">10</div> Cyber Security Quiz</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="content-stream-workspace">
+
+    <div class="lesson-card" style="border-color: rgba(232, 49, 47, 0.15); background: linear-gradient(to bottom right, rgba(255,255,255,0.6), rgba(232,49,47,0.02));">
+      <h1 class="hero-title" style="font-size: 34px; line-height: 1.25; margin-bottom: 8px;">Safe Browsing <span class="accent">Practices</span></h1>
+      <p style="font-size:16px; opacity:0.85;">Learn how to browse the internet safely, identify malicious websites, protect your personal information, and avoid common online threats using real-world cyber security practices.</p>
+      <div class="premium-badge-strip">
+        <span class="meta-badge" style="color:#e8312f; background: rgba(232,49,47,0.06); font-weight:700;">Course 6 of 10</span>
+        <span class="meta-badge">📋 Difficulty: Beginner</span>
+        <span class="meta-badge">⏱️ Reading Time: 8–10 Minutes</span>
+        <span class="meta-badge">🏷️ Category: Internet Safety & Web Security</span>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🌐</span> Section 1: Core Fundamentals of Web Navigation</h2>
+      <p>The modern browser is our primary gateway to global networks, making it a prime target for automated exploitation tools.</p>
+      
+      <div class="quote-box">
+        <strong>GTU Exam-Friendly Definition:</strong>
+        <p style="margin-top: 6px; font-style: normal; font-size: 14.5px;"><em>"Safe Browsing Practices constitute a framework of security settings, behavioral strategies, and cryptographic verification processes used to protect an end-user's terminal device from web-driven hazards, data leakage, and malicious tracking infrastructure."</em></p>
+      </div>
+
+      <div class="success-accent-box">
+        <strong style="color:#1fa75a;">💡 Easy Trick to Remember: The "Traffic Signal" Concept</strong>
+        <p style="font-size:14px; margin-top: 4px;">Treat every website link like a street crossing: <strong>Look</strong> at the URL spelling, <strong>Check</strong> for the HTTPS lock icon, and <strong>Stop</strong> if your browser throws an unexpected warning banner.</p>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🔒</span> Section 2: Decoupling HTTP vs HTTPS</h2>
+      <p>Data traveling across the web moves via specific communication protocols. The presence of a single letter changes how data is treated in transit.</p>
+      
+      <div class="comparison-container">
+        <div class="comparison-item http">
+          <strong style="color:#e8312f;">❌ HTTP (Hypertext Transfer Protocol)</strong>
+          <p style="margin-top: 6px; font-size:13.5px;">Transmits data in unencrypted plain text across routing points.</p>
+          <p style="font-size:12.5px; opacity:0.8; margin-top:4px;"><strong>Analogy:</strong> Sending a postcard through the post. Anyone along the delivery route can look at the text.</p>
+          <p style="font-size:12.5px; opacity:0.8; font-weight:600; margin-top:4px; color:#e8312f;">⚠️ Vulnerable to intermediate interception and data alterations.</p>
+        </div>
+        <div class="comparison-item https">
+          <strong style="color:#1fa75a;">🟢 HTTPS (Secure Protocol over TLS/SSL)</strong>
+          <p style="margin-top: 6px; font-size:13.5px;">Encrypts data using Transport Layer Security before it leaves the browser.</p>
+          <p style="font-size:12.5px; opacity:0.8; margin-top:4px;"><strong>Analogy:</strong> Dropping a message into a high-security lockbox that only the destination server can open.</p>
+          <p style="font-size:12.5px; opacity:0.8; font-weight:600; margin-top:4px; color:#1fa75a;">🛡️ Prevents data interception, shielding passwords and payment information.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>⚔️</span> Section 3: Identifying Spoofed Web Portals</h2>
+      <p>Malicious actors build exact clones of popular banking or social networks to steal credentials. Spotting these clones requires careful verification:</p>
+      
+      <div class="timeline-wrapper">
+        <div class="timeline-step">
+          <strong>1. Perform Domain Structural Audits</strong>
+          <p style="font-size:14px; opacity:0.8; margin-top:4px;">Always look at the text right before the primary suffix extension (e.g., look for <span style="font-family: monospace;">support.google.com</span> instead of <span style="font-family: monospace;">google.support-security.com</span>).</p>
+        </div>
+        <div class="timeline-step">
+          <strong>2. Catch Visual Anomalies and Subdomain Layering</strong>
+          <p style="font-size:14px; opacity:0.8; margin-top:4px;">Malicious sites often feature broken internal image links, low-resolution logos, spelling errors, or awkward typography choices.</p>
+        </div>
+        <div class="timeline-step">
+          <strong>3. Beware of Sudden File Download Triggers</strong>
+          <p style="font-size:14px; opacity:0.8; margin-top:4px;">If a webpage triggers an automatic download box for an unexpected file extension like <span style="font-family: monospace;">.exe</span>, <span style="font-family: monospace;">.scr</span>, or <span style="font-family: monospace;">.zip</span>, cancel it immediately.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>📡</span> Section 4: Secure Public Wi-Fi Usage & Cookies</h2>
+      <p>Connecting to open, public wireless networks introduces serious threat vectors, as these environments lack traditional perimeter protections.</p>
+      
+      <div class="warning-accent-box">
+        <strong style="color:#e8312f;">Critical Threat Scenario: Public Wireless Networks</strong>
+        <p style="font-size:14px; margin-top: 4px;">Attackers can host open hotspots named "Free Airport Wi-Fi" nearby. If you connect, all unencrypted web traffic passes through their device, giving them visibility into your session activity.</p>
+      </div>
+
+      <p><strong>Tracking Cookies Explained:</strong></p>
+      <p>Cookies are small data scripts stored by your browser to save logins or settings. While first-party cookies keep you logged into sites, third-party tracking cookies can follow your activity across different web domains to build detailed behavioral profiles.</p>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🛠️</span> Section 5: Browser Hardening Configurations</h2>
+      <p>Security teams recommend taking proactive defensive measures within your browser settings to mitigate automated web-based exploits.</p>
+      
+      <p><strong>Essential Browser Security Actions:</strong></p>
+      <ul style="margin-left: 20px; font-size: 14.5px; opacity: 0.85; display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
+        <li>Keep your web browser updated so that security patches can close zero-day system flaws.</li>
+        <li>Turn on integrated protective safety features, such as Google Safe Browsing or Microsoft SmartScreen alerts.</li>
+        <li>Clear out stored web tracking cookie archives on a regular basis.</li>
+        <li>Use trusted ad-blocking utilities to stop malicious advertising code from running on compromised web links.</li>
+      </ul>
+    </div>
+
+    <div class="lesson-card" style="border-color: rgba(232,49,47,0.12); background: rgba(232,49,47,0.005);">
+      <h2 style="font-size:20px; color:#e8312f;">🎯 Deep Dive Insights</h2>
+      
+      <p style="margin-top:12px;"><strong>✅ Learning Objectives:</strong> Differentiate HTTP channels from encrypted HTTPS paths, spot deceptive lookalike URLs, mitigate risks on public Wi-Fi, and configure robust web browser privacy controls.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Key Highlights:</strong> The HTTPS lock symbol confirms that your connection to a website is encrypted, but it does not guarantee that the website itself is safe or trustworthy.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Quick Facts:</strong> A significant portion of modern malware infections originate from deceptive web links or malvertising banners hosted on otherwise legitimate websites.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Did You Know?:</strong> Attackers use complex lookalike scripts to mirror domain names, substituting specific characters with distinct symbols that look identical in a standard browser address bar.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Best Security Practices:</strong> Use verified HTTPS protocols, turn on built-in web security extensions, clear out third-party cookies regularly, and run a reliable virtual private network (VPN) when using public Wi-Fi.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Summary:</strong> Keeping your web browsing safe requires proactive settings and careful checking of addresses. Verifying URLs, using secure channels, and keeping your browser updated creates a strong defense against web-based exploits.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Key Takeaways:</strong> Automated web threats rely on user distraction. Taking a brief moment to review domain names before entering credentials helps protect your private data from interception.</p>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>📝</span> Mini Knowledge Check</h2>
+      <p style="opacity:0.7; font-size:13px;">Test your understanding of safe web navigation principles before continuing to the next module.</p>
+      
+      <div class="mcq-node-block">
+        <p><strong>1. What layer of primary protection does the HTTPS protocol provide during web navigation tasks?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) It completely scans local hard drives for malware.</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) It encrypts communication between the browser and the target server, preventing data interception.</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>2. If a popular web platform's URL appears in your browser address bar as "support.paypal-security-update.com", what is the threat status?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">A) High Risk. This is a spoofed lookalike domain designed to harvest credentials.</button>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">B) Safe. The presence of the word "security" confirms it is an authorized server page.</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>3. Why is performing sensitive financial or personal banking operations on an open public Wi-Fi network discouraged?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) Public hotspots do not support standard web browser connections.</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) Attackers on the same network can intercept unencrypted data traffic or run local snooping scripts.</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>4. What is the role of third-party tracking cookies when visiting websites?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">A) Building long-term behavioral profiles by tracking user activity across multiple independent websites.</button>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">B) Speeding up local computer processing power.</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>5. What is the safest response when a web page unexpectedly opens a download prompt for a ".exe" installation file?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) Run the installer tool immediately to fix browser issues.</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) Terminate or cancel the download prompt immediately and exit the webpage.</button>
+      </div>
+    </div>
+
+    <div class="nav-btn-row">
+      <button class="btn btn-secondary" onclick="window.location.href='course-5.html'">&larr; Previous Lesson</button>
+      <button class="btn btn-secondary" onclick="window.location.href='../course.html'">Back To Courses</button>
+      <button class="btn btn-primary" onclick="window.location.href='course-7.html'">Next Lesson &rarr;</button>
+    </div>
+
+  </main>
+</div>
+
+<footer style="text-align: center; padding: 40px 24px; opacity: 0.5; font-size: 13px; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 80px;">
+  &copy; 2026 RBEH Multiverse Ecosystem. All Content Protection Bounds Applied.
+</footer>
+
+<script src="../js/theme.js"></script>
+<script src="../js/script.js"></script>
+<script>
+  // Dynamic Scroll Progress Calculation System
+  window.addEventListener('scroll', () => {
+    const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = Math.min(Math.max(Math.round((winScroll / height) * 100), 0), 100);
+    
+    document.getElementById('scrollBar').style.width = scrolled + '%';
+    document.getElementById('scrollPct').innerText = scrolled + '%';
+  });
+</script>
+</body>
+</html>

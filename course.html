@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Learning Hub | RBEH Multiverse</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/light.css" id="light-theme">
+<link rel="stylesheet" href="css/dark.css" id="dark-theme" disabled>
+</head>
+<body data-theme="light">
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+        <circle cx="12" cy="11" r="1.6" fill="#fff"/>
+        <rect x="11.2" y="11" width="1.6" height="3" fill="#fff"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <div class="nav-actions">
+    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">
+      <svg id="theme-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+    </button>
+    <div class="menu-wrap">
+      <button class="menu-btn" id="menu-btn" aria-haspopup="true" aria-expanded="false">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <span>Menu</span>
+      </button>
+      <div class="menu-dropdown" id="menu-dropdown">
+        <a href="tools.html"><span class="menu-icon">🛠</span> Tools</a>
+        <a href="course.html" class="active"><span class="menu-icon">📚</span> Course</a>
+        <a href="cyberlab.html"><span class="menu-icon">🧪</span> Cyber Lab</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="hero" style="padding-bottom: 20px;">
+  <section class="hero-left">
+    <h1 class="hero-title">
+      Elevate Your<br>
+      <span class="accent">Cyber Skills.</span>
+    </h1>
+    <p class="hero-desc">
+      Explore expert-led courses and advance your cyber security knowledge through practical learning.
+    </p>
+    <div class="hero-buttons">
+      <button class="btn btn-primary" onclick="document.getElementById('courses-hub-section').scrollIntoView({ behavior: 'smooth' });">
+        Browse Courses
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <polyline points="19 12 12 19 5 12"></polyline>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <section class="hero-center">
+    <div class="shield-wrap">
+      <div class="shield-glow" style="background: radial-gradient(circle, rgba(232,49,47,0.18) 0%, transparent 70%);"></div>
+      <svg class="shield-svg" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="courseHubGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ff6b6b"/>
+            <stop offset="100%" stop-color="#d61c1c"/>
+          </linearGradient>
+        </defs>
+        <g transform="translate(10, 15)">
+          <path d="M40 140 L160 140 L180 160 L20 160 Z" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+          <rect x="50" y="70" width="100" height="65" rx="4" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+          
+          <path d="M60 115 C75 105, 95 105, 100 110 C105 105, 125 105, 140 115 L140 85 C125 75, 105 75, 100 80 C95 75, 75 75, 60 85 Z" fill="url(#courseHubGrad)" stroke="#ff4d4d" stroke-width="1"/>
+          <line x1="100" y1="80" x2="100" y2="110" stroke="#ffffff" stroke-width="1" opacity="0.8"/>
+          
+          <path d="M100 25 L125 35 V55 C125 70, 100 80, 100 80 C100 80, 75 70, 75 55 V35 Z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="100" cy="50" r="6" fill="#ff4d4d"/>
+          
+          <circle cx="35" cy="60" r="3" fill="currentColor" opacity="0.5"/>
+          <circle cx="165" cy="75" r="4" fill="#ff4d4d" opacity="0.8"/>
+          <line x1="145" y1="40" x2="165" y2="75" stroke="currentColor" stroke-width="0.5" stroke-dasharray="2" opacity="0.3"/>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <section class="hero-right">
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="terminal-title">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4 17 10 11 4 5"></polyline>
+            <line x1="12" y1="19" x2="20" y2="19"></line>
+          </svg>
+          <span>user@rbehHub: ~</span>
+        </div>
+        <div class="terminal-status">
+          <span class="dot" style="background-color: #22c55e;"></span> System Active
+        </div>
+      </div>
+      <div class="terminal-body" id="terminal-body">
+        <p><span class="prompt">user@rbeh:~$</span> modules --explore</p>
+        <p class="output" style="color: #ff4d4d;">&gt; intro-to-cyber-security [Loaded]</p>
+        <p class="output" style="color: #ff4d4d;">&gt; attack-vectors-matrix [Loaded]</p>
+        <p class="output" style="color: #ff4d4d;">&gt; phishing-mitigation [Loaded]</p>
+        <p class="output" style="color: #ff4d4d;">&gt; crypto-foundations   [Loaded]</p>
+        <p class="output" style="color: #ff4d4d;">&gt; social-engineering   [Loaded]</p>
+        <p><span class="prompt">user@rbeh:~$</span> learning-status</p>
+        <p class="output">Environment: Ready to Start</p>
+        <p class="prompt-line"><span class="prompt">user@rbeh:~$</span> <span class="cursor"></span></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section id="courses-hub-section" style="padding: 40px 48px 100px; max-width: 1400px; margin: 0 auto;">
+  <div class="tools-grid-layout">
+    
+    <div class="tool-action-card" data-course-id="intro" style="--accent-glow: rgba(232,49,47,0.25); cursor: pointer;">
+      <div class="tool-top-content">
+        <div class="stat-icon tools">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+          </svg>
+        </div>
+        <div class="tool-text-group">
+          <h3>Introduction to Cyber Security</h3>
+          <p>Master foundational security pillars, standard threat landscapes, and baseline industrial defense methodologies.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn">Start Learning <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" data-course-id="attacks" style="--accent-glow: rgba(232,49,47,0.25); cursor: pointer;">
+      <div class="tool-top-content">
+        <div class="stat-icon tools">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <div class="tool-text-group">
+          <h3>Types of Cyber Attacks</h3>
+          <p>Deconstruct structural digital methodologies including Malware injection vectors, DDoS incidents, and MITM operations.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn">Start Learning <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" data-course-id="phishing" style="--accent-glow: rgba(232,49,47,0.25); cursor: pointer;">
+      <div class="tool-top-content">
+        <div class="stat-icon tools">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-2-4-4.5c-.5 2.5-2 3-4 4.5S5 13 5 15a7 7 0 0 0 7 7z"></path>
+          </svg>
+        </div>
+        <div class="tool-text-group">
+          <h3>Phishing Awareness</h3>
+          <p>Identify social email anomalies, malicious structural domain linkages, and strategic spoofing heuristics.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn">Start Learning <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" data-course-id="password" style="--accent-glow: rgba(232,49,47,0.25); cursor: pointer;">
+      <div class="tool-top-content">
+        <div class="stat-icon tools">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <div class="tool-text-group">
+          <h3>Password Security</h3>
+          <p>Implement industrial-strength entropy configurations, secure hashes, and credential vault defenses.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn">Start Learning <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" data-course-id="encryption" style="--accent-glow: rgba(232,49,47,0.25); cursor: pointer;">
+      <div class="tool-top-content">
+        <div class="stat-icon tools">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </div>
+        <div class="tool-text-group">
+          <h3>Encryption Basics</h3>
+          <p>Explore algorithmic core properties of symmetric hashing, asymmetric key pairing, and secure data tunnels.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn">Start Learning <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" data-course-id="browsing" style="--accent-glow: rgba(232,49,47,0.25); cursor: pointer;">
+      <div class="tool-top-content">
+        <div class="stat-icon tools">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+        </div>
+        <div class="tool-text-group">
+          <h3>Safe Browsing Practices</h3>
+          <p>Audit system configurations, intercept persistent tracking cookies, and manage digital connection points securely.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn">Start Learning <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" data-course-id="qrscams" style="--accent-glow: rgba(232,49,47,0.25); cursor: pointer;">
+      <div class="tool-top-content">
+        <div class="stat-icon tools">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </div>
+        <div class="tool-text-group">
+          <h3>QR Code Scams</h3>
+          <p>Detect visual injection tampering, unmask tracking redirects, and block cross-site execution payloads.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn">Start Learning <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" data-course-id="webbasics" style="--accent-glow: rgba(232,49,47,0.25); cursor: pointer;">
+      <div class="tool-top-content">
+        <div class="stat-icon tools">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+        </div>
+        <div class="tool-text-group">
+          <h3>Website Security Basics</h3>
+          <p>Analyze fundamental architecture vulnerability parameters including SSL/TLS handshakes, CORS policies, and server logs.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn">Start Learning <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" data-course-id="social" style="--accent-glow: rgba(232,49,47,0.25); cursor: pointer;">
+      <div class="tool-top-content">
+        <div class="stat-icon tools">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+        <div class="tool-text-group">
+          <h3>Social Engineering Attacks</h3>
+          <p>Identify psychological manipulation traps, pretexting strategies, and systemic corporate impersonation risks.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn">Start Learning <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" data-course-id="quiz" style="--accent-glow: rgba(232,49,47,0.25); cursor: pointer;">
+      <div class="tool-top-content">
+        <div class="stat-icon tools">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </div>
+        <div class="tool-text-group">
+          <h3>Cyber Security Quiz</h3>
+          <p>Evaluate your retention across various vectors to challenge and confirm your learned defense metrics.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn">Start Learning <span>&rarr;</span></button>
+    </div>
+
+  </div>
+</section>
+
+<script src="js/theme.js"></script>
+<script src="js/script.js"></script>
+<script src="js/course.js"></script>
+</body>
+</html>

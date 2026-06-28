@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fake Phishing Website Demo | RBEH Multiverse</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/light.css" id="light-theme">
+<link rel="stylesheet" href="css/dark.css" id="dark-theme" disabled>
+<style>
+  /* Seamless integration extensions aligned with the main glassmorphism design */
+  .demo-split-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 32px;
+    margin-top: 40px;
+  }
+  .sim-pane {
+    background: var(--card-bg, rgba(255, 255, 255, 0.65));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  [data-theme="dark"] .sim-pane {
+    background: rgba(20, 20, 20, 0.6);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  .sim-pane.highlight-danger {
+    box-shadow: 0 0 24px rgba(232, 49, 47, 0.2);
+    border-color: #e8312f;
+  }
+  .sim-pane.highlight-success {
+    box-shadow: 0 0 24px rgba(34, 197, 94, 0.2);
+    border-color: #22c55e;
+  }
+  .browser-mockup {
+    border-radius: 8px;
+    background: var(--bg-primary, #ffffff);
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+    margin-top: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+  }
+  [data-theme="dark"] .browser-mockup {
+    background: #141414;
+  }
+  .browser-bar {
+    background: var(--bg-secondary, #f3f4f6);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+  }
+  [data-theme="dark"] .browser-bar {
+    background: #1f1f1f;
+  }
+  .browser-dots {
+    display: flex;
+    gap: 6px;
+  }
+  .browser-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #cbd5e1;
+  }
+  .browser-url-input {
+    flex-grow: 1;
+    background: var(--card-bg, #ffffff);
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-family: monospace;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .browser-url-input:hover {
+    background: var(--bg-secondary, #f9fafb);
+  }
+  .mock-content {
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .mock-form {
+    width: 100%;
+    max-width: 280px;
+    margin-top: 16px;
+  }
+  .mock-input-group {
+    margin-bottom: 14px;
+  }
+  .mock-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    opacity: 0.8;
+  }
+  .mock-input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.15));
+    background: transparent;
+    color: inherit;
+    font-size: 14px;
+  }
+  .flag-badge {
+    position: absolute;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: none;
+    z-index: 10;
+    animation: fadeIn 0.3s ease forwards;
+  }
+  .flag-badge.red { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; }
+  .flag-badge.green { background: #dcfce7; color: #22c55e; border: 1px solid #86efac; }
+  
+  .hotspot-indicator {
+    border-bottom: 2px dashed #ff4d4d;
+    cursor: help;
+    position: relative;
+  }
+  .hotspot-success {
+    border-bottom: 2px dashed #22c55e;
+    cursor: help;
+  }
+  .expl-card {
+    background: var(--bg-secondary, #f9fafb);
+    border-left: 4px solid #ff4d4d;
+    border-radius: 4px;
+    padding: 12px;
+    margin-top: 16px;
+    font-size: 13px;
+    display: none;
+    animation: fadeIn 0.3s ease forwards;
+  }
+  .expl-card.secure { border-left-color: #22c55e; }
+  
+  .checklist-box {
+    background: var(--card-bg, rgba(255, 255, 255, 0.5));
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 32px;
+  }
+  .checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    opacity: 0.7;
+    transition: opacity 0.3s, color 0.3s;
+  }
+  .checklist-item.verified { opacity: 1; color: #22c55e; font-weight: 600; }
+  .checklist-item.danger-found { opacity: 1; color: #e8312f; font-weight: 600; }
+</style>
+</head>
+<body data-theme="light">
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+        <circle cx="12" cy="11" r="1.6" fill="#fff"/>
+        <rect x="11.2" y="11" width="1.6" height="3" fill="#fff"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <div class="nav-actions">
+    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">
+      <svg id="theme-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+    </button>
+    <div class="menu-wrap">
+      <button class="menu-btn" id="menu-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <span>Menu</span>
+      </button>
+      <div class="menu-dropdown" id="menu-dropdown">
+        <a href="tools.html"><span class="menu-icon">🛠</span> Tools</a>
+        <a href="course.html"><span class="menu-icon">📚</span> Course</a>
+        <a href="cyberlab.html" class="active"><span class="menu-icon">🧪</span> Cyber Lab</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="hero" style="padding-bottom: 20px;">
+  <section class="hero-left">
+    <h1 class="hero-title">Fake Phishing<br><span class="accent">Website Demo</span></h1>
+    <p class="hero-desc">Learn how phishing websites trick users by comparing a simulated fake website with a legitimate one in a safe educational environment.</p>
+    <div class="hero-buttons">
+      <button class="btn btn-primary" onclick="document.getElementById('simulation-arena').scrollIntoView({ behavior: 'smooth' });">
+        ▶ Start Simulation
+      </button>
+      <button class="btn btn-secondary" onclick="window.location.href='courses/course-3.html'">
+        📚 Learn Phishing
+      </button>
+    </div>
+  </section>
+
+  <section class="hero-center">
+    <div class="shield-wrap">
+      <div class="shield-glow" style="background: radial-gradient(circle, rgba(232,49,47,0.15) 0%, transparent 70%);"></div>
+      <svg class="shield-svg" viewBox="0 0 200 220">
+        <path d="M100 20 L30 50 V110 C30 160 100 200 100 200 C100 200 170 160 170 110 V50 Z" fill="none" stroke="#e8312f" stroke-width="2"/>
+        <path d="M70 105 L90 125 L135 80" fill="none" stroke="currentColor" stroke-width="2.5"/>
+      </svg>
+    </div>
+  </section>
+
+  <section class="hero-right">
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="terminal-title"><span>user@rbehLab: ~</span></div>
+        <div class="terminal-status"><span class="dot" style="background-color: #e8312f;"></span> Simulation Box</div>
+      </div>
+      <div class="terminal-body">
+        <p><span class="prompt">user@rbeh:~$</span> ./phishing_simulator</p>
+        <p class="output" style="color: #ff4d4d;">[!] Warning: Inspection Mode Available</p>
+        <p class="output">&gt; Mapping matrix nodes...</p>
+        <p class="output" style="color: #22c55e;">&gt; Safe sandboxed view created.</p>
+        <p class="prompt-line"><span class="prompt">user@rbeh:~$</span> <span class="cursor"></span></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div style="padding: 0 48px; max-width: 1400px; margin: 0 auto;">
+  <div class="sim-pane" style="border-left: 4px solid #e8312f; background: rgba(232,49,47,0.04); margin-bottom: 24px;">
+    <h3 style="color: #e8312f; font-size: 16px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+      ⚠️ Educational Demonstration
+    </h3>
+    <p style="font-size: 14px; opacity: 0.85; line-height: 1.5;">
+      This simulation is created only for cyber security education and awareness. It does not collect usernames, passwords, personal information, or transmit any data. All interactions remain securely processed inside your local browser instance.
+    </p>
+  </div>
+
+  <section id="simulation-arena" style="padding: 20px 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <h2 style="font-size: 22px; font-weight: 700;">Comparative Matrix Arena</h2>
+        <p style="font-size: 14px; opacity: 0.6;">Analyze the structural flags and indicator layers on both items.</p>
+      </div>
+      <button class="btn btn-primary" id="analyze-btn" onclick="triggerAnalysis()">Analyze Differences</button>
+    </div>
+
+    <div id="info-overlay-card" class="expl-card" style="margin-top: 24px; border-left-color: #3b82f6;">
+      <strong id="info-title">Interactive Inspector:</strong> <span id="info-body">Click any dashed or highlighted metadata parameter inside the web interfaces to inspect its defensive score.</span>
+    </div>
+
+    <div class="demo-split-container">
+      
+      <div class="sim-pane" id="fake-pane">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-size: 16px; font-weight: 700; color: #e8312f;">🚨 Simulated Fake Website</h3>
+          <span class="flag-badge red" id="badge-fake-verdict">Phishing Entity</span>
+        </div>
+        
+        <div class="browser-mockup">
+          <div class="browser-bar">
+            <div class="browser-dots"><div class="browser-dot"></div><div class="browser-dot"></div><div class="browser-dot"></div></div>
+            <div class="browser-url-input" onclick="showExpl('Fake Domain', 'Cybercriminals often replace characters, add deceptive prefixes, or alter structural extensions (e.g., security-alert-login.com) to mask an illegitimate environment.')">
+              <span style="color: #ef4444;">⚠️ Not Secure</span>
+              <span class="hotspot-indicator" id="hs-fake-url">http://secure-login-rbeh.net/auth</span>
+            </div>
+          </div>
+          <div class="mock-content">
+            <div style="font-size: 20px; font-weight: 800; color: #ef4444; margin-bottom: 4px;" class="hotspot-indicator" onclick="showExpl('Fake Branding', 'Look carefully at logotypes. Attackers often deploy slightly off-ratio, outdated, or low-resolution graphical branding assets.')">
+              SecureBank Pro
+            </div>
+            <p style="font-size: 11px; color: #e8312f; font-weight: bold; margin-bottom: 16px;" onclick="showExpl('Urgency Message', 'Phishing vectors systematically exploit fear and psychological pressure, urging rapid completion before imaginary lockouts.')" class="hotspot-indicator">
+              ⏰ CRITICAL: Verify identity within 5 minutes to protect account access!
+            </p>
+            <div class="mock-form" onclick="event.preventDefault();">
+              <p style="font-size: 13px; opacity: 0.7; margin-bottom: 8px;" class="hotspot-indicator" onclick="showExpl('Generic Greeting', 'Legitimate operational entities customize interfaces using database parameters. Generic prompts indicate systemic cold outreach campaigns.')">Dear Valued User,</p>
+              <div class="mock-input-group">
+                <label class="mock-label">Bank Account Number / Email</label>
+                <input type="text" class="mock-input" placeholder="Enter credentials" disabled>
+              </div>
+              <div class="mock-input-group">
+                <label class="mock-label">Security PIN / Passcode</label>
+                <input type="password" class="mock-input" placeholder="••••••••" disabled>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 14px; opacity: 0.6;">
+                <label><input type="checkbox" disabled> Keep me active</label>
+                <span class="hotspot-indicator" onclick="showExpl('Fake Support Links', 'Hovering links frequently shows internal redirect anchors or mismatched locations completely separate from standard corporate channels.')">Forgot Details?</span>
+              </div>
+              <button class="btn btn-primary" style="width: 100%; padding: 8px; font-size: 13px; background: #ef4444; border-color: #ef4444;" onclick="showExpl('Suspicious Login Form', 'Sandboxed forms handle text data targets insecurely without standard protocol handshakes or cross-origin headers.')">Proceed To Account</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sim-pane" id="real-pane">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-size: 16px; font-weight: 700; color: #22c55e;">✅ Legitimate Website</h3>
+          <span class="flag-badge green" id="badge-real-verdict">Verified Secure</span>
+        </div>
+
+        <div class="browser-mockup">
+          <div class="browser-bar">
+            <div class="browser-dots"><div class="browser-dot"></div><div class="browser-dot"></div><div class="browser-dot"></div></div>
+            <div class="browser-url-input" onclick="showExpl('HTTPS Encryption', 'The standard lock mechanism denotes a verified TLS/SSL layer protecting standard transactional integrity directly to the root certificate.')">
+              <span style="color: #22c55e;">🔒 HTTPS</span>
+              <span class="hotspot-indicator hotspot-success" id="hs-real-url">https://rbeh-banking.com/login</span>
+            </div>
+          </div>
+          <div class="mock-content">
+            <div style="font-size: 20px; font-weight: 800; margin-bottom: 16px;" class="hotspot-indicator hotspot-success" onclick="showExpl('Official Branding', 'Authentic corporate items use crisp vector layouts, official fonts, and strict trademark registration components.')">
+              RBEH Corp Bank
+            </div>
+            <div class="mock-form" onclick="event.preventDefault();">
+              <div class="mock-input-group">
+                <label class="mock-label">Sign-In ID</label>
+                <input type="text" class="mock-input" placeholder="User Identifier" disabled>
+              </div>
+              <div class="mock-input-group">
+                <label class="mock-label">Password</label>
+                <input type="password" class="mock-input" placeholder="••••••••" disabled>
+              </div>
+              <div style="margin-bottom: 14px; padding: 6px; background: rgba(34,197,94,0.06); border-radius: 6px; font-size: 11px; display: flex; align-items: center; gap: 6px;" class="hotspot-indicator hotspot-success" onclick="showExpl('2FA Authentication', 'Secure networks integrate out-of-band layers such as TOTP tokens or dynamic hardware verification keys to eliminate credentials vulnerability points.')">
+                <span style="color: #22c55e;">🛡️</span> Multi-Factor Authentication Active
+              </div>
+              <button class="btn btn-primary" style="width: 100%; padding: 8px; font-size: 13px; background: #22c55e; border-color: #22c55e;">Secure Login</button>
+              <div style="margin-top: 12px; text-align: center; font-size: 11px; opacity: 0.5;" class="hotspot-indicator hotspot-success" onclick="showExpl('Privacy Regulations', 'Corporate parameters render links to binding corporate data disclosures, regional terms, and organizational compliance references.')">
+                Privacy Policy & Disclosures
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="checklist-box">
+      <h3 style="font-size: 15px; font-weight: 700;">Security Validation Matrix Checklist</h3>
+      <div class="checklist-grid">
+        <div class="checklist-item" id="chk-1">⬜ Check HTTPS Protocol</div>
+        <div class="checklist-item" id="chk-2">⬜ Verify Domain Name</div>
+        <div class="checklist-item" id="chk-3">⬜ Scan for Typos/Spelling Errors</div>
+        <div class="checklist-item" id="chk-4">⬜ Avoid Urgency Messages</div>
+        <div class="checklist-item" id="chk-5">⬜ Check Certificate Authority</div>
+        <div class="checklist-item" id="chk-6">⬜ Verify Crisp Branding Assets</div>
+        <div class="checklist-item" id="chk-7">⬜ Avoid Suspicious Forms</div>
+        <div class="checklist-item" id="chk-8">⬜ Confirm 2FA Availability</div>
+      </div>
+    </div>
+
+    <div id="verdict-block" class="sim-pane" style="margin-top: 32px; display: none; animation: fadeIn 0.4s ease forwards;">
+      <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 12px;">Simulation Analytics Output</h3>
+      <div style="display: flex; gap: 40px; flex-wrap: wrap;">
+        <div>
+          <div style="font-size: 12px; opacity: 0.6; text-transform: uppercase; font-weight: bold;">Calculated Risk Index</div>
+          <div style="font-size: 36px; font-weight: 900; color: #e8312f;" id="risk-score-value">95 / 100</div>
+        </div>
+        <div style="flex-grow: 1;">
+          <div style="font-size: 12px; opacity: 0.6; text-transform: uppercase; font-weight: bold;">Structural Recommendation</div>
+          <p style="font-size: 14px; margin-top: 4px; line-height: 1.5;" id="verdict-text"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sim-pane" style="margin-top: 32px;">
+      <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px;">📚 Knowledge Discovery Vault</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px;">
+        <div>
+          <h4 style="font-size: 14px; font-weight: 700; color: #e8312f; margin-bottom: 8px;">How Phishing Works</h4>
+          <p style="font-size: 13px; opacity: 0.75; line-height: 1.5;">Attackers simulate trustworthy interfaces using fraudulent data paths. When a target enters their security credentials, information values bounce to command control databases rather than clearing operational corporate ledgers.</p>
+        </div>
+        <div>
+          <h4 style="font-size: 14px; font-weight: 700; color: #e8312f; margin-bottom: 8px;">Common Trick Strategies</h4>
+          <p style="font-size: 13px; opacity: 0.75; line-height: 1.5;">Look out for look-alike characters (Typosquatting), spoofed email routing heads, fake security expiration dates, and urgent system update directives requesting sudden confirmation actions.</p>
+        </div>
+        <div>
+          <h4 style="font-size: 14px; font-weight: 700; color: #22c55e; margin-bottom: 8px;">Action Plan: If Target Compromised</h4>
+          <p style="font-size: 13px; opacity: 0.75; line-height: 1.5;">Immediately access the official platform terminal directly via clean bookmarks to refresh authentication parameters. Implement global session revokes and submit local transaction halt reports immediately to authorized fraud investigation teams.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 16px; margin-top: 32px; flex-wrap: wrap;">
+      <button class="btn btn-secondary" onclick="resetSim()">Analyze Again</button>
+      <button class="btn btn-secondary" onclick="window.location.href='cyberlab.html'">Back to Cyber Lab</button>
+      <button class="btn btn-primary" onclick="window.location.href='courses/course-3.html'">Learn Phishing Pathways</button>
+    </div>
+
+  </section>
+</div>
+
+<script src="js/theme.js"></script>
+<script src="js/script.js"></script>
+<script>
+  // Sandboxed Execution Pipeline logic 
+  function showExpl(title, message) {
+    const box = document.getElementById('info-overlay-card');
+    document.getElementById('info-title').innerText = title + ": ";
+    document.getElementById('info-body').innerText = message;
+    box.style.display = 'block';
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function triggerAnalysis() {
+    // Dynamic styles and animations mapping arrays
+    document.getElementById('fake-pane').classList.add('highlight-danger');
+    document.getElementById('real-pane').classList.add('highlight-success');
+    
+    document.getElementById('badge-fake-verdict').style.display = 'inline-block';
+    document.getElementById('badge-real-verdict').style.display = 'inline-block';
+    
+    // Animate item flags checked inside target vector
+    const redFlags = ['chk-1', 'chk-2', 'chk-3', 'chk-4', 'chk-7'];
+    const greenFlags = ['chk-5', 'chk-6', 'chk-8'];
+    
+    redFlags.forEach(id => {
+      const el = document.getElementById(id);
+      el.innerText = '❌ ' + el.innerText.substring(2);
+      el.classList.add('danger-found');
+    });
+    
+    greenFlags.forEach(id => {
+      const el = document.getElementById(id);
+      el.innerText = '✅ ' + el.innerText.substring(2);
+      el.classList.add('verified');
+    });
+
+    // Populate the Simulation Analytics Block content
+    document.getElementById('verdict-text').innerText = "The entity labeled 'http://secure-login-rbeh.net/auth' presents definitive structural telemetry signatures indicative of phishing frameworks: missing SSL/TLS transport protocol, lookalike sub-domain redirection architecture, manipulation tactics exploiting immediate timeline urgency, and unmapped database submission fields. Conversely, the official instance incorporates authentic root registration assets, multi-factor credential handshake mechanisms, and explicit regulatory compliance validation anchors.";
+    document.getElementById('verdict-block').style.display = 'block';
+    document.getElementById('verdict-block').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function resetSim() {
+    document.getElementById('fake-pane').classList.remove('highlight-danger');
+    document.getElementById('real-pane').classList.remove('highlight-success');
+    document.getElementById('badge-fake-verdict').style.display = 'none';
+    document.getElementById('badge-real-verdict').style.display = 'none';
+    document.getElementById('verdict-block').style.display = 'none';
+    
+    const checklistItems = [
+      { id: 'chk-1', text: 'Check HTTPS Protocol' },
+      { id: 'chk-2', text: 'Verify Domain Name' },
+      { id: 'chk-3', text: 'Scan for Typos/Spelling Errors' },
+      { id: 'chk-4', text: 'Avoid Urgency Messages' },
+      { id: 'chk-5', text: 'Check Certificate Authority' },
+      { id: 'chk-6', text: 'Verify Crisp Branding Assets' },
+      { id: 'chk-7', text: 'Avoid Suspicious Forms' },
+      { id: 'chk-8', text: 'Confirm 2FA Availability' }
+    ];
+
+    checklistItems.forEach(item => {
+      const el = document.getElementById(item.id);
+      el.innerText = '⬜ ' + item.text;
+      el.className = 'checklist-item';
+    });
+
+    document.getElementById('info-title').innerText = "Interactive Inspector: ";
+    document.getElementById('info-body').innerText = "Click any dashed or highlighted metadata parameter inside the web interfaces to inspect its defensive score.";
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secure Local File Encryption & Decryption | RBEH Multiverse</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/light.css" id="light-theme">
+<link rel="stylesheet" href="css/dark.css" id="dark-theme" disabled>
+<style>
+  .file-crypt-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  @media(min-width: 992px) {
+    .file-crypt-container {
+      grid-template-columns: 1.2fr 0.8fr;
+    }
+  }
+  /* Drag and drop sandbox zone */
+  .drop-zone-premium {
+    border: 2px dashed rgba(232, 49, 47, 0.3);
+    border-radius: 12px;
+    padding: 30px 20px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.01);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  body[data-theme="dark"] .drop-zone-premium {
+    background: rgba(255, 255, 255, 0.01);
+    border-color: rgba(232, 49, 47, 0.2);
+  }
+  .drop-zone-premium.drag-over {
+    border-color: #e8312f;
+    background: rgba(232, 49, 47, 0.05);
+    transform: scale(0.99);
+  }
+  .key-group-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .pass-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .pass-input {
+    width: 100%;
+    padding: 12px 40px 12px 14px;
+    background: rgba(0,0,0,0.02);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 8px;
+    font-size: 14px;
+    color: inherit;
+    outline: none;
+  }
+  body[data-theme="dark"] .pass-input {
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(255,255,255,0.08);
+  }
+  .pass-input:focus { border-color: #e8312f; }
+  .eye-toggle-span {
+    position: absolute;
+    right: 12px;
+    cursor: pointer;
+    opacity: 0.6;
+    user-select: none;
+  }
+  .progress-container-track {
+    background: rgba(0,0,0,0.05);
+    border-radius: 4px;
+    height: 6px;
+    width: 100%;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  body[data-theme="dark"] .progress-container-track { background: rgba(255,255,255,0.05); }
+  .progress-bar-fill-node {
+    width: 0%;
+    height: 100%;
+    background: #e8312f;
+    transition: width 0.1s linear;
+  }
+  .history-scroll-panel {
+    max-height: 260px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .history-item-row {
+    padding: 10px 12px;
+    background: rgba(0,0,0,0.02);
+    border: 1px solid rgba(0,0,0,0.04);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+  }
+  body[data-theme="dark"] .history-item-row {
+    background: rgba(255,255,255,0.02);
+    border-color: rgba(255,255,255,0.04);
+  }
+  .badge-status-prm {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="tools.html" class="active">Tools</a>
+    <a href="cyberlab.html">Cyber Lab</a>
+  </nav>
+  <div class="nav-actions">
+    <button class="icon-btn" id="theme-toggle">⚙️</button>
+  </div>
+</header>
+
+<main class="file-crypt-container">
+  <section class="execution-workspace">
+    <div style="margin-bottom: 24px;">
+      <span style="color: #e8312f; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-bottom: 4px;">Zero-Server Privacy Framework</span>
+      <h1 style="font-size: 32px; font-weight: 800; letter-spacing: -0.8px; margin: 0;">File Encryption & Decryption</h1>
+      <p style="opacity: 0.7; font-size: 15px; margin-top: 8px; line-height: 1.5;">Encrypt and decrypt files securely using modern browser cryptography. Your files never leave your device, ensuring complete privacy and security.</p>
+    </div>
+
+    <div class="terminal" style="padding: 24px; border-radius: 16px;">
+      
+      <div id="drop-zone" class="drop-zone-premium">
+        <input type="file" id="file-hidden-input" style="display: none;">
+        <div id="drop-zone-prompt-view">
+          <span style="font-size: 36px; display: block; margin-bottom: 10px;">📂</span>
+          <span style="font-weight: 700; font-size: 15px; display: block; margin-bottom: 4px;">Drag & Drop target file here or click to browser pipeline</span>
+          <span style="opacity: 0.5; font-size: 12px;">Supports PDF, DOCX, TXT, ZIP, Images, Audio, Video (Max Local Allocations Apply)</span>
+        </div>
+        <div id="drop-zone-meta-view" style="display: none; text-align: left; background: rgba(0,0,0,0.02); padding: 12px; border-radius: 8px;">
+          <div style="font-weight: 700; font-size: 14px; word-break: break-all; margin-bottom: 6px;" id="meta-file-name">Target: filename.txt</div>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 12px; opacity: 0.7;">
+            <div>Size: <span id="meta-file-size">0 Bytes</span></div>
+            <div>MIME Type: <span id="meta-file-type">Unknown</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="file-sub-actions" style="display: none; gap: 10px; margin-top: 12px; flex-wrap: wrap;">
+        <button id="btn-select-another" class="btn btn-primary" style="padding: 8px 14px; font-size: 12px; background: rgba(0,0,0,0.04); color: inherit;">📂 Select Another File</button>
+        <button id="btn-remove-file" class="btn btn-primary" style="padding: 8px 14px; font-size: 12px; background: rgba(232,49,47,0.06); color: #e8312f;">🗑 Remove File</button>
+      </div>
+
+      <div class="key-group-grid">
+        <div>
+          <label style="font-size: 11px; font-weight: 700; opacity: 0.6; text-transform: uppercase; display: block; margin-bottom: 6px;">Secret Encryption / Decryption Key</label>
+          <div class="pass-wrapper">
+            <input type="password" id="secret-key-main" class="pass-input" placeholder="Enter Secret Encryption Key">
+            <span id="toggle-key-main" class="eye-toggle-span">👁️</span>
+          </div>
+        </div>
+        <div>
+          <label style="font-size: 11px; font-weight: 700; opacity: 0.6; text-transform: uppercase; display: block; margin-bottom: 6px;">Confirm Security Key (Encryption Only)</label>
+          <div class="pass-wrapper">
+            <input type="password" id="secret-key-confirm" class="pass-input" placeholder="Confirm Encryption Key">
+            <span id="toggle-key-confirm" class="eye-toggle-span">👁️</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <label style="font-size: 11px; font-weight: 700; opacity: 0.6; text-transform: uppercase; display: block; margin-bottom: 6px;">Cryptographic Symmetric Algorithm Selection</label>
+        <select id="algo-selection-dropdown" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; color: inherit; font-size: 13.5px; outline: none; cursor: pointer;">
+          <option value="AES-GCM" selected>AES-GCM (Authenticated High-Throughput Stream Standard)</option>
+          <option value="AES-CBC">AES-CBC (Cipher Block Chaining - Requires Native Vector Buffers)</option>
+        </select>
+        <div id="algo-short-explainer" style="font-size: 11.5px; opacity: 0.6; margin-top: 6px; padding-left: 4px;">
+          AES-GCM authenticates payload structural matrices integrity blocks during reverse pipeline mapping loops execution.
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
+        <button id="btn-trigger-encrypt" class="btn btn-primary" style="padding: 12px 24px; font-weight: 700;">🔒 Encrypt File</button>
+        <button id="btn-trigger-decrypt" class="btn btn-primary" style="padding: 12px 24px; font-weight: 700; background: rgba(0,0,0,0.04); color: inherit;">🔓 Decrypt File</button>
+      </div>
+
+      <div id="processing-stage-node" style="display: none; padding: 16px; background: rgba(0,0,0,0.01); border: 1px solid rgba(0,0,0,0.04); border-radius: 8px; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600;">
+          <span id="progress-status-string-lbl">Preparing Encryption Engine Pipeline Threads...</span>
+          <span id="progress-percent-val-lbl">0%</span>
+        </div>
+        <div class="progress-container-track">
+          <div id="progress-bar-fill" class="progress-bar-fill-node"></div>
+        </div>
+      </div>
+
+      <div id="error-boundary-card" style="display: none; padding: 14px; background: rgba(232,49,47,0.06); border-left: 4px solid #e8312f; border-radius: 0 8px 8px 0; font-size: 13px; color: #e8312f; font-weight: 600; margin-bottom: 20px;">
+        Error message pipeline output channel template layout frame.
+      </div>
+
+      <div id="output-result-matrix-panel" style="display: none; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 20px; margin-top: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span class="badge-status-prm" id="status-badge-lbl" style="background: rgba(31,167,90,0.1); color: #1fa75a;">🟢 Encryption Complete</span>
+          <button id="btn-clear-result" style="font-size: 12px; opacity: 0.5; cursor: pointer; background: transparent; border: none; font-weight: 700;">Clear Result</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px;" class="terminal-body">
+          <div style="font-size: 12px; line-height: 1.5;">
+            <div style="opacity:0.5; font-weight:700; text-transform:uppercase; font-size:10px;">Processed File Profile</div>
+            <div id="out-file-name" style="font-weight:700; word-break:break-all;">encrypted_data.enc</div>
+          </div>
+          <div style="font-size: 12px; line-height: 1.5;">
+            <div style="opacity:0.5; font-weight:700; text-transform:uppercase; font-size:10px;">Transformation Delta Sizes</div>
+            <div>In: <span id="out-size-orig">0 KB</span> | Out: <span id="out-size-mod">0 KB</span></div>
+          </div>
+          <div style="font-size: 12px; line-height: 1.5;">
+            <div style="opacity:0.5; font-weight:700; text-transform:uppercase; font-size:10px;">Primitive / Metric Execution</div>
+            <div><span id="out-algo-used">AES-GCM</span> (<span id="out-exec-time">0 ms</span>)</div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+          <a id="lnk-download-trigger" class="btn btn-primary" style="padding: 10px 18px; font-size: 13px; font-weight: 700; text-decoration: none; text-align: center;">⬇ Download Processed File</a>
+          <button id="btn-copy-meta-info" class="btn btn-primary" style="padding: 10px 18px; font-size: 13px; background: rgba(0,0,0,0.03); color: inherit;">📋 Copy File Information</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="telemetry-history-panel">
+    <div class="terminal" style="padding: 24px; border-radius: 16px; margin-bottom: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <span style="font-size: 12px; font-weight: 700; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.5px;">📋 Local Sandbox Log History (Last 10)</span>
+        <button id="btn-flush-history" style="font-size: 11px; font-weight: 700; color: #e8312f; background: transparent; border: none; cursor: pointer; text-transform: uppercase;">Flush All</button>
+      </div>
+      <div id="history-rows-wrapper-node" class="history-scroll-panel">
+        <div style="font-size: 12px; opacity: 0.5; padding: 20px 0; text-align: center;">No file arrays mapped inside browser transaction boundaries.</div>
+      </div>
+    </div>
+
+    <div class="terminal" style="padding: 20px; border-radius: 16px; border-left: 4px solid #e8312f;">
+      <span style="font-size: 11px; font-weight: 700; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 8px;">🛡️ Data Boundary Verification Constraints</span>
+      <ul style="margin-left: 16px; font-size: 12.5px; line-height: 1.6; opacity: 0.8; display: flex; flex-direction: column; gap: 5px;">
+        <li><strong>Never share your file decryption keys.</strong> Primitives do not contain password recovery recovery modules.</li>
+        <li><strong>Keep pristine secondary backup tracks</strong> of high-priority file matrices before running custom verification pipelines.</li>
+        <li>Without matching string bits configuration states, encrypted binary chunks match absolute chaotic decay states (unrecoverable).</li>
+        <li>Large structural assets (e.g., HD video vectors) are processed in local memory limits; ensure browser allocations are sustained.</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer style="text-align: center; padding: 40px 24px; opacity: 0.5; font-size: 13px; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 80px;">
+  &copy; 2026 RBEH Multiverse Ecosystem. Hardware Sandboxed Stream Encryption Standard V2.
+</footer>
+
+<script src="js/theme.js"></script>
+<script src="js/script.js"></script>
+<script src="api/file-encryption.js"></script>
+</body>
+</html>

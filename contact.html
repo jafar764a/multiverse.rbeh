@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact & Project Info | RBEH Multiverse</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/light.css" id="light-theme">
+<link rel="stylesheet" href="css/dark.css" id="dark-theme" disabled>
+<style>
+  /* Local layout optimization engines matching the platform structure without rewriting style.css */
+  .contact-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(45%, 1fr));
+    gap: 32px;
+    margin-bottom: 48px;
+  }
+  .info-list-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  body[data-theme="dark"] .info-list-item {
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+  }
+  .info-label {
+    opacity: 0.6;
+    font-weight: 500;
+  }
+  .info-value {
+    font-weight: 600;
+    text-align: right;
+  }
+  .contact-channels-headline {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 48px 0 24px;
+    letter-spacing: -0.02em;
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+        <circle cx="12" cy="11" r="1.6" fill="#fff"/>
+        <rect x="11.2" y="11" width="1.6" height="3" fill="#fff"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html" class="active">Contact</a>
+  </nav>
+
+  <div class="nav-actions">
+    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">
+      <svg id="theme-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+    </button>
+    <div class="menu-wrap">
+      <button class="menu-btn" id="menu-btn" aria-haspopup="true" aria-expanded="false">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <span>Menu</span>
+      </button>
+      <div class="menu-dropdown" id="menu-dropdown">
+        <a href="tools.html"><span class="menu-icon">🛠</span> Tools</a>
+        <a href="course.html"><span class="menu-icon">📚</span> Course</a>
+        <a href="cyberlab.html"><span class="menu-icon">🧪</span> Cyber Lab</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="hero" style="padding-bottom: 20px;">
+  <section class="hero-left">
+    <h1 class="hero-title">
+      Contact &<br>
+      <span class="accent">Project Info.</span>
+    </h1>
+    <p class="hero-desc">
+      Get in touch with the creator, explore project details, and connect through the official RBEH channels.
+    </p>
+    <div class="hero-buttons">
+      <button class="btn btn-primary" onclick="document.getElementById('project-cards-section').scrollIntoView({ behavior: 'smooth' });">
+        Contact RBEH
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <polyline points="19 12 12 19 5 12"></polyline>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <section class="hero-center">
+    <div class="shield-wrap">
+      <div class="shield-glow" style="background: radial-gradient(circle, rgba(232,49,47,0.18) 0%, transparent 70%);"></div>
+      <svg class="shield-svg" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="contactCoreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ff6b6b"/>
+            <stop offset="100%" stop-color="#d61c1c"/>
+          </linearGradient>
+        </defs>
+        <g transform="translate(10, 15)">
+          <path d="M100 20 L160 38 V110 C160 148 100 180 100 180 C100 180 40 148 40 110 V38 Z" fill="url(#contactCoreGrad)" stroke="#ff4d4d" stroke-width="1"/>
+          <path d="M65 85 L90 110 L140 60" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="25" cy="50" r="2" fill="currentColor" opacity="0.4"/>
+          <circle cx="175" cy="130" r="3" fill="#ff4d4d"/>
+          <line x1="150" y1="140" x2="175" y2="130" stroke="currentColor" stroke-width="0.5" opacity="0.3"/>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <section class="hero-right">
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="terminal-title">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4 17 10 11 4 5"></polyline>
+            <line x1="12" y1="19" x2="20" y2="19"></line>
+          </svg>
+          <span>user@rbehContact: ~</span>
+        </div>
+        <div class="terminal-status">
+          <span class="dot" style="background-color: #22c55e;"></span> System Ready
+        </div>
+      </div>
+      <div class="terminal-body" id="terminal-body">
+        <p><span class="prompt">user@rbeh:~$</span> lookup --developer</p>
+        <p class="output" style="color: #ff4d4d;">Identity: Ansari Mohammad Ahesan Ahmed</p>
+        <p class="output">Alias: Jafar (RBEH)</p>
+        <p><span class="prompt">user@rbeh:~$</span> platform --verify</p>
+        <p class="output">Status: GTU | IBM SkillsBuild Internship</p>
+        <p class="output">Deployment Target: production-active</p>
+        <p class="prompt-line"><span class="prompt">user@rbeh:~$</span> <span class="cursor"></span></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section id="project-cards-section" style="padding: 40px 48px 100px; max-width: 1400px; margin: 0 auto;">
+  
+  <div class="contact-info-grid">
+    <div class="tool-action-card" style="--accent-glow: rgba(232,49,47,0.15);">
+      <div class="tool-top-content" style="width: 100%;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+          <div class="stat-icon tools" style="margin: 0;">🆔</div>
+          <h3 style="font-size: 20px; font-weight: 700; margin: 0;">Personal Information</h3>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+          <div class="info-list-item"><span class="info-label">Name</span><span class="info-value">Ansari Mohammad Ahesan Ahmed (Jafar)</span></div>
+          <div class="info-list-item"><span class="info-label">Project Name</span><span class="info-value">RBEH Multiverse</span></div>
+          <div class="info-list-item"><span class="info-label">Institute</span><span class="info-value">R. C. Technical Institute</span></div>
+          <div class="info-list-item"><span class="info-label">Course</span><span class="info-value">Diploma in Information Technology</span></div>
+          <div class="info-list-item"><span class="info-label">University</span><span class="info-value">Gujarat Technological University (GTU)</span></div>
+          <div class="info-list-item"><span class="info-label">Academic Year</span><span class="info-value">2026</span></div>
+          <div class="info-list-item" style="border: none;"><span class="info-label">Enrollment Number</span><span class="info-value">246400316002</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-action-card" style="--accent-glow: rgba(232,49,47,0.15); display: flex; flex-direction: column; justify-content: space-between;">
+      <div class="tool-top-content">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+          <div class="stat-icon tools" style="margin: 0;">🛡️</div>
+          <h3 style="font-size: 20px; font-weight: 700; margin: 0;">Who is RBEH?</h3>
+        </div>
+        <p style="font-size: 14px; line-height: 1.6; opacity: 0.85; margin-bottom: 20px;">
+          RBEH is the online identity of Ansari Mohammad Ahesan Ahmed (Jafar), a Diploma in Information Technology student with a strong interest in cyber security, web development, and modern technologies. RBEH Multiverse was created with the vision of making cyber security education more practical, interactive, and accessible for everyone. By combining learning resources, security tools, and realistic cyber demonstrations into one platform, the project encourages ethical learning, continuous skill development, and responsible use of technology.
+        </p>
+      </div>
+      <button class="btn btn-primary" onclick="window.location.href='about.html'" style="align-self: flex-start; width: auto; padding: 10px 20px; font-size: 14px;">
+        More About RBEH <span>&rarr;</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="tool-action-card" style="--accent-glow: rgba(232,49,47,0.15); width: 100%; margin-bottom: 48px;">
+    <div class="tool-top-content">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+        <div class="stat-icon tools" style="margin: 0;">📜</div>
+        <h3 style="font-size: 20px; font-weight: 700; margin: 0;">Internship Project Declaration</h3>
+      </div>
+      <p style="font-size: 14px; line-height: 1.6; opacity: 0.85;">
+        RBEH Multiverse was developed as part of the 15-Day Cyber Security Internship under the GTU | IBM SkillsBuild Skill-Based Training Program 2026. Throughout this internship, the project was designed and developed by applying practical cyber security concepts, secure web development practices, and modern front-end technologies. The objective of this project is to provide an interactive learning platform that combines cyber security tools, educational courses, and safe demonstration labs into a single professional web application while enhancing practical knowledge and real-world learning experience.
+      </p>
+    </div>
+  </div>
+
+  <h2 class="contact-channels-headline">Connect with RBEH</h2>
+  <div class="tools-grid-layout" style="margin-top: 0;">
+    
+    <div class="tool-action-card" onclick="window.location.href='mailto:ansarirbeh@gmail.com?subject=RBEH%20Multiverse%20Support&body=Hello%20RBEH%2C%0A%0AI%20would%20like%20to%20contact%20you%20regarding...'" style="cursor: pointer; --accent-glow: rgba(232,49,47,0.25);">
+      <div class="tool-top-content">
+        <div class="stat-icon tools">📧</div>
+        <div class="tool-text-group">
+          <h3>Email Communication</h3>
+          <p>Drop an email query regarding structural platform extensions or code implementations.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn">Send Email <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" onclick="window.location.href='https://wa.me/919998742751'" style="cursor: pointer; --accent-glow: rgba(34,197,94,0.25);">
+      <div class="tool-top-content">
+        <div class="stat-icon course" style="background: rgba(34,197,94,0.1); color: #22c55e;">💬</div>
+        <div class="tool-text-group">
+          <h3>WhatsApp Support</h3>
+          <p>Initiate a real-time cellular discussion channel for immediate technical updates.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn" style="color: #22c55e;">Open WhatsApp <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" onclick="window.open('https://t.me/crsec', '_blank')" style="cursor: pointer; --accent-glow: rgba(59,130,246,0.25);">
+      <div class="tool-top-content">
+        <div class="stat-icon lab" style="background: rgba(59,130,246,0.1); color: #3b82f6;">✈️</div>
+        <div class="tool-text-group">
+          <h3>Telegram DM</h3>
+          <p>Connect with the developer profile account instantly inside secure chat channels.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn" style="color: #3b82f6;">@crsec <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" onclick="window.open('https://t.me/ufrin', '_blank')" style="cursor: pointer; --accent-glow: rgba(168,85,247,0.25);">
+      <div class="tool-top-content">
+        <div class="stat-icon tools" style="background: rgba(168,85,247,0.1); color: #a855f7;">📢</div>
+        <div class="tool-text-group">
+          <h3>Official Telegram Channel</h3>
+          <p>Subscribe to the main platform broadcasting handle for general resource alerts.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn" style="color: #a855f7;">Official Channel <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" onclick="window.open('https://t.me/owner_of_this_all', '_blank')" style="cursor: pointer; --accent-glow: rgba(249,115,22,0.25);">
+      <div class="tool-top-content">
+        <div class="stat-icon lab" style="background: rgba(249,115,22,0.1); color: #f97316;">🕵️</div>
+        <div class="tool-text-group">
+          <h3>Cyber Security Channel</h3>
+          <p>Access the curated threat payload analysis ecosystem feed updates directly.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn" style="color: #f97316;">Cyber Security Channel <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" onclick="window.location.href='feedback.html'" style="cursor: pointer; --accent-glow: rgba(6,182,212,0.25);">
+      <div class="tool-top-content">
+        <div class="stat-icon course" style="background: rgba(6,182,212,0.1); color: #06b6d4;">📝</div>
+        <div class="tool-text-group">
+          <h3>Feedback Form</h3>
+          <p>Submit bug responses or security enhancement ideas inside the structured panel form.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn" style="color: #06b6d4;">Open Feedback Form <span>&rarr;</span></button>
+    </div>
+
+  </div>
+</section>
+
+<script src="js/theme.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

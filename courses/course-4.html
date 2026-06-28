@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Password Security | RBEH Multiverse</title>
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/light.css" id="light-theme">
+<link rel="stylesheet" href="../css/dark.css" id="dark-theme" disabled>
+<style>
+  /* --- Unified Context Extensions for Lesson Modules --- */
+  .course-layout-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  
+  @media(min-width: 992px) {
+    .course-layout-container {
+      grid-template-columns: 280px 1fr;
+    }
+  }
+
+  /* --- Premium Floating Scroll Indicator Bar --- */
+  .scroll-tracker-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+  }
+  body[data-theme="dark"] .scroll-tracker-container {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .scroll-tracker-fill {
+    height: 100%;
+    width: 0%;
+    background: #e8312f;
+    box-shadow: 0 0 10px rgba(232, 49, 47, 0.6);
+    transition: width 0.1s ease-out;
+  }
+  .scroll-percentage-badge {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 10px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #e8312f;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  body[data-theme="dark"] .scroll-percentage-badge {
+    background: rgba(20, 20, 25, 0.85);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  /* --- Sticky Side Course Matrix Control Panel --- */
+  .matrix-sidebar {
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+  }
+  .matrix-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.01);
+  }
+  body[data-theme="dark"] .matrix-card {
+    background: rgba(20, 20, 25, 0.6);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+  .matrix-title {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.75px;
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+  .matrix-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .matrix-node {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.4;
+    transition: opacity 0.25s ease;
+  }
+  .matrix-node.completed {
+    opacity: 0.7;
+    color: #1fa75a;
+  }
+  .matrix-node.active {
+    opacity: 1;
+    font-weight: 700;
+  }
+  .matrix-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .matrix-node.completed .matrix-circle {
+    background: rgba(31, 167, 90, 0.1);
+    border-color: #1fa75a;
+  }
+  .matrix-node.active .matrix-circle {
+    background: #e8312f;
+    border-color: #e8312f;
+    color: #fff !important;
+    box-shadow: 0 0 12px rgba(232, 49, 47, 0.4);
+  }
+  body[data-theme="dark"] .matrix-node.active .matrix-circle {
+    background: #ff4d4d;
+    border-color: #ff4d4d;
+  }
+
+  /* --- Premium Component Content Architecture Cards --- */
+  .lesson-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.01);
+  }
+  body[data-theme="dark"] .lesson-card {
+    background: rgba(20, 20, 25, 0.5);
+    border-color: rgba(255, 255, 255, 0.04);
+  }
+  .lesson-card h2, .lesson-card h3 {
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .lesson-card p {
+    font-size: 15px;
+    line-height: 1.65;
+    opacity: 0.85;
+    margin-bottom: 12px;
+  }
+  .lesson-card p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Structural Sub-Components Blocks */
+  .premium-badge-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .meta-badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 30px;
+    background: rgba(0, 0, 0, 0.04);
+  }
+  body[data-theme="dark"] .meta-badge {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  
+  .quote-box {
+    background: rgba(232, 49, 47, 0.03);
+    border-left: 4px solid #e8312f;
+    padding: 18px;
+    border-radius: 0 14px 14px 0;
+    margin: 16px 0;
+  }
+  body[data-theme="dark"] .quote-box {
+    background: rgba(255, 77, 77, 0.03);
+    border-left-color: #ff4d4d;
+  }
+
+  .comparison-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 18px 0;
+  }
+  .comparison-item {
+    border-radius: 12px;
+    padding: 20px;
+    font-size: 14px;
+  }
+  .comparison-item.bad {
+    background: rgba(232, 49, 47, 0.04);
+    border: 1px solid rgba(232, 49, 47, 0.1);
+  }
+  .comparison-item.good {
+    background: rgba(31, 167, 90, 0.04);
+    border: 1px solid rgba(31, 167, 90, 0.1);
+  }
+
+  .warning-accent-box {
+    background: rgba(232, 49, 47, 0.05);
+    border: 1px solid rgba(232, 49, 47, 0.12);
+    border-radius: 12px;
+    padding: 18px;
+    margin: 16px 0;
+  }
+  .success-accent-box {
+    background: rgba(31, 167, 90, 0.06);
+    border: 1px solid rgba(31, 167, 90, 0.12);
+    border-radius: 12px;
+    padding: 18px;
+    margin: 16px 0;
+  }
+
+  /* Timeline Elements */
+  .timeline-wrapper {
+    position: relative;
+    padding-left: 24px;
+    border-left: 2px solid rgba(0,0,0,0.06);
+    margin: 20px 0 10px 8px;
+  }
+  body[data-theme="dark"] .timeline-wrapper {
+    border-left-color: rgba(255,255,255,0.06);
+  }
+  .timeline-step {
+    position: relative;
+    margin-bottom: 24px;
+  }
+  .timeline-step:last-child {
+    margin-bottom: 0;
+  }
+  .timeline-step::before {
+    content: '';
+    position: absolute;
+    left: -31px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e8312f;
+    border: 2px solid #fff;
+  }
+  body[data-theme="dark"] .timeline-step::before {
+    border-color: #09090b;
+    background: #ff4d4d;
+  }
+
+  /* Quiz Node Components */
+  .mcq-node-block {
+    border-top: 1px solid rgba(0,0,0,0.06);
+    padding-top: 20px;
+    margin-top: 20px;
+  }
+  body[data-theme="dark"] .mcq-node-block {
+    border-top-color: rgba(255,255,255,0.06);
+  }
+  .mcq-option-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 14px;
+    background: rgba(0,0,0,0.01);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 10px;
+    margin-top: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  body[data-theme="dark"] .mcq-option-btn {
+    background: rgba(255,255,255,0.01);
+    border-color: rgba(255,255,255,0.06);
+  }
+  .mcq-option-btn:hover {
+    background: rgba(232, 49, 47, 0.05);
+    border-color: rgba(232, 49, 47, 0.2);
+  }
+  body[data-theme="dark"] .mcq-option-btn:hover {
+    background: rgba(255, 77, 77, 0.05);
+    border-color: rgba(255, 77, 77, 0.2);
+  }
+
+  .nav-btn-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<div class="scroll-tracker-container"><div class="scroll-tracker-fill" id="scrollBar"></div></div>
+<div class="scroll-percentage-badge"><span>⚡</span> <span id="scrollPct">0%</span> Completed</div>
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='../index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+        <circle cx="12" cy="11" r="1.6" fill="#fff"/>
+        <rect x="11.2" y="11" width="1.6" height="3" fill="#fff"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+
+  <nav class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="../about.html">About</a>
+    <a href="../contact.html">Contact</a>
+  </nav>
+
+  <div class="nav-actions">
+    <button id="theme-toggle" class="icon-btn">
+      <svg id="theme-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+      </svg>
+    </button>
+    <div class="menu-wrap">
+      <button class="menu-btn" id="menu-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+        </svg>
+        <span>Menu</span>
+      </button>
+      <div class="menu-dropdown" id="menu-dropdown">
+        <a href="../tools.html"><span class="menu-icon">🛠</span> Tools</a>
+        <a href="../course.html" class="active"><span class="menu-icon">📚</span> Course</a>
+        <a href="../cyberlab.html"><span class="menu-icon">🧪</span> Cyber Lab</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="course-layout-container">
+  
+  <aside class="matrix-sidebar">
+    <div class="matrix-card">
+      <div class="matrix-title">Course Progress</div>
+      <div class="matrix-grid">
+        <div class="matrix-node completed"><div class="matrix-circle">1</div> Introduction to Cyber Security</div>
+        <div class="matrix-node completed"><div class="matrix-circle">2</div> Types of Cyber Attacks</div>
+        <div class="matrix-node completed"><div class="matrix-circle">3</div> Phishing Awareness</div>
+        <div class="matrix-node active" style="color:#e8312f;"><div class="matrix-circle">4</div> Password Security</div>
+        <div class="matrix-node"><div class="matrix-circle">5</div> Encryption Basics</div>
+        <div class="matrix-node"><div class="matrix-circle">6</div> Safe Browsing Practices</div>
+        <div class="matrix-node"><div class="matrix-circle">7</div> QR Code Scams</div>
+        <div class="matrix-node"><div class="matrix-circle">8</div> Website Security Basics</div>
+        <div class="matrix-node"><div class="matrix-circle">9</div> Social Engineering Attacks</div>
+        <div class="matrix-node"><div class="matrix-circle">10</div> Cyber Security Quiz</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="content-stream-workspace">
+
+    <div class="lesson-card" style="border-color: rgba(232, 49, 47, 0.15); background: linear-gradient(to bottom right, rgba(255,255,255,0.6), rgba(232,49,47,0.02));">
+      <h1 class="hero-title" style="font-size: 34px; line-height: 1.25; margin-bottom: 8px;">Password <span class="accent">Security</span></h1>
+      <p style="font-size:16px; opacity:0.85;">Learn how to create strong passwords, protect online accounts, understand password attacks, and use modern authentication methods to keep your digital identity secure.</p>
+      <div class="premium-badge-strip">
+        <span class="meta-badge" style="color:#e8312f; background: rgba(232,49,47,0.06); font-weight:700;">Course 4 of 10</span>
+        <span class="meta-badge">📋 Difficulty: Beginner</span>
+        <span class="meta-badge">⏱️ Reading Time: 8–10 Minutes</span>
+        <span class="meta-badge">🏷️ Category: Account & Password Security</span>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🎓</span> Section 1: Core Definitions & Academic Concepts</h2>
+      <p>In computer networks and engineering audits, verifying access origins depends completely on initial security structures.</p>
+      
+      <div class="quote-box">
+        <strong>GTU Exam-Friendly Definition:</strong>
+        <p style="margin-top: 6px; font-style: normal; font-size: 14.5px;"><em>"Password Security is defined as a collection of programmatic configurations, algorithmic validation guidelines, and deployment practices designed to protect secret credential strings from unauthorized extraction, interception, or mechanical guessing exploits, thereby preserving confidentiality within an identity management framework."</em></p>
+      </div>
+      
+      <p>Passwords serve as the primary defensive shield separating localized client terminals from sensitive server databases.</p>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>⚔️</span> Section 2: How Adversaries Crack Credentials</h2>
+      <p>To build effective defenses, we must understand how attackers exploit weak entry points. Automated workflows generally use three main methods:</p>
+      
+      <div class="timeline-wrapper">
+        <div class="timeline-step">
+          <strong>1. Brute-Force Attacks</strong>
+          <p style="font-size:14px; opacity:0.8; margin-top:4px;">Automated terminal scripts cycle through every mathematical arrangement of keys sequentially (e.g., aaaa, aaab, aaac) until entry is achieved.</p>
+        </div>
+        <div class="timeline-step">
+          <strong>2. Dictionary Exploits</strong>
+          <p style="font-size:14px; opacity:0.8; margin-top:4px;">Instead of sequential guessing, scripts upload massive databases of commonly used terms, geographic locations, and leaked text combinations to guess passwords rapidly.</p>
+        </div>
+        <div class="timeline-step">
+          <strong>3. Credential Stuffing</strong>
+          <p style="font-size:14px; opacity:0.8; margin-top:4px;">Because users often reuse passwords across sites, attackers take automated data lists leaked from old corporate breaches and try them against completely separate platforms.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🧩</span> Section 3: Creating Uncrackable Structures</h2>
+      <p>A strong password strategy focuses on increasing complexity and length to defeat automated parsing scripts.</p>
+      
+      <div class="comparison-container">
+        <div class="comparison-item bad">
+          <strong style="color:#e8312f;">❌ Weak Structure Pattern</strong>
+          <p style="margin-top: 6px; font-family: monospace; font-size:13px;">Rahul@1998</p>
+          <p style="font-size:12px; opacity:0.75; margin-top:4px;">Predictable name capitalization, standard special character location, and guessable birth year sequences.</p>
+        </div>
+        <div class="comparison-item good">
+          <strong style="color:#1fa75a;">🟢 High Entropy Passphrase</strong>
+          <p style="margin-top: 6px; font-family: monospace; font-size:13px;">Blue#Laptop$Coffee%Run26</p>
+          <p style="font-size:12px; opacity:0.75; margin-top:4px;">Combining four unrelated dictionary items with distinct tracking symbols raises the overall password complexity dramatically.</p>
+        </div>
+      </div>
+
+      <div class="success-accent-box">
+        <strong style="color:#1fa75a;">💡 Easy Trick to Remember: The "Room-Object" Technique</strong>
+        <p style="font-size:14px; margin-top: 4px;">Look around any room. Pick one stationary structure, one object on your left, and an action, then join them with special characters: <span class="accent" style="font-family:monospace; font-weight:700;">Wall&Paper#Spinning!88</span>. This creates a secure, highly random passphrase that remains easy for you to remember.</p>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🛡️</span> Section 4: Upgrading to Multi-Factor Authentication</h2>
+      <p>Even a strong password can fail if it is caught by local keyboard tracking malware or a phishing link. Because of this, identity systems rely on multi-layered defenses.</p>
+      
+      <div class="warning-accent-box">
+        <strong style="color:#e8312f;">Critical Security Vulnerability:</strong>
+        <p style="font-size:14px; margin-top: 4px;">Relying purely on a standard single-factor password leaves systems exposed. If a password is stolen, your entire profile is compromised instantly.</p>
+      </div>
+
+      <p><strong>Multi-Factor Authentication (MFA)</strong> requires verification across three key pillars:</p>
+      <ul style="margin-left: 20px; font-size: 14.5px; opacity: 0.85; display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
+        <li><strong>Something You Know:</strong> Your primary master passphrase string.</li>
+        <li><strong>Something You Have:</strong> A dynamic authentication token app, hardware key, or mobile device.</li>
+        <li><strong>Something You Are:</strong> Biometric tracking such as fingerprint profiles or facial structure mapping.</li>
+      </ul>
+    </div>
+
+    <div class="lesson-card" style="border-color: rgba(232,49,47,0.12); background: rgba(232,49,47,0.005);">
+      <h2 style="font-size:20px; color:#e8312f;">🎯 Deep Dive Insights</h2>
+      
+      <p style="margin-top:12px;"><strong>✅ Learning Objectives:</strong> Understand password strength engineering, identify common brute-force methods, use dedicated credential storage apps, and deploy multi-factor validation tools.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Key Highlights:</strong> Password length protects your account better against brute-force guessing software than complex character swapping rules alone.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Quick Facts:</strong> Attackers use specialized graphics processing cards to run billions of hash calculations every second when attacking password databases offline.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Did You Know?:</strong> Changing passwords constantly on a strict schedule can actually cause users to create weaker, more predictable variations of their old passwords.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Best Security Practices:</strong> Use long passphrases, run a standalone password manager, turn on biometric or app-based multi-factor login checks, and never reuse credentials across different websites.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Summary:</strong> Keeping accounts secure means moving beyond weak, reused passwords. Using long passphrases and multi-factor validation creates a strong defense against automated attacks.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Key Takeaways:</strong> Hackers look for reused passwords. Protecting your accounts requires separating your login credentials and turning on multi-factor authentication across all major platforms.</p>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>📝</span> Mini Knowledge Check</h2>
+      <p style="opacity:0.7; font-size:13px;">Test your understanding of the concepts covered in this module before moving forward.</p>
+      
+      <div class="mcq-node-block">
+        <p><strong>1. Which password attack technique cycles sequentially through every single mathematical arrangement of characters?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">A) Brute-Force Attack</button>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">B) Credential Stuffing</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>2. Why is using long passphrases considered a better security approach than short, complex passwords?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) Long passphrases bypass web application firewalls automatically.</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) The increased character count drastically raises the time needed for automated tools to crack it.</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>3. What scenario describes a standard "Credential Stuffing" attack vector?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) Forcing a local server terminal to dump configuration keys using malware.</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) Using automated scripts to test stolen breach credentials across entirely unrelated websites.</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>4. Under the core pillars of Multi-Factor Authentication, a biometric fingerprint verification scan represents:</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">A) Something You Are</button>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">B) Something You Have</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>5. What is the safest way to handle login credentials for dozens of different web applications?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) Modify the ending digits of one base password for each platform.</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) Store distinct random passphrases inside an encrypted password manager.</button>
+      </div>
+    </div>
+
+    <div class="nav-btn-row">
+      <button class="btn btn-secondary" onclick="window.location.href='course-3.html'">&larr; Previous Lesson</button>
+      <button class="btn btn-secondary" onclick="window.location.href='../course.html'">Back To Courses</button>
+      <button class="btn btn-primary" onclick="window.location.href='course-5.html'">Next Lesson &rarr;</button>
+    </div>
+
+  </main>
+</div>
+
+<footer style="text-align: center; padding: 40px 24px; opacity: 0.5; font-size: 13px; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 80px;">
+  &copy; 2026 RBEH Multiverse Ecosystem. All Content Protection Bounds Applied.
+</footer>
+
+<script src="../js/theme.js"></script>
+<script src="../js/script.js"></script>
+<script>
+  // Dynamic Scroll Progress Calculation System
+  window.addEventListener('scroll', () => {
+    const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = Math.min(Math.max(Math.round((winScroll / height) * 100), 0), 100);
+    
+    document.getElementById('scrollBar').style.width = scrolled + '%';
+    document.getElementById('scrollPct').innerText = scrolled + '%';
+  });
+</script>
+</body>
+</html>

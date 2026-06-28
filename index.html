@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RBEH Multiverse | Learn. Practice. Protect.</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/light.css" id="light-theme">
+<link rel="stylesheet" href="css/dark.css" id="dark-theme" disabled>
+</head>
+<body data-theme="light">
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+        <circle cx="12" cy="11" r="1.6" fill="#fff"/>
+        <rect x="11.2" y="11" width="1.6" height="3" fill="#fff"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+
+  <nav class="nav-links">
+    <a href="index.html" class="active">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <div class="nav-actions">
+    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">
+      <svg id="theme-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+    </button>
+    <div class="menu-wrap">
+      <button class="menu-btn" id="menu-btn" aria-haspopup="true" aria-expanded="false">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <span>Menu</span>
+      </button>
+      <div class="menu-dropdown" id="menu-dropdown">
+        <a href="tools.html"><span class="menu-icon">🛠</span> Tools</a>
+        <a href="course.html"><span class="menu-icon">📚</span> Course</a>
+        <a href="cyberlab.html"><span class="menu-icon">🧪</span> Cyber Lab</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="hero">
+  <section class="hero-left">
+    <h1 class="hero-title">
+      Learn.<br>
+      Practice.<br>
+      <span class="accent">Protect.</span>
+    </h1>
+    <p class="hero-desc">
+      Hands-on labs, real-world scenarios and expert guidance to turn you into a cybersecurity professional.
+    </p>
+    
+    <div class="hero-buttons">
+      <button class="btn btn-primary" onclick="window.location.href='course.html'">
+        Start Learning
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+      <button class="btn btn-secondary" onclick="window.location.href='cyberlab.html'">
+        Explore Labs
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 3h6v2H9V3z"></path>
+          <path d="M6 7h12l-1 13H7L6 7z"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card" data-href="tools.html" style="cursor: pointer;">
+        <div class="stat-icon tools">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94L7.7 19.7a2.5 2.5 0 1 1-3.4-3.4L10.5 10a6 6 0 0 1 7.94-7.94L14.7 5.8a1 1 0 0 0-.9.5z"></path>
+          </svg>
+        </div>
+        <div class="stat-text">
+          <span class="stat-num">6</span>
+          <span class="stat-label">Tools</span>
+        </div>
+        <a href="tools.html" class="stat-link">View all <span>&rarr;</span></a>
+      </div>
+
+      <div class="stat-card" data-href="course.html" style="cursor: pointer;">
+        <div class="stat-icon course">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"></path>
+            <path d="M6 12v5c3.5 2 8.5 2 12 0v-5"></path>
+          </svg>
+        </div>
+        <div class="stat-text">
+          <span class="stat-num">10</span>
+          <span class="stat-label">Courses</span>
+        </div>
+        <a href="course.html" class="stat-link">View all <span>&rarr;</span></a>
+      </div>
+
+      <div class="stat-card" data-href="cyberlab.html" style="cursor: pointer;">
+        <div class="stat-icon lab">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 2h6"></path>
+            <path d="M10 2v7.5L4.5 19a1.5 1.5 0 0 0 1.3 2.3h12.4a1.5 1.5 0 0 0 1.3-2.3L14 9.5V2"></path>
+            <path d="M7.5 15h9"></path>
+          </svg>
+        </div>
+        <div class="stat-text">
+          <span class="stat-num">6</span>
+          <span class="stat-label">Cyber Labs</span>
+        </div>
+        <a href="cyberlab.html" class="stat-link">View all <span>&rarr;</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero-center">
+    <div class="shield-wrap">
+      <div class="shield-glow"></div>
+      <svg class="shield-svg" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="shieldGradLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ff6b6b"/>
+            <stop offset="55%" stop-color="#d61c1c"/>
+            <stop offset="100%" stop-color="#6e0000"/>
+          </linearGradient>
+          <linearGradient id="shieldGradRight" x1="100%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#3a0000"/>
+            <stop offset="55%" stop-color="#8a0000"/>
+            <stop offset="100%" stop-color="#3a0000"/>
+          </linearGradient>
+          <linearGradient id="shineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.55"/>
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+          </linearGradient>
+          <radialGradient id="keyholeGlow" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#ff8a8a"/>
+            <stop offset="100%" stop-color="#3a0000"/>
+          </radialGradient>
+        </defs>
+        <path d="M100 8 L100 212 C58 196 22 160 22 110 V38 Z" fill="url(#shieldGradLeft)" stroke="#ff9d9d" stroke-width="1.5"/>
+        <path d="M100 8 L100 212 C142 196 178 160 178 110 V38 Z" fill="url(#shieldGradRight)" stroke="#ff4d4d" stroke-width="1.5" stroke-opacity="0.5"/>
+        <path d="M100 6 L182 37 V110 C182 162 146 198 100 214 C54 198 18 162 18 110 V37 Z" fill="none" stroke="#ff4d4d" stroke-width="1.2" stroke-opacity="0.65"/>
+        <path d="M35 45 L70 30 L55 95 L30 100 Z" fill="url(#shineGrad)" opacity="0.5"/>
+        <circle cx="100" cy="98" r="17" fill="url(#keyholeGlow)"/>
+        <rect x="93" y="96" width="14" height="30" rx="3" fill="url(#keyholeGlow)"/>
+        <circle cx="100" cy="98" r="17" fill="none" stroke="#ffb3b3" stroke-width="1" stroke-opacity="0.6"/>
+      </svg>
+    </div>
+  </section>
+
+  <section class="hero-right">
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="terminal-title">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4 17 10 11 4 5"></polyline>
+            <line x1="12" y1="19" x2="20" y2="19"></line>
+          </svg>
+          <span>RBEH Multiverse</span>
+        </div>
+        <div class="terminal-status">
+          <span class="dot"></span> Connected
+        </div>
+      </div>
+      <div class="terminal-body" id="terminal-body">
+        <p><span class="prompt">user@byteshield:~$</span> whoami</p>
+        <p class="output">cyber_learner</p>
+        <p><span class="prompt">user@byteshield:~$</span> ls -la /skills</p>
+        <p class="output">&gt; networking</p>
+        <p class="output">&gt; web-security</p>
+        <p class="output">&gt; ethical-hacking</p>
+        <p class="output">&gt; bug-bounty</p>
+        <p class="output">&gt; pentesting</p>
+        <p><span class="prompt">user@byteshield:~$</span> mission --start</p>
+        <p class="output">Mission: Master cyber security</p>
+        <p class="output">through practical learning.</p>
+        <p class="prompt-line"><span class="prompt">user@byteshield:~$</span> <span class="cursor"></span></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="js/theme.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

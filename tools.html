@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyber Security Tools | RBEH Multiverse</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/light.css" id="light-theme">
+<link rel="stylesheet" href="css/dark.css" id="dark-theme" disabled>
+</head>
+<body data-theme="light">
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+        <circle cx="12" cy="11" r="1.6" fill="#fff"/>
+        <rect x="11.2" y="11" width="1.6" height="3" fill="#fff"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <div class="nav-actions">
+    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">
+      <svg id="theme-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+    </button>
+    <div class="menu-wrap">
+      <button class="menu-btn" id="menu-btn" aria-haspopup="true" aria-expanded="false">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <span>Menu</span>
+      </button>
+      <div class="menu-dropdown" id="menu-dropdown">
+        <a href="tools.html"><span class="menu-icon">🛠</span> Tools</a>
+        <a href="course.html"><span class="menu-icon">📚</span> Course</a>
+        <a href="cyberlab.html"><span class="menu-icon">🧪</span> Cyber Lab</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="hero" style="padding-bottom: 20px;">
+  <section class="hero-left">
+    <h1 class="hero-title">
+      Cyber Security<br>
+      <span class="accent">Tools.</span>
+    </h1>
+    <p class="hero-desc">
+      Powerful cyber security tools for learning, testing and practice.
+    </p>
+    <div class="hero-buttons">
+      <button class="btn btn-primary" onclick="document.getElementById('tools-container-section').scrollIntoView({ behavior: 'smooth' });">
+        Explore Grid
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <polyline points="19 12 12 19 5 12"></polyline>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <section class="hero-center">
+    <div class="shield-wrap">
+      <div class="shield-glow" style="background: radial-gradient(circle, rgba(232,49,47,0.15) 0%, transparent 70%);"></div>
+      <svg class="shield-svg" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="toolIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ff6b6b"/>
+            <stop offset="100%" stop-color="#d61c1c"/>
+          </linearGradient>
+        </defs>
+        <g transform="translate(10, 10)">
+          <circle cx="50" cy="50" r="2" fill="currentColor" opacity="0.3"/>
+          <circle cx="130" cy="50" r="2" fill="currentColor" opacity="0.3"/>
+          <circle cx="50" cy="150" r="2" fill="currentColor" opacity="0.3"/>
+          <circle cx="130" cy="150" r="2" fill="currentColor" opacity="0.3"/>
+          <line x1="50" y1="50" x2="130" y2="50" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4" opacity="0.2"/>
+          <line x1="50" y1="50" x2="50" y2="150" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4" opacity="0.2"/>
+          
+          <circle cx="90" cy="100" r="32" fill="none" stroke="url(#toolIconGrad)" stroke-width="2" stroke-dasharray="8 4"/>
+          <circle cx="90" cy="100" r="20" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          
+          <path d="M90 50 L90 70 M90 130 L90 150 M40 100 L60 100 M120 100 L140 100" stroke="currentColor" stroke-width="1.5" opacity="0.7"/>
+          <circle cx="90" cy="100" r="4" fill="#ff4d4d"/>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <section class="hero-right">
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="terminal-title">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4 17 10 11 4 5"></polyline>
+            <line x1="12" y1="19" x2="20" y2="19"></line>
+          </svg>
+          <span>user@rbehMultiverse: ~</span>
+        </div>
+        <div class="terminal-status">
+          <span class="dot" style="background-color: #22c55e;"></span> Ready
+        </div>
+      </div>
+      <div class="terminal-body" id="terminal-body">
+        <p><span class="prompt">user@rbeh:~$</span> tools</p>
+        <p class="output" style="color: #ff4d4d; opacity: 0.95;">&gt; phishing-detector</p>
+        <p class="output" style="color: #ff4d4d; opacity: 0.95;">&gt; password-checker</p>
+        <p class="output" style="color: #ff4d4d; opacity: 0.95;">&gt; text-encryption</p>
+        <p class="output" style="color: #ff4d4d; opacity: 0.95;">&gt; file-encryption</p>
+        <p class="output" style="color: #ff4d4d; opacity: 0.95;">&gt; qr-detector</p>
+        <p class="output" style="color: #ff4d4d; opacity: 0.95;">&gt; password-generator</p>
+        <p style="margin-top: 8px;"><span class="prompt">Status :</span> Ready</p>
+        <p class="prompt-line"><span class="prompt">user@rbeh:~$</span> <span class="cursor"></span></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section id="tools-container-section" style="padding: 40px 48px 100px; max-width: 1400px; margin: 0 auto;">
+  <div class="tools-grid-layout">
+    
+    <div class="tool-action-card" data-api="api/phishing.js" style="--accent-glow: rgba(232,49,47,0.25); cursor: pointer;">
+      <div class="tool-top-content">
+        <div class="stat-icon tools">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-2-4-4.5c-.5 2.5-2 3-4 4.5S5 13 5 15a7 7 0 0 0 7 7z"></path>
+          </svg>
+        </div>
+        <div class="tool-text-group">
+          <h3>Phishing Link Detector</h3>
+          <p>Analyze links and domain structural signatures to evaluate potential hidden phishing threats.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn">Open Tool <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" data-api="api/password.js" style="--accent-glow: rgba(34,197,94,0.25); cursor: pointer;">
+      <div class="tool-top-content">
+        <div class="stat-icon course" style="background: rgba(34,197,94,0.1); color: #22c55e;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <div class="tool-text-group">
+          <h3>Password Strength Checker</h3>
+          <p>Measure operational entropy thresholds against brute force dictionary algorithms.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn" style="color: #22c55e;">Open Tool <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" data-api="api/encryption.js" style="--accent-glow: rgba(59,130,246,0.25); cursor: pointer;">
+      <div class="tool-top-content">
+        <div class="stat-icon lab" style="background: rgba(59,130,246,0.1); color: #3b82f6;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <div class="tool-text-group">
+          <h3>Text Encryption / Decryption</h3>
+          <p>Instantly encode and translate plaintext blocks securely into strong cryptographic string outputs.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn" style="color: #3b82f6;">Open Tool <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" data-api="api/file-encryption.js" style="--accent-glow: rgba(168,85,247,0.25); cursor: pointer;">
+      <div class="tool-top-content">
+        <div class="stat-icon tools" style="background: rgba(168,85,247,0.1); color: #a855f7;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+        </div>
+        <div class="tool-text-group">
+          <h3>File Encryption / Decryption</h3>
+          <p>Protect complex file architectures securely using state-of-the-art cipher systems.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn" style="color: #a855f7;">Open Tool <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" data-api="api/qr.js" style="--accent-glow: rgba(249,115,22,0.25); cursor: pointer;">
+      <div class="tool-top-content">
+        <div class="stat-icon lab" style="background: rgba(249,115,22,0.1); color: #f97316;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </div>
+        <div class="tool-text-group">
+          <h3>Fake QR Code Detector</h3>
+          <p>Deconstruct targets embedded inside vector matrices to reveal compromised redirects safely.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn" style="color: #f97316;">Open Tool <span>&rarr;</span></button>
+    </div>
+
+    <div class="tool-action-card" data-api="api/password-generator.js" style="--accent-glow: rgba(6,182,212,0.25); cursor: pointer;">
+      <div class="tool-top-content">
+        <div class="stat-icon course" style="background: rgba(6,182,212,0.1); color: #06b6d4;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="7.5" cy="15.5" r="5.5"></circle>
+            <path d="M21 2l-9.6 9.6"></path>
+            <path d="M19 5l2 2"></path>
+          </svg>
+        </div>
+        <div class="tool-text-group">
+          <h3>Secure Password Generator</h3>
+          <p>Assemble hardware-randomized alphanumeric arrays to instantly defend digital identities.</p>
+        </div>
+      </div>
+      <button class="tool-action-btn" style="color: #06b6d4;">Open Tool <span>&rarr;</span></button>
+    </div>
+
+  </div>
+</section>
+
+<script src="js/theme.js"></script>
+<script src="js/script.js"></script>
+<script src="js/tools.js"></script>
+</body>
+</html>

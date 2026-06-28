@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Engineering Awareness Simulator | RBEH Multiverse</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/light.css" id="light-theme">
+<link rel="stylesheet" href="css/dark.css" id="dark-theme" disabled>
+<style>
+  /* Seamless RBEH Ecosystem Layout Extensions */
+  .grid-two-column {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 32px;
+    margin-top: 40px;
+  }
+  @media (max-width: 992px) {
+    .grid-two-column { grid-template-columns: 1fr; }
+  }
+  .pane-card {
+    background: var(--card-bg, rgba(255, 255, 255, 0.65));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+  }
+  [data-theme="dark"] .pane-card {
+    background: rgba(20, 20, 20, 0.6);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  .scenario-box {
+    border-radius: 12px;
+    background: var(--bg-primary, #ffffff);
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+    padding: 20px;
+    margin-top: 16px;
+    display: none;
+    animation: fadeIn 0.4s ease;
+  }
+  [data-theme="dark"] .scenario-box { background: #141414; }
+  .scenario-box.active { display: block; }
+  
+  .option-btn {
+    width: 100%;
+    text-align: left;
+    padding: 12px 16px;
+    background: var(--bg-secondary, #f3f4f6);
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
+    border-radius: 8px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: inherit;
+    transition: all 0.2s ease;
+  }
+  [data-theme="dark"] .option-btn { background: #1f1f1f; }
+  .option-btn:hover { background: rgba(232, 49, 47, 0.05); border-color: var(--accent-color, #e8312f); }
+  
+  .feedback-box {
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    display: none;
+  }
+  .feedback-success { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.2); }
+  .feedback-danger { background: rgba(232, 49, 47, 0.1); color: #e8312f; border: 1px solid rgba(232, 49, 47, 0.2); }
+  
+  .stat-badge-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .stat-badge {
+    background: var(--bg-secondary, #f3f4f6);
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.05));
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+  }
+  [data-theme="dark"] .stat-badge { background: #1f1f1f; }
+  .stat-number { font-size: 20px; font-weight: 800; color: #e8312f; }
+  
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+  }
+  .checklist-item.flagged { opacity: 1; font-weight: 600; color: #e8312f; }
+</style>
+</head>
+<body data-theme="light">
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+        <circle cx="12" cy="11" r="1.6" fill="#fff"/>
+        <rect x="11.2" y="11" width="1.6" height="3" fill="#fff"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <div class="nav-actions">
+    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">
+      <svg id="theme-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+    </button>
+    <div class="menu-wrap">
+      <button class="menu-btn" id="menu-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <span>Menu</span>
+      </button>
+      <div class="menu-dropdown" id="menu-dropdown">
+        <a href="tools.html"><span class="menu-icon">🛠</span> Tools</a>
+        <a href="course.html"><span class="menu-icon">📚</span> Course</a>
+        <a href="cyberlab.html" class="active"><span class="menu-icon">🧪</span> Cyber Lab</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="hero" style="padding-bottom: 20px;">
+  <section class="hero-left">
+    <h1 class="hero-title">Social Engineering<br><span class="accent">Awareness Simulator</span></h1>
+    <p class="hero-desc">Learn how scammers manipulate people using trust, urgency, fear and curiosity. Practice recognizing common scam techniques in a safe educational environment.</p>
+    <div class="hero-buttons">
+      <button class="btn btn-primary" onclick="document.getElementById('simulator-arena').scrollIntoView({ behavior: 'smooth' });">
+        ▶ Start Learning
+      </button>
+      <button class="btn btn-secondary" onclick="window.location.href='courses/course-9.html'">
+        📚 Open Course
+      </button>
+    </div>
+  </section>
+
+  <section class="hero-center">
+    <div class="shield-wrap">
+      <div class="shield-glow" style="background: radial-gradient(circle, rgba(232,49,47,0.15) 0%, transparent 70%);"></div>
+      <svg class="shield-svg" viewBox="0 0 200 220">
+        <path d="M100 20 C50 20 40 50 40 100 C40 160 100 200 100 200 C100 200 160 160 160 100 C160 50 150 20 100 20 Z" fill="none" stroke="#e8312f" stroke-width="2"/>
+        <circle cx="100" cy="100" r="25" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <path d="M90 100 L97 107 L112 92" stroke="#22c55e" stroke-width="2.5" fill="none"/>
+      </svg>
+    </div>
+  </section>
+
+  <section class="hero-right">
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="terminal-title"><span>user@rbehLab: ~ cognitive-audit</span></div>
+        <div class="terminal-status"><span class="dot" style="background-color: #e8312f;"></span> Live Sandbox</div>
+      </div>
+      <div class="terminal-body">
+        <p><span class="prompt">user@rbeh:~$</span> ./social_defense_init</p>
+        <p class="output">&gt; Loading active context manipulation profiles...</p>
+        <p class="output" style="color: #22c55e;">&gt; Human Layer Simulation Engine Ready.</p>
+        <p class="prompt-line"><span class="prompt">user@rbeh:~$</span> <span class="cursor"></span></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="simulator-arena" style="padding: 0 48px; max-width: 1400px; margin: 0 auto; padding-bottom: 80px;">
+  
+  <div class="pane-card" style="border-left: 4px solid #3b82f6; background: rgba(59,130,246,0.03);">
+    <h3 style="color: #3b82f6; font-size: 15px; margin-bottom: 4px;">ℹ️ Educational Simulation Notice</h3>
+    <p style="font-size: 13.5px; opacity: 0.85; line-height: 1.5;">
+      This arena operates exclusively for cyber security education and awareness. It is engineered to train your decision-making boundaries against physiological manipulation paradigms. This portal does not collect, track, or record data payloads.
+    </p>
+  </div>
+
+  <div class="grid-two-column">
+    <div>
+      <div class="pane-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color, rgba(0,0,0,0.1)); padding-bottom: 12px;">
+          <h2 style="font-size: 18px; font-weight: 700;">Tactical Scenario Assessment</h2>
+          <span id="scenario-counter" style="font-size: 13px; opacity: 0.6; font-weight: 600;">Scenario 1 of 6</span>
+        </div>
+
+        <div id="scenario-1" class="scenario-box active">
+          <h3 style="font-size: 15px; margin-bottom: 8px; color: var(--accent-color, #e8312f);">📞 Scenario 1: Unverified Bank Telephony</h3>
+          <p style="font-size: 14px; opacity: 0.9; line-height: 1.5;">An urgent caller claims to be a senior security manager from your registered branch. They state your account is compromised and demand your One-Time Password (OTP) immediately to arrest the transaction.</p>
+          <div style="margin-top: 16px;">
+            <button class="option-btn" onclick="handleOption(1, 'A', false, 'ledger-4')">A) Share OTP to stop the fraudulent transaction safely.</button>
+            <button class="option-btn" onclick="handleOption(1, 'B', true, 'ledger-4')">B) Explicitly refuse to share any dynamic values over the phone call.</button>
+            <button class="option-btn" onclick="handleOption(1, 'C', true, 'ledger-4')">C) Hang up and verify directly through official banking smartphone apps or tokens.</button>
+          </div>
+          <div id="feedback-1" class="feedback-box"></div>
+        </div>
+
+        <div id="scenario-2" class="scenario-box">
+          <h3 style="font-size: 15px; margin-bottom: 8px; color: var(--accent-color, #e8312f);">🎁 Scenario 2: Unexpected Mega Rewards</h3>
+          <p style="font-size: 14px; opacity: 0.9; line-height: 1.5;">You receive a direct messaging platform link claiming: "Congratulations! You have won a custom premium luxury vacation package. Click here within 10 minutes to process your delivery coordinates!"</p>
+          <div style="margin-top: 16px;">
+            <button class="option-btn" onclick="handleOption(2, 'A', false, 'ledger-3')">A) Open the hyperlink instantly before the countdown expires.</button>
+            <button class="option-btn" onclick="handleOption(2, 'B', true, 'ledger-3')">B) Completely ignore the transmission and delete the communication thread.</button>
+            <button class="option-btn" onclick="handleOption(2, 'C', true, 'ledger-3')">C) Check the official company domain via a secure manual window lookup.</button>
+          </div>
+          <div id="feedback-2" class="feedback-box"></div>
+        </div>
+
+        <div id="scenario-3" class="scenario-box">
+          <h3 style="font-size: 15px; margin-bottom: 8px; color: var(--accent-color, #e8312f);">💼 Scenario 3: Advance Employment Processing</h3>
+          <p style="font-size: 14px; opacity: 0.9; line-height: 1.5;">An unknown recruiter reaches out offering a highly paid remote role. However, they request you to transfer an upfront deposit to clear "mandatory hardware verification steps".</p>
+          <div style="margin-top: 16px;">
+            <button class="option-btn" onclick="handleOption(3, 'A', false, 'ledger-6')">A) Pay the advance amount immediately to secure the competitive contract position.</button>
+            <button class="option-btn" onclick="handleOption(3, 'B', true, 'ledger-6')">B) Discontinue communication. True professional compliance teams never demand onboarding fees.</button>
+          </div>
+          <div id="feedback-3" class="feedback-box"></div>
+        </div>
+
+        <div id="scenario-4" class="scenario-box">
+          <h3 style="font-size: 15px; margin-bottom: 8px; color: var(--accent-color, #e8312f);">🖥️ Scenario 4: Browser Security Warning Popup</h3>
+          <p style="font-size: 14px; opacity: 0.9; line-height: 1.5;">A flashing critical error message locks your window, claiming malicious tracking codes have corrupted your storage. It prompts you to call a support toll-free line or download a dynamic remote assistant script tool.</p>
+          <div style="margin-top: 16px;">
+            <button class="option-btn" onclick="handleOption(4, 'A', false, 'ledger-2')">A) Run the required assistant software script package immediately.</button>
+            <button class="option-btn" onclick="handleOption(4, 'B', true, 'ledger-2')">B) Close the browser process. Verify local baseline health statuses via built-in system protection parameters.</button>
+          </div>
+          <div id="feedback-4" class="feedback-box"></div>
+        </div>
+
+        <div id="scenario-5" class="scenario-box">
+          <h3 style="font-size: 15px; margin-bottom: 8px; color: var(--accent-color, #e8312f);">📦 Scenario 5: Unscheduled Logistics Interception</h3>
+          <p style="font-size: 14px; opacity: 0.9; line-height: 1.5;">An SMS states a package cannot be verified at local sorting facilities due to a tracking error. It requests a minor payment correction via a payment link to complete delivery.</p>
+          <div style="margin-top: 16px;">
+            <button class="option-btn" onclick="handleOption(5, 'A', false, 'ledger-7')">A) input payment data values immediately to ensure standard tracking.</button>
+            <button class="option-btn" onclick="handleOption(5, 'B', true, 'ledger-7')">B) Check the tracking status directly on the official logistics dashboard using your original invoice codes.</button>
+          </div>
+          <div id="feedback-5" class="feedback-box"></div>
+        </div>
+
+        <div id="scenario-6" class="scenario-box">
+          <h3 style="font-size: 15px; margin-bottom: 8px; color: var(--accent-color, #e8312f);">👥 Scenario 6: Identity Hijacking Clone Trap</h3>
+          <p style="font-size: 14px; opacity: 0.9; line-height: 1.5;">A digital profile replicating your close colleague sends an emergency message claiming they are stranded without cash networks and requires an instant transfer.</p>
+          <div style="margin-top: 16px;">
+            <button class="option-btn" onclick="handleOption(6, 'A', false, 'ledger-9')">A) Transfer funds immediately without testing the communication channel.</button>
+            <button class="option-btn" onclick="handleOption(6, 'B', true, 'ledger-9')">B) Reach out to your colleague via an independent offline voice network or known cell number to verify identity parameters.</button>
+          </div>
+          <div id="feedback-6" class="feedback-box"></div>
+        </div>
+
+        <div style="margin-top: 24px; display: flex; justify-content: space-between; border-top: 1px solid var(--border-color, rgba(0,0,0,0.1)); padding-top: 16px;">
+          <button id="prev-btn" class="btn btn-secondary" onclick="changeScenario(-1)" disabled>Previous</button>
+          <button id="next-btn" class="btn btn-primary" onclick="changeScenario(1)">Next Scenario &rarr;</button>
+        </div>
+      </div>
+
+      <div class="pane-card">
+        <h3 style="font-size: 16px; font-weight: 700;">🧩 Sandbox Mini-Quiz Checkpoint</h3>
+        <p style="font-size: 13.5px; opacity: 0.8; margin-top: 6px;">Which emotional triggers are most commonly exploited simultaneously by attackers to bypass logical inspection barriers?</p>
+        <div style="margin-top: 12px;">
+          <button class="option-btn" onclick="evaluateQuizAnswer(false)">A) Extreme technical verification frameworks and open documentation models.</button>
+          <button class="option-btn" onclick="evaluateQuizAnswer(true)">B) False sense of strict urgency mixed with intimidating authoritative fear signatures.</button>
+        </div>
+        <div id="quiz-feedback" class="feedback-box"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="pane-card">
+        <h3 style="font-size: 16px; font-weight: 700;">📊 Learning Analytics</h3>
+        <div class="stat-badge-grid">
+          <div class="stat-badge">
+            <div id="stat-score" class="stat-number">0</div>
+            <div style="font-size: 11px; opacity: 0.6;">Current Score</div>
+          </div>
+          <div class="stat-badge">
+            <div id="stat-progress" class="stat-number">0%</div>
+            <div style="font-size: 11px; opacity: 0.6;">Completion</div>
+          </div>
+          <div class="stat-badge">
+            <div id="stat-correct" class="stat-number" style="color: #22c55e;">0</div>
+            <div style="font-size: 11px; opacity: 0.6;">Correct</div>
+          </div>
+          <div class="stat-badge">
+            <div id="stat-mistakes" class="stat-number">0</div>
+            <div style="font-size: 11px; opacity: 0.6;">Mistakes</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane-card">
+        <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px;">🚩 Human Exploit Ledger Vector Map</h3>
+        <div>
+          <div id="ledger-1" class="checklist-item">🔳 Urgency Manipulation Frameworks</div>
+          <div id="ledger-2" class="checklist-item">🔳 Fear & Psychological Lockdowns</div>
+          <div id="ledger-3" class="checklist-item">🔳 Unexpected Premium Reward Attractors</div>
+          <div id="ledger-4" class="checklist-item">🔳 Telephony Request for Token Values (OTP)</div>
+          <div id="ledger-5" class="checklist-item">🔳 Unsecured Static Account Authentication</div>
+          <div id="ledger-6" class="checklist-item">🔳 Requests for Advance Processing Fees</div>
+          <div id="ledger-7" class="checklist-item">🔳 Unverified Hyperlink Payloads</div>
+          <div id="ledger-8" class="checklist-item">🔳 Unknown Attachment Vectors</div>
+          <div id="ledger-9" class="checklist-item">🔳 Cloned Social Identity Spoofing</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pane-card" style="margin-top: 12px;">
+    <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">📚 Cognitive Layer Protection Vault</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+      <div>
+        <h3 style="font-size: 15px; color: #e8312f; margin-bottom: 8px;">What is Social Engineering?</h3>
+        <p style="font-size: 13px; opacity: 0.8; line-height: 1.5;">Social engineering is the tactical weaponization of human psychology. Instead of probing software infrastructure exploits, adversaries leverage trust patterns, authority, panic, or confusion to make users execute critical mistakes willingly.</p>
+      </div>
+      <div>
+        <h3 style="font-size: 15px; color: #e8312f; margin-bottom: 8px;">Common Scam Techniques</h3>
+        <p style="font-size: 13px; opacity: 0.8; line-height: 1.5;">Tactics include Pretexting (fabricating false scenarios), Phishing (deceptive communication nodes), Baiting (promising free rewards), and Quid Pro Quo (offering fake services for target tokens or network privileges).</p>
+      </div>
+      <div>
+        <h3 style="font-size: 15px; color: #22c55e; margin-bottom: 8px;">Real-Life Prevention Tips</h3>
+        <p style="font-size: 13px; opacity: 0.8; line-height: 1.5;">Slow down whenever communications pressure you to act fast. Always cross-examine validation parameters through standard separate networks. If an administrative office requests access codes, instantly step away and process a dedicated ticket.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 16px; margin-top: 32px; flex-wrap: wrap;">
+    <button class="btn btn-secondary" onclick="resetSimulatorDemo()">Restart Demo</button>
+    <button class="btn btn-secondary" onclick="window.location.href='cyberlab.html'">🏠 Back to Cyber Lab</button>
+    <button class="btn btn-primary" onclick="window.location.href='courses/course-9.html'">Learn More Pathways</button>
+  </div>
+
+</div>
+
+<script src="js/theme.js"></script>
+<script src="js/script.js"></script>
+<script>
+  // Core Engineering Awareness Logic Matrix
+  let currentScenario = 1;
+  const totalScenarios = 6;
+  let score = 0;
+  let correctCount = 0;
+  let mistakeCount = 0;
+  const answeredScenarios = new Set();
+
+  function changeScenario(direction) {
+    document.getElementById(`scenario-${currentScenario}`).classList.remove('active');
+    currentScenario += direction;
+    
+    if (currentScenario < 1) currentScenario = 1;
+    if (currentScenario > totalScenarios) currentScenario = totalScenarios;
+    
+    document.getElementById(`scenario-${currentScenario}`).classList.add('active');
+    document.getElementById('scenario-counter').innerText = `Scenario ${currentScenario} of ${totalScenarios}`;
+    
+    document.getElementById('prev-btn').disabled = (currentScenario === 1);
+    document.getElementById('next-btn').disabled = (currentScenario === totalScenarios);
+
+    updateGlobalDashboardMetrics();
+  }
+
+  function handleOption(scenarioId, option, isCorrect, ledgerId) {
+    const feedback = document.getElementById(`feedback-${scenarioId}`);
+    feedback.style.display = 'block';
+    
+    // Highlight checklist dynamic item references
+    if (ledgerId) {
+      const ledgerItem = document.getElementById(ledgerId);
+      ledgerItem.className = 'checklist-item flagged';
+      ledgerItem.innerText = '☑️' + ledgerItem.innerText.substring(1);
+    }
+
+    if (isCorrect) {
+      feedback.className = "feedback-box feedback-success";
+      feedback.innerHTML = `<strong>Verification Successful!</strong> Your choice reflects correct situational awareness. Always separate your communication paths to neutralize impersonation models.`;
+      
+      if (!answeredScenarios.has(scenarioId)) {
+        score += 15;
+        correctCount++;
+        answeredScenarios.add(scenarioId);
+      }
+    } else {
+      feedback.className = "feedback-box feedback-danger";
+      feedback.innerHTML = `<strong>Exploit Alert!</strong> This selection demonstrates compliance with the threat vector. Sharing authentication assets or executing software based on unverified instructions opens network channels to adversaries.`;
+      
+      if (!answeredScenarios.has(scenarioId)) {
+        mistakeCount++;
+        answeredScenarios.add(scenarioId);
+      }
+    }
+    
+    updateGlobalDashboardMetrics();
+  }
+
+  function evaluateQuizAnswer(isCorrect) {
+    const quizFeedback = document.getElementById('quiz-feedback');
+    quizFeedback.style.display = 'block';
+    if (isCorrect) {
+      quizFeedback.className = "feedback-box feedback-success";
+      quizFeedback.innerHTML = "<strong>Correct!</strong> Attackers purposefully craft high-stress conditions to alter your analytical boundaries, relying on impulse over technical validation.";
+    } else {
+      quizFeedback.className = "feedback-box feedback-danger";
+      quizFeedback.innerHTML = "<strong>Incorrect.</strong> Technical models are secondary here; structural engineering scams systematically weaponize behavioral urgency thresholds to disrupt clear evaluation.";
+    }
+  }
+
+  function updateGlobalDashboardMetrics() {
+    document.getElementById('stat-score').innerText = score;
+    document.getElementById('stat-correct').innerText = correctCount;
+    document.getElementById('stat-mistakes').innerText = mistakeCount;
+    
+    const calculationPct = Math.round((answeredScenarios.size / totalScenarios) * 100);
+    document.getElementById('stat-progress').innerText = `${calculationPct}%`;
+  }
+
+  function resetSimulatorDemo() {
+    currentScenario = 1;
+    score = 0;
+    correctCount = 0;
+    mistakeCount = 0;
+    answeredScenarios.clear();
+    
+    for (let i = 1; i <= totalScenarios; i++) {
+      const box = document.getElementById(`feedback-${i}`);
+      if (box) {
+        box.style.display = 'none';
+        box.innerHTML = '';
+      }
+      document.getElementById(`scenario-${i}`).classList.remove('active');
+    }
+    document.getElementById('quiz-feedback').style.display = 'none';
+    
+    document.getElementById('scenario-1').classList.add('active');
+    document.getElementById('scenario-counter').innerText = `Scenario 1 of ${totalScenarios}`;
+    document.getElementById('prev-btn').disabled = true;
+    document.getElementById('next-btn').disabled = false;
+
+    const ledgers = ['ledger-2', 'ledger-3', 'ledger-4', 'ledger-6', 'ledger-7', 'ledger-9'];
+    const titles = [
+      'Fear & Psychological Lockdowns',
+      'Unexpected Premium Reward Attractors',
+      'Telephony Request for Token Values (OTP)',
+      'Requests for Advance Processing Fees',
+      'Unverified Hyperlink Payloads',
+      'Cloned Social Identity Spoofing'
+    ];
+    
+    ledgers.forEach((id, index) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.className = 'checklist-item';
+        el.innerText = '🔳 ' + titles[index];
+      }
+    });
+
+    updateGlobalDashboardMetrics();
+  }
+</script>
+</body>
+</html>

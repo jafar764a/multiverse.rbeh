@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fake QR Code Detector | RBEH Multiverse</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/light.css" id="light-theme">
+<link rel="stylesheet" href="css/dark.css" id="dark-theme" disabled>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<style>
+  .qr-workspace-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  @media(min-width: 992px) {
+    .qr-workspace-container {
+      grid-template-columns: 1.2fr 0.8fr;
+    }
+  }
+  .tab-header-row {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+  }
+  body[data-theme="dark"] .tab-header-row {
+    border-color: rgba(255,255,255,0.06);
+  }
+  .tab-btn-premium {
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    background: rgba(0,0,0,0.02);
+    border: 1px solid rgba(0,0,0,0.04);
+    border-radius: 6px;
+    cursor: pointer;
+    color: inherit;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+  body[data-theme="dark"] .tab-btn-premium {
+    background: rgba(255,255,255,0.02);
+    border-color: rgba(255,255,255,0.04);
+  }
+  .tab-btn-premium.active-slot {
+    background: #e8312f;
+    color: #fff;
+    border-color: #e8312f;
+  }
+  .qr-drag-sandbox {
+    border: 2px dashed rgba(232, 49, 47, 0.3);
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    background: rgba(0,0,0,0.01);
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+  .qr-drag-sandbox.drag-over {
+    border-color: #e8312f;
+    background: rgba(232,49,47,0.04);
+  }
+  .video-preview-canvas-box {
+    width: 100%;
+    max-height: 320px;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+  .paste-area-premium {
+    width: 100%;
+    height: 120px;
+    padding: 14px;
+    background: rgba(0,0,0,0.02);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 10px;
+    color: inherit;
+    font-family: inherit;
+    resize: none;
+    outline: none;
+  }
+  body[data-theme="dark"] .paste-area-premium {
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(255,255,255,0.08);
+  }
+  .paste-area-premium:focus { border-color: #e8312f; }
+  .pulse-loader-line {
+    height: 4px;
+    width: 100%;
+    background: rgba(0,0,0,0.05);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+    margin-top: 10px;
+  }
+  .pulse-loader-fill {
+    width: 40%;
+    height: 100%;
+    background: #e8312f;
+    position: absolute;
+    animation: loading-bar-move 1.5s infinite ease-in-out;
+  }
+  @keyframes loading-bar-move {
+    0% { left: -40%; }
+    100% { left: 100%; }
+  }
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .meta-node-data {
+    padding: 12px;
+    background: rgba(0,0,0,0.02);
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.04);
+  }
+  body[data-theme="dark"] .meta-node-data {
+    background: rgba(255,255,255,0.02);
+    border-color: rgba(255,255,255,0.04);
+  }
+  .verdict-banner-card {
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: 0.5px;
+    margin-top: 20px;
+    text-transform: uppercase;
+  }
+  .history-log-scroller {
+    max-height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="tools.html" class="active">Tools</a>
+    <a href="cyberlab.html">Cyber Lab</a>
+  </nav>
+  <div class="nav-actions">
+    <button class="icon-btn" id="theme-toggle">⚙️</button>
+  </div>
+</header>
+
+<main class="qr-workspace-container">
+  <section class="detector-panel-left">
+    <div style="margin-bottom: 24px;">
+      <span style="color: #e8312f; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-bottom: 4px;">Dynamic QR Code Sanitizer</span>
+      <h1 style="font-size: 32px; font-weight: 800; letter-spacing: -0.8px; margin: 0;">Fake QR Code Detector</h1>
+      <p style="opacity: 0.7; font-size: 15px; margin-top: 8px; line-height: 1.5;">Analyze QR Codes before scanning them. Detect phishing links, fake payment QR codes, shortened URLs, malicious websites, and suspicious destinations using intelligent analysis.</p>
+    </div>
+
+    <div class="terminal" style="padding: 24px; border-radius: 16px; margin-bottom: 24px;">
+      <div class="tab-header-row">
+        <button class="tab-btn-premium active-slot" id="tab-trigger-upload">📁 Upload QR Image</button>
+        <button class="tab-btn-premium" id="tab-trigger-camera">📷 Live Camera Scanner</button>
+        <button class="tab-btn-premium" id="tab-trigger-paste">📝 Paste QR Content</button>
+      </div>
+
+      <div id="section-view-upload" class="tab-content-block-node">
+        <div id="qr-drag-container" class="qr-drag-sandbox">
+          <input type="file" id="qr-file-input" accept="image/*" style="display: none;">
+          <span style="font-size: 36px; display: block; margin-bottom: 12px;">🖼️</span>
+          <span style="font-weight: 700; font-size: 14.5px; display: block; margin-bottom: 4px;">Drop raw QR image container here or click to browse files</span>
+          <span style="opacity: 0.5; font-size: 12px;">Supports PNG, JPG, JPEG, WEBP formats</span>
+        </div>
+        <div id="qr-upload-preview-wrapper" style="display: none; margin-top: 16px; text-align: center;">
+          <img id="qr-preview-img" style="max-height: 200px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1);" alt="QR Target Vector">
+        </div>
+      </div>
+
+      <div id="section-view-camera" class="tab-content-block-node" style="display: none;">
+        <div class="video-preview-canvas-box">
+          <video id="camera-feed-stream" style="width: 100%; height: 100%; object-fit: cover;" autoplay playsinline></video>
+          <div style="position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.6); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;" id="camera-status-tag">CAMERA IDLE</div>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 14px;">
+          <button id="btn-camera-start" class="btn btn-primary" style="padding: 10px 18px; font-size: 13px;">Start Camera</button>
+          <button id="btn-camera-stop" class="btn btn-primary" style="padding: 10px 18px; font-size: 13px; background: rgba(0,0,0,0.04); color: inherit;">Stop Camera</button>
+        </div>
+      </div>
+
+      <div id="section-view-paste" class="tab-content-block-node" style="display: none;">
+        <label style="font-size: 11px; font-weight: 700; opacity: 0.6; text-transform: uppercase; display: block; margin-bottom: 6px;">Payload String / Target Destination Content</label>
+        <textarea id="paste-input-data" class="paste-area-premium" placeholder="Paste URL, Text, Payment String or raw QR values directly..."></textarea>
+      </div>
+
+      <div style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+        <button id="btn-execute-analysis" class="btn btn-primary" style="padding: 12px 24px; font-weight: 700; background: #e8312f; color: #fff;">✅ Analyze QR</button>
+        <button class="btn btn-primary" onclick="window.location.href='courses/course-7.html'" style="padding: 12px 18px; font-size: 13px; background: transparent; color: inherit;">Learn QR Code Scams</button>
+      </div>
+
+      <div id="loading-stage-indicator" style="display: none; margin-top: 20px; padding: 16px; background: rgba(0,0,0,0.01); border-radius: 8px;">
+        <div style="font-size: 12.5px; font-weight: 600; display: flex; justify-content: space-between;" id="loading-txt-lbl">Scanning QR...</div>
+        <div class="pulse-loader-line"><div class="pulse-loader-fill"></div></div>
+      </div>
+
+      <div id="error-presentation-card" style="display: none; margin-top: 20px; padding: 14px; background: rgba(232,49,47,0.06); border-left: 4px solid #e8312f; border-radius: 0 8px 8px 0; font-size: 13px; color: #e8312f; font-weight: 600;">
+        Error message placeholder frame template.
+      </div>
+    </div>
+
+    <div id="dashboard-result-panel" style="display: none; transition: all 0.3s ease;">
+      <div id="verdict-banner" class="verdict-banner-card">🟠 SUSPICIOUS</div>
+
+      <div class="terminal" style="padding: 24px; border-radius: 16px; margin-top: 20px;">
+        <h3 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 800; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 8px;">📊 Hybrid Telemetry & Security Analysis Report</h3>
+        
+        <div class="dashboard-grid">
+          <div class="meta-node-data">
+            <div style="font-size: 10px; opacity: 0.5; font-weight: 700; text-transform: uppercase;">QR Structure Type</div>
+            <div id="dash-qr-type" style="font-size: 14px; font-weight: 700; margin-top: 2px;">Unknown</div>
+          </div>
+          <div class="meta-node-data">
+            <div style="font-size: 10px; opacity: 0.5; font-weight: 700; text-transform: uppercase;">Heuristic Threat Score</div>
+            <div id="dash-manual-score" style="font-size: 14px; font-weight: 700; margin-top: 2px;">0 / 100</div>
+          </div>
+          <div class="meta-node-data">
+            <div style="font-size: 10px; opacity: 0.5; font-weight: 700; text-transform: uppercase;">VirusTotal Integration</div>
+            <div id="dash-vt-score" style="font-size: 14px; font-weight: 700; margin-top: 2px;">Not Tracked</div>
+          </div>
+          <div class="meta-node-data">
+            <div style="font-size: 10px; opacity: 0.5; font-weight: 700; text-transform: uppercase;">Transport Security</div>
+            <div id="dash-https-status" style="font-size: 14px; font-weight: 700; margin-top: 2px;">N/A</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; font-size: 13px; line-height: 1.6;">
+          <div style="font-weight: 700; opacity: 0.6; text-transform: uppercase; font-size: 11px; margin-bottom: 4px;">Decoded Content Payload Matrix</div>
+          <div id="dash-decoded-raw" style="padding: 12px; background: rgba(0,0,0,0.03); border-radius: 6px; font-family: monospace; word-break: break-all; max-height: 100px; overflow-y: auto;">None</div>
+        </div>
+
+        <div style="margin-top: 16px; font-size: 13px; line-height: 1.6;">
+          <div style="font-weight: 700; opacity: 0.6; text-transform: uppercase; font-size: 11px; margin-bottom: 4px;">Destination URL Resolves Target</div>
+          <div id="dash-destination-url" style="color: #e8312f; font-weight: 700; word-break: break-all;">No links extracted inside target context data string.</div>
+        </div>
+
+        <div style="margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.02); border-left: 3px solid #e8312f; border-radius: 4px; font-size: 13px;" id="dash-recommendation-block">
+          System recommendation string text context frames.
+        </div>
+
+        <div style="margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; border-top: 1px dashed rgba(0,0,0,0.06); padding-top: 16px;">
+          <button id="btn-action-copy-all" class="btn btn-primary" style="padding: 10px 16px; font-size: 12.5px;">Copy Result</button>
+          <button id="btn-action-copy-url" class="btn btn-primary" style="padding: 10px 16px; font-size: 12.5px; background: rgba(0,0,0,0.03); color: inherit;">Copy URL</button>
+          <a id="btn-action-open-url" class="btn btn-primary" target="_blank" style="padding: 10px 16px; font-size: 12.5px; background: #1fa75a; color:#fff; text-decoration:none; display:none;">Open URL ↗</a>
+          <button id="btn-action-reset" class="btn btn-primary" style="padding: 10px 16px; font-size: 12.5px; background: transparent; color: inherit; border: 1px dashed rgba(0,0,0,0.2);">Scan Another QR</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="telemetry-panel-right">
+    <div class="terminal" style="padding: 24px; border-radius: 16px; margin-bottom: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <span style="font-size: 12px; font-weight: 700; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.5px;">📋 QR Scanner Log Cache Registry</span>
+        <button id="btn-flush-qr-history" style="font-size: 11px; font-weight: 700; color: #e8312f; background: transparent; border: none; cursor: pointer;">Flush</button>
+      </div>
+      <div id="history-qr-scroller" class="history-log-scroller">
+        <div style="font-size: 12px; opacity: 0.5; padding: 20px 0; text-align: center;">No history logs traced during current sandbox initialization cycle.</div>
+      </div>
+    </div>
+
+    <div class="terminal" style="padding: 20px; border-radius: 16px; border-left: 4px solid #e8312f;">
+      <span style="font-size: 11px; font-weight: 700; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 8px;">🛡️ Security Notice</span>
+      <p style="font-size: 13px; line-height: 1.6; opacity: 0.8; margin: 0;">
+        Always verify QR Codes before scanning them. Fake QR Codes can redirect users to phishing websites, fake payment pages, malware downloads, and credential theft portals. Never enter passwords, OTPs, or banking details unless you trust the destination.
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer style="text-align: center; padding: 40px 24px; opacity: 0.5; font-size: 13px; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 80px;">
+  &copy; 2026 RBEH Multiverse System Platform Ecosystem. Client Hybrid QR Decoding Node v1.
+</footer>
+
+<script src="js/theme.js"></script>
+<script src="js/script.js"></script>
+<script src="api/qr.js"></script>
+</body>
+</html>

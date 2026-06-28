@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code Scam Awareness Demo | RBEH Multiverse</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/light.css" id="light-theme">
+<link rel="stylesheet" href="css/dark.css" id="dark-theme" disabled>
+<style>
+  /* Seamless RBEH Ecosystem Layout & Responsive Grid Extensions */
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 32px;
+  }
+  .analysis-split-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 32px;
+    margin-top: 32px;
+  }
+  @media (max-width: 992px) {
+    .analysis-split-grid { grid-template-columns: 1fr; }
+  }
+  .pane-card {
+    background: var(--card-bg, rgba(255, 255, 255, 0.65));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+  }
+  [data-theme="dark"] .pane-card {
+    background: rgba(20, 20, 20, 0.6);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  .pane-card.active-target {
+    box-shadow: 0 0 24px var(--glow-color, rgba(59, 130, 246, 0.2));
+    border-color: var(--stroke-color, #3b82f6);
+  }
+  .qr-mock-box {
+    width: 140px;
+    height: 140px;
+    margin: 16px auto;
+    background: #ffffff;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color, rgba(0,0,0,0.1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+  }
+  .pane-card:hover .qr-mock-box {
+    transform: scale(1.04);
+  }
+  .status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: inline-block;
+  }
+  .status-badge.safe { background: #dcfce7; color: #22c55e; border: 1px solid #86efac; }
+  .status-badge.verify { background: #ffedd5; color: #ea580c; border: 1px solid #fed7aa; }
+  .status-badge.dangerous { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; }
+  .status-badge.check { background: #fef9c3; color: #ca8a04; border: 1px solid #fef08a; }
+
+  .telemetry-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color, rgba(0,0,0,0.06));
+    font-size: 13.5px;
+  }
+  .telemetry-row span:last-child {
+    font-weight: 600;
+  }
+  .quiz-option {
+    padding: 12px 16px;
+    background: var(--bg-secondary, #f3f4f6);
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
+    border-radius: 8px;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    text-align: left;
+    color: inherit;
+  }
+  [data-theme="dark"] .quiz-option { background: #1f1f1f; }
+  .quiz-option:hover { background: rgba(59, 130, 246, 0.05); border-color: #3b82f6; }
+  
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    opacity: 0.8;
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+        <circle cx="12" cy="11" r="1.6" fill="#fff"/>
+        <rect x="11.2" y="11" width="1.6" height="3" fill="#fff"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <div class="nav-actions">
+    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">
+      <svg id="theme-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+    </button>
+    <div class="menu-wrap">
+      <button class="menu-btn" id="menu-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <span>Menu</span>
+      </button>
+      <div class="menu-dropdown" id="menu-dropdown">
+        <a href="tools.html"><span class="menu-icon">🛠</span> Tools</a>
+        <a href="course.html"><span class="menu-icon">📚</span> Course</a>
+        <a href="cyberlab.html" class="active"><span class="menu-icon">🧪</span> Cyber Lab</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="hero" style="padding-bottom: 20px;">
+  <section class="hero-left">
+    <h1 class="hero-title">QR Code Scam<br><span class="accent">Awareness Demo</span></h1>
+    <p class="hero-desc">Learn how cyber criminals hide phishing links, fake payment requests and malicious websites inside QR Codes. Practice analyzing matrix data endpoints securely before execution.</p>
+    <div class="hero-buttons">
+      <button class="btn btn-primary" onclick="document.getElementById('demo-arena').scrollIntoView({ behavior: 'smooth' });">
+        ▶ Start Demo
+      </button>
+      <button class="btn btn-secondary" onclick="window.location.href='courses/course-7.html'">
+        📚 Learn QR Scams
+      </button>
+    </div>
+  </section>
+
+  <section class="hero-center">
+    <div class="shield-wrap">
+      <div class="shield-glow" style="background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%);"></div>
+      <svg class="shield-svg" viewBox="0 0 200 220">
+        <rect x="55" y="65" width="90" height="90" rx="6" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+        <rect x="65" y="75" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"/>
+        <rect x="111" y="75" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"/>
+        <rect x="65" y="121" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M100 20 L170 50 V110 C170 160 100 200 100 200 C100 200 300 160 30 110 V50 Z" fill="none" stroke="#3b82f6" stroke-width="2"/>
+      </svg>
+    </div>
+  </section>
+
+  <section class="hero-right">
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="terminal-title"><span>user@rbehLab: ~ qr-decoder</span></div>
+        <div class="terminal-status"><span class="dot" style="background-color: #22c55e;"></span> Decoder Matrix Active</div>
+      </div>
+      <div class="terminal-body">
+        <p><span class="prompt">user@rbeh:~$</span> ./init_qr_analyzer</p>
+        <p class="output">&gt; Matrix tracking structure parsed into buffer arrays...</p>
+        <p class="output" style="color: #ca8a04;">&gt; Intercepting Vector Signal Intertwine Nodes...</p>
+        <p class="prompt-line"><span class="prompt">user@rbeh:~$</span> <span class="cursor"></span></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="demo-arena" style="padding: 0 48px; max-width: 1400px; margin: 0 auto; padding-bottom: 80px;">
+
+  <div class="pane-card" style="border-left: 4px solid #f59e0b; background: rgba(245,158,11 0.03); margin-bottom: 32px;">
+    <h3 style="color: #d97706; font-size: 15px; margin-bottom: 4px; font-weight: 700;">⚠️ Educational Demonstration</h3>
+    <p style="font-size: 13.5px; opacity: 0.85; line-height: 1.5;">
+      This simulation is designed for learning purposes only. All QR Codes are completely simulated inside the sandbox environment. No real payments, real money transfers, or outbound external website lookups are executed anywhere.
+    </p>
+  </div>
+
+  <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">1. Select a Vector Target Profile</h2>
+  <p style="font-size: 14px; opacity: 0.6; margin-bottom: 24px;">Click on any baseline scenario panel below to unpack the encapsulated data matrix elements safely.</p>
+  
+  <div class="grid-container">
+    
+    <div class="pane-card" id="qr-card-1" style="--glow-color: rgba(34,197,94,0.15); --stroke-color: #22c55e;" onclick="selectQR(1)">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:700; font-size:14px;">Profile 01</span>
+        <span class="status-badge safe">🟢 Safe</span>
+      </div>
+      <div class="qr-mock-box">
+        <svg viewBox="0 0 100 100" width="100%" height="100%" fill="currentColor" style="opacity: 0.85;">
+          <rect x="0" y="0" width="30" height="30"/><rect x="5" y="5" width="20" height="20" fill="#fff"/><rect x="10" y="10" width="10" height="10"/>
+          <rect x="70" y="0" width="30" height="30"/><rect x="75" y="5" width="20" height="20" fill="#fff"/><rect x="80" y="10" width="10" height="10"/>
+          <rect x="0" y="70" width="30" height="30"/><rect x="5" y="75" width="20" height="20" fill="#fff"/><rect x="10" y="80" width="10" height="10"/>
+          <rect x="40" y="10" width="15" height="15"/><rect x="45" y="40" width="20" height="10"/><rect x="75" y="45" width="15" height="20"/>
+        </svg>
+      </div>
+      <h3 style="font-size:15px; font-weight:700; text-align:center; margin-top:8px;">Restaurant Menu QR</h3>
+      <button class="btn btn-secondary" style="width:100%; margin-top:16px; font-size:12px; padding:6px 0;">Analyze QR</button>
+    </div>
+
+    <div class="pane-card" id="qr-card-2" style="--glow-color: rgba(234,88,12,0.15); --stroke-color: #ea580c;" onclick="selectQR(2)">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:700; font-size:14px;">Profile 02</span>
+        <span class="status-badge verify">🟠 Verify Carefully</span>
+      </div>
+      <div class="qr-mock-box">
+        <svg viewBox="0 0 100 100" width="100%" height="100%" fill="currentColor" style="opacity: 0.85;">
+          <rect x="0" y="0" width="30" height="30"/><rect x="5" y="5" width="20" height="20" fill="#fff"/><rect x="10" y="10" width="10" height="10"/>
+          <rect x="70" y="0" width="30" height="30"/><rect x="75" y="5" width="20" height="20" fill="#fff"/><rect x="80" y="10" width="10" height="10"/>
+          <rect x="0" y="70" width="30" height="30"/><rect x="5" y="75" width="20" height="20" fill="#fff"/><rect x="10" y="80" width="10" height="10"/>
+          <rect x="45" y="15" width="10" height="25"/><rect x="35" y="50" width="25" height="15"/><rect x="80" y="80" width="15" height="15"/>
+        </svg>
+      </div>
+      <h3 style="font-size:15px; font-weight:700; text-align:center; margin-top:8px;">UPI Payment QR</h3>
+      <button class="btn btn-secondary" style="width:100%; margin-top:16px; font-size:12px; padding:6px 0;">Analyze QR</button>
+    </div>
+
+    <div class="pane-card" id="qr-card-3" style="--glow-color: rgba(232,49,47,0.15); --stroke-color: #e8312f;" onclick="selectQR(3)">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:700; font-size:14px;">Profile 03</span>
+        <span class="status-badge dangerous">🔴 Dangerous</span>
+      </div>
+      <div class="qr-mock-box">
+        <svg viewBox="0 0 100 100" width="100%" height="100%" fill="currentColor" style="opacity: 0.85;">
+          <rect x="0" y="0" width="30" height="30"/><rect x="5" y="5" width="20" height="20" fill="#fff"/><rect x="10" y="10" width="10" height="10"/>
+          <rect x="70" y="0" width="30" height="30"/><rect x="75" y="5" width="20" height="20" fill="#fff"/><rect x="80" y="10" width="10" height="10"/>
+          <rect x="0" y="70" width="30" height="30"/><rect x="5" y="75" width="20" height="20" fill="#fff"/><rect x="10" y="80" width="10" height="10"/>
+          <rect x="35" y="35" width="30" height="30"/><rect x="40" y="40" width="20" height="20" fill="#fff"/>
+        </svg>
+      </div>
+      <h3 style="font-size:15px; font-weight:700; text-align:center; margin-top:8px;">Free Gift Voucher QR</h3>
+      <button class="btn btn-secondary" style="width:100%; margin-top:16px; font-size:12px; padding:6px 0;">Analyze QR</button>
+    </div>
+
+    <div class="pane-card" id="qr-card-4" style="--glow-color: rgba(202,138,4,0.15); --stroke-color: #ca8a04;" onclick="selectQR(4)">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:700; font-size:14px;">Profile 04</span>
+        <span class="status-badge check">🟡 Check Before Connecting</span>
+      </div>
+      <div class="qr-mock-box">
+        <svg viewBox="0 0 100 100" width="100%" height="100%" fill="currentColor" style="opacity: 0.85;">
+          <rect x="0" y="0" width="30" height="30"/><rect x="5" y="5" width="20" height="20" fill="#fff"/><rect x="10" y="10" width="10" height="10"/>
+          <rect x="70" y="0" width="30" height="30"/><rect x="75" y="5" width="20" height="20" fill="#fff"/><rect x="80" y="10" width="10" height="10"/>
+          <rect x="0" y="70" width="30" height="30"/><rect x="5" y="75" width="20" height="20" fill="#fff"/><rect x="10" y="80" width="10" height="10"/>
+          <rect x="40" y="40" width="10" height="10"/><rect x="55" y="55" width="15" height="15"/>
+        </svg>
+      </div>
+      <h3 style="font-size:15px; font-weight:700; text-align:center; margin-top:8px;">Wi-Fi Config QR</h3>
+      <button class="btn btn-secondary" style="width:100%; margin-top:16px; font-size:12px; padding:6px 0;">Analyze QR</button>
+    </div>
+
+  </div>
+
+  <div class="analysis-split-grid" id="inspection-workspace" style="display: none; scroll-margin-top: 40px;">
+    
+    <div class="pane-card" style="border-left: 4px solid #3b82f6;">
+      <h3 style="font-size:18px; font-weight:700; margin-bottom: 16px; display:flex; align-items:center; gap:8px;">
+        🔍 Active Decoder Matrix Diagnostics
+      </h3>
+      
+      <div class="telemetry-row">
+        <span>Payload Target Type:</span>
+        <span id="tel-type">-</span>
+      </div>
+      <div class="telemetry-row">
+        <span>Decoded Content Stream:</span>
+        <span id="tel-content" style="font-family:monospace; color:#3b82f6;">-</span>
+      </div>
+      <div class="telemetry-row">
+        <span>Destination Endpoint:</span>
+        <span id="tel-destination" style="font-family:monospace;">-</span>
+      </div>
+      <div class="telemetry-row">
+        <span>Calculated Risk Level:</span>
+        <span id="tel-risk">-</span>
+      </div>
+
+      <div id="advanced-telemetry-block" style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--border-color, rgba(0,0,0,0.15));">
+        <h4 style="font-size:14px; font-weight:700; margin-bottom:12px; color:var(--accent-color, #e8312f);">🛡️ URL Static Security Audit Ledger</h4>
+        <div class="telemetry-row"><span>HTTPS Encryption Protocol:</span><span id="audit-https">-</span></div>
+        <div class="telemetry-row"><span>Domain Identity Match:</span><span id="audit-domain">-</span></div>
+        <div class="telemetry-row"><span>Character Length Validation:</span><span id="audit-length">-</span></div>
+        <div class="telemetry-row"><span>Suspicious Keyword Signature:</span><span id="audit-keyword">-</span></div>
+        <div class="telemetry-row"><span>Shortened Link Redirection:</span><span id="audit-shortener">-</span></div>
+        <div class="telemetry-row"><span>Spoofed Typosquatting Detection:</span><span id="audit-spoof">-</span></div>
+        <div class="telemetry-row" style="background:rgba(0,0,0,0.02); padding:10px 6px; font-weight:bold; border-radius:4px;">
+          <span>Aggregate Risk Score Profile:</span><span id="audit-score">-</span>
+        </div>
+        <div class="telemetry-row" style="border:none; padding-top:12px;">
+          <span>Final Verdict Status:</span><span id="audit-verdict">-</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pane-card" id="advisory-panel" style="background: rgba(255,255,255,0.4);">
+      <h3 style="font-size:16px; font-weight:700; margin-bottom:12px;">💡 Security Analyst Advisory</h3>
+      <div id="tel-tips" style="font-size:13.5px; opacity:0.85; line-height:1.5;">
+        Select an active matrix token panel from the target rows above to populate immediate defensive intelligence fields.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="pane-card" style="margin-top: 32px;">
+    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px;">🚩 Human Exploit Ledger Vector Map</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px;">
+      <div class="checklist-item">✔️ Verify Original Physical Source Integrity</div>
+      <div class="checklist-item">✔️ Check Destination Domain String Alignment</div>
+      <div class="checklist-item">✔️ Look for Explicit HTTPS Security Layers</div>
+      <div class="checklist-item">✔️ Avoid Unknown Matrix Prints in Public Areas</div>
+      <div class="checklist-item">✔️ Never Pay Transactions Without Voice Verification</div>
+      <div class="checklist-item">✔️ Verify Merchant Identity via Baseline Apps</div>
+    </div>
+  </div>
+
+  <div class="pane-card" style="margin-top: 32px;">
+    <h3 style="font-size: 16px; font-weight: 700;">🧩 Sandbox Mini-Quiz Checkpoint</h3>
+    <p style="font-size: 13.5px; opacity: 0.8; margin-top: 4px;">Before scanning a QR code prominently stuck over an existing payment desk poster, you should ideally:</p>
+    <div style="margin-top: 12px;">
+      <button class="quiz-option" onclick="processQuiz(false)">A) Scan immediately to complete processing parameters before transaction timers drop.</button>
+      <button class="quiz-option" onclick="processQuiz(true)">B) Verify the physical authenticity of the source substrate and check for structural overlapping stickers.</button>
+    </div>
+    <div id="quiz-feedback-box" style="margin-top:14px; font-size:13.5px; display:none; padding:12px; border-radius:6px;"></div>
+  </div>
+
+  <div class="pane-card" style="margin-top: 32px;">
+    <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 16px;">📚 Core Educational Discovery Vault</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+      <div>
+        <h4 style="font-size: 14.5px; font-weight: 700; color: #3b82f6; margin-bottom: 6px;">What is a QR Code?</h4>
+        <p style="font-size: 13px; opacity: 0.75; line-height: 1.5;">A Quick Response (QR) code is a matrix barcode designed to contain raw string arrays. Because human eyes cannot read compiled vector nodes natively, attackers utilize this structural translation gap to hide malicious scripts or spoofed addresses.</p>
+      </div>
+      <div>
+        <h4 style="font-size: 14.5px; font-weight: 700; color: #ea580c; margin-bottom: 6px;">How QR Scams Work</h4>
+        <p style="font-size: 13px; opacity: 0.75; line-height: 1.5;">Also known as Quishing, attackers replace legitimate stickers in restaurants, parking zones, or retail counters with customized asset profiles that drop users into unsecured payload loops instead of expected authentic systems.</p>
+      </div>
+      <div>
+        <h4 style="font-size: 14.5px; font-weight: 700; color: #e8312f; margin-bottom: 6px;">Common Threat Variants</h4>
+        <ul style="font-size: 13px; opacity: 0.75; line-height: 1.6; padding-left: 16px; margin: 0;">
+          <li><strong>Fake Payment QR:</strong> Swaps bank targets to capture unauthorized token balances.</li>
+          <li><strong>Fake Restaurant QR:</strong> Simulates digital menus to extract local identity parameters.</li>
+          <li><strong>Fake Parking QR:</strong> Leverages quick timers to enforce urgent unverified credential processing.</li>
+          <li><strong>Fake WhatsApp QR:</strong> Hijacks authorization keys to capture session state tokens.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 16px; margin-top: 32px; flex-wrap: wrap;">
+    <button class="btn btn-secondary" onclick="resetDemoArena()">Restart Demo</button>
+    <button class="btn btn-secondary" onclick="window.location.href='cyberlab.html'">🏠 Back to Cyber Lab</button>
+    <button class="btn btn-primary" onclick="window.location.href='courses/course-7.html'">Learn More Pathways</button>
+  </div>
+
+</div>
+
+<script src="js/theme.js"></script>
+<script src="js/script.js"></script>
+<script>
+  // Dynamic Simulation Repository Engine
+  const qrDatabase = {
+    1: {
+      type: 'Restaurant Menu Node',
+      content: 'HTTPS Plaintext Data Vector',
+      destination: 'https://restaurant-demo.com/menu',
+      risk: '<span class="status-badge safe">🟢 Safe</span>',
+      tips: '<strong>Safe Profile Analysis:</strong> This structure resolves directly through standard cryptographic TLS handshakes (HTTPS) matching a transparent corporate domain string layout. No data collection fields are requested.',
+      audit: { https: '✅ SECURE (TLS Active)', domain: 'Verified (restaurant-demo.com)', length: 'Normal (31 chars)', keyword: 'None Detected', shortener: 'No Redirection Detected', spoof: 'None', score: '0 / 100', verdict: '<span style="color:#22c55e;font-weight:bold;">COMPLIANT SECURE</span>' }
+    },
+    2: {
+      type: 'UPI Intent Transaction Protocol',
+      content: 'upi://pay?pa=merchant-sandbox@bank&pn=DemoMerchant',
+      destination: 'upi://pay?pa=merchant-sandbox@bank&pn=DemoMerchant...',
+      risk: '<span class="status-badge verify">🟠 Verify Carefully</span>',
+      tips: '<strong>UPI Transaction Analysis:</strong> Payment vectors bypass web URLs to load native bank processing modules. Always inspect the exact registered corporate merchant name inside your bank app before inputting PIN parameters.',
+      audit: { https: '⚠️ N/A (Deep Link Protocol)', domain: 'Local Protocol Routing', length: 'Variable Parameters', keyword: 'Dynamic Payment Arguments', shortener: 'No', spoof: 'Manual Inspection Required', score: '35 / 100', verdict: '<span style="color:#ea580c;font-weight:bold;">VERIFY MERCHANT NAME</span>' }
+    },
+    3: {
+      type: 'Malicious Phishing Redirection Loop',
+      content: 'HTTP Deceptive Vector Target',
+      destination: 'http://free-prize-claim.xyz',
+      risk: '<span class="status-badge dangerous">🔴 Dangerous</span>',
+      tips: '<strong>Phishing Vector Analysis:</strong> This structure utilizes a cheap alternative TLD (.xyz), operates over unencrypted connection links (HTTP), and claims artificial reward scenarios to enforce urgent credential parsing.',
+      audit: { https: '❌ UNSECURED (HTTP Protocol)', domain: 'Untrusted TLD (.xyz)', length: 'Normal', keyword: '🚨 "free-prize-claim" (High Risk)', shortener: 'Potential Obfuscation Layer', spoof: 'High Branding Impersonation', score: '95 / 100', verdict: '<span style="color:#e8312f;font-weight:bold;">CRITICAL MALICIOUS SCAM</span>' }
+    },
+    4: {
+      type: 'Local Wi-Fi Network Access Array',
+      content: 'WIFI:S:Guest_Network_Secure;T:WPA;P:HiddenPassword123;;',
+      destination: 'Internal System Authentication Broadcast',
+      risk: '<span class="status-badge check">🟡 Low Risk</span>',
+      tips: '<strong>Wi-Fi Broadcast Analysis:</strong> Automatically provisions local connectivity setups. Beware of open public areas; attackers can frame rogue nodes replicating legitimate router configurations to execute Man-in-the-Middle tracking.',
+      audit: { https: '⚠️ N/A (Internal Frame Layout)', domain: 'Local Access Point Profile', length: 'Short String', keyword: 'Security Network Arguments', shortener: 'No', spoof: 'Rogue AP Potential', score: '20 / 100', verdict: '<span style="color:#ca8a04;font-weight:bold;">CHECK BEFORE CONNECTING</span>' }
+    }
+  };
+
+  function selectQR(id) {
+    // Reset structural selection highlights across all cards
+    for(let i=1; i<=4; i++) {
+      document.getElementById(`qr-card-${i}`).classList.remove('active-target');
+    }
+    
+    // Highlight active card selection targets
+    const activeCard = document.getElementById(`qr-card-${id}`);
+    activeCard.classList.add('active-target');
+
+    // Extract dynamic metadata mappings cleanly from database repository
+    const dataset = qrDatabase[id];
+    
+    document.getElementById('tel-type').innerHTML = dataset.type;
+    document.getElementById('tel-content').innerHTML = dataset.content;
+    document.getElementById('tel-destination').innerHTML = dataset.destination;
+    document.getElementById('tel-risk').innerHTML = dataset.risk;
+    document.getElementById('tel-tips').innerHTML = dataset.tips;
+
+    // Map out static audit ledger properties
+    document.getElementById('audit-https').innerHTML = dataset.audit.https;
+    document.getElementById('audit-domain').innerHTML = dataset.audit.domain;
+    document.getElementById('audit-length').innerHTML = dataset.audit.length;
+    document.getElementById('audit-keyword').innerHTML = dataset.audit.keyword;
+    document.getElementById('audit-shortener').innerHTML = dataset.audit.shortener;
+    document.getElementById('audit-spoof').innerHTML = dataset.audit.spoof;
+    document.getElementById('audit-score').innerHTML = dataset.audit.score;
+    document.getElementById('audit-verdict').innerHTML = dataset.audit.verdict;
+
+    // Slide viewport boundaries smoothly down into workspace frame
+    const workspace = document.getElementById('inspection-workspace');
+    workspace.style.display = 'grid';
+    workspace.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function processQuiz(isCorrect) {
+    const box = document.getElementById('quiz-feedback-box');
+    box.style.display = 'block';
+    
+    if(isCorrect) {
+      box.style.background = 'rgba(34,197,94,0.1)';
+      box.style.color = '#22c55e';
+      box.innerHTML = '<strong>Correct Choice!</strong> Always inspect physical surfaces to verify the QR substrate has not been altered or covered by adversarial tracking overlays.';
+    } else {
+      box.style.background = 'rgba(232,49,47,0.1)';
+      box.style.color = '#e8312f';
+      box.innerHTML = '<strong>Risk Warning!</strong> Scanning blindly allows malicious deep redirects to exploit browser processing engine vectors before an analyst can intercede.';
+    }
+  }
+
+  function resetDemoArena() {
+    for(let i=1; i<=4; i++) {
+      document.getElementById(`qr-card-${i}`).classList.remove('active-target');
+    }
+    document.getElementById('inspection-workspace').style.display = 'none';
+    document.getElementById('quiz-feedback-box').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code Scams | RBEH Multiverse</title>
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/light.css" id="light-theme">
+<link rel="stylesheet" href="../css/dark.css" id="dark-theme" disabled>
+<style>
+  /* --- Unified Context Extensions for Lesson Modules --- */
+  .course-layout-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  
+  @media(min-width: 992px) {
+    .course-layout-container {
+      grid-template-columns: 280px 1fr;
+    }
+  }
+
+  /* --- Premium Floating Scroll Indicator Bar --- */
+  .scroll-tracker-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+  }
+  body[data-theme="dark"] .scroll-tracker-container {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .scroll-tracker-fill {
+    height: 100%;
+    width: 0%;
+    background: #e8312f;
+    box-shadow: 0 0 10px rgba(232, 49, 47, 0.6);
+    transition: width 0.1s ease-out;
+  }
+  .scroll-percentage-badge {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 10px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #e8312f;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  body[data-theme="dark"] .scroll-percentage-badge {
+    background: rgba(20, 20, 25, 0.85);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  /* --- Sticky Side Course Matrix Control Panel --- */
+  .matrix-sidebar {
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+  }
+  .matrix-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.01);
+  }
+  body[data-theme="dark"] .matrix-card {
+    background: rgba(20, 20, 25, 0.6);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+  .matrix-title {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.75px;
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+  .matrix-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .matrix-node {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.4;
+    transition: opacity 0.25s ease;
+  }
+  .matrix-node.completed {
+    opacity: 0.7;
+    color: #1fa75a;
+  }
+  .matrix-node.active {
+    opacity: 1;
+    font-weight: 700;
+  }
+  .matrix-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .matrix-node.completed .matrix-circle {
+    background: rgba(31, 167, 90, 0.1);
+    border-color: #1fa75a;
+  }
+  .matrix-node.active .matrix-circle {
+    background: #e8312f;
+    border-color: #e8312f;
+    color: #fff !important;
+    box-shadow: 0 0 12px rgba(232, 49, 47, 0.4);
+  }
+  body[data-theme="dark"] .matrix-node.active .matrix-circle {
+    background: #ff4d4d;
+    border-color: #ff4d4d;
+  }
+
+  /* --- Premium Component Content Architecture Cards --- */
+  .lesson-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.01);
+  }
+  body[data-theme="dark"] .lesson-card {
+    background: rgba(20, 20, 25, 0.5);
+    border-color: rgba(255, 255, 255, 0.04);
+  }
+  .lesson-card h2, .lesson-card h3 {
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .lesson-card p {
+    font-size: 15px;
+    line-height: 1.65;
+    opacity: 0.85;
+    margin-bottom: 12px;
+  }
+  .lesson-card p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Structural Sub-Components Blocks */
+  .premium-badge-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .meta-badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 30px;
+    background: rgba(0, 0, 0, 0.04);
+  }
+  body[data-theme="dark"] .meta-badge {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  
+  .quote-box {
+    background: rgba(232, 49, 47, 0.03);
+    border-left: 4px solid #e8312f;
+    padding: 18px;
+    border-radius: 0 14px 14px 0;
+    margin: 16px 0;
+  }
+  body[data-theme="dark"] .quote-box {
+    background: rgba(255, 77, 77, 0.03);
+    border-left-color: #ff4d4d;
+  }
+
+  .comparison-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 18px 0;
+  }
+  .comparison-item {
+    border-radius: 12px;
+    padding: 20px;
+    font-size: 14px;
+  }
+  .comparison-item.legit {
+    background: rgba(31, 167, 90, 0.04);
+    border: 1px solid rgba(31, 167, 90, 0.1);
+  }
+  .comparison-item.malicious {
+    background: rgba(232, 49, 47, 0.04);
+    border: 1px solid rgba(232, 49, 47, 0.1);
+  }
+
+  .warning-accent-box {
+    background: rgba(232, 49, 47, 0.05);
+    border: 1px solid rgba(232, 49, 47, 0.12);
+    border-radius: 12px;
+    padding: 18px;
+    margin: 16px 0;
+  }
+  .success-accent-box {
+    background: rgba(31, 167, 90, 0.06);
+    border: 1px solid rgba(31, 167, 90, 0.12);
+    border-radius: 12px;
+    padding: 18px;
+    margin: 16px 0;
+  }
+
+  /* Timeline Elements */
+  .timeline-wrapper {
+    position: relative;
+    padding-left: 24px;
+    border-left: 2px solid rgba(0,0,0,0.06);
+    margin: 20px 0 10px 8px;
+  }
+  body[data-theme="dark"] .timeline-wrapper {
+    border-left-color: rgba(255,255,255,0.06);
+  }
+  .timeline-step {
+    position: relative;
+    margin-bottom: 24px;
+  }
+  .timeline-step:last-child {
+    margin-bottom: 0;
+  }
+  .timeline-step::before {
+    content: '';
+    position: absolute;
+    left: -31px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e8312f;
+    border: 2px solid #fff;
+  }
+  body[data-theme="dark"] .timeline-step::before {
+    border-color: #09090b;
+    background: #ff4d4d;
+  }
+
+  /* Quiz Node Components */
+  .mcq-node-block {
+    border-top: 1px solid rgba(0,0,0,0.06);
+    padding-top: 20px;
+    margin-top: 20px;
+  }
+  body[data-theme="dark"] .mcq-node-block {
+    border-top-color: rgba(255,255,255,0.06);
+  }
+  .mcq-option-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 14px;
+    background: rgba(0,0,0,0.01);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 10px;
+    margin-top: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  body[data-theme="dark"] .mcq-option-btn {
+    background: rgba(255,255,255,0.01);
+    border-color: rgba(255,255,255,0.06);
+  }
+  .mcq-option-btn:hover {
+    background: rgba(232, 49, 47, 0.05);
+    border-color: rgba(232, 49, 47, 0.2);
+  }
+  body[data-theme="dark"] .mcq-option-btn:hover {
+    background: rgba(255, 77, 77, 0.05);
+    border-color: rgba(255, 77, 77, 0.2);
+  }
+
+  .nav-btn-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<div class="scroll-tracker-container"><div class="scroll-tracker-fill" id="scrollBar"></div></div>
+<div class="scroll-percentage-badge"><span>⚡</span> <span id="scrollPct">0%</span> Completed</div>
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='../index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+        <circle cx="12" cy="11" r="1.6" fill="#fff"/>
+        <rect x="11.2" y="11" width="1.6" height="3" fill="#fff"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+
+  <nav class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="../about.html">About</a>
+    <a href="../contact.html">Contact</a>
+  </nav>
+
+  <div class="nav-actions">
+    <button id="theme-toggle" class="icon-btn">
+      <svg id="theme-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+      </svg>
+    </button>
+    <div class="menu-wrap">
+      <button class="menu-btn" id="menu-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+        </svg>
+        <span>Menu</span>
+      </button>
+      <div class="menu-dropdown" id="menu-dropdown">
+        <a href="../tools.html"><span class="menu-icon">🛠</span> Tools</a>
+        <a href="../course.html" class="active"><span class="menu-icon">📚</span> Course</a>
+        <a href="../cyberlab.html"><span class="menu-icon">🧪</span> Cyber Lab</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="course-layout-container">
+  
+  <aside class="matrix-sidebar">
+    <div class="matrix-card">
+      <div class="matrix-title">Course Progress</div>
+      <div class="matrix-grid">
+        <div class="matrix-node completed"><div class="matrix-circle">1</div> Introduction to Cyber Security</div>
+        <div class="matrix-node completed"><div class="matrix-circle">2</div> Types of Cyber Attacks</div>
+        <div class="matrix-node completed"><div class="matrix-circle">3</div> Phishing Awareness</div>
+        <div class="matrix-node completed"><div class="matrix-circle">4</div> Password Security</div>
+        <div class="matrix-node completed"><div class="matrix-circle">5</div> Encryption Basics</div>
+        <div class="matrix-node completed"><div class="matrix-circle">6</div> Safe Browsing Practices</div>
+        <div class="matrix-node active" style="color:#e8312f;"><div class="matrix-circle">7</div> QR Code Scams</div>
+        <div class="matrix-node"><div class="matrix-circle">8</div> Website Security Basics</div>
+        <div class="matrix-node"><div class="matrix-circle">9</div> Social Engineering Attacks</div>
+        <div class="matrix-node"><div class="matrix-circle">10</div> Cyber Security Quiz</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="content-stream-workspace">
+
+    <div class="lesson-card" style="border-color: rgba(232, 49, 47, 0.15); background: linear-gradient(to bottom right, rgba(255,255,255,0.6), rgba(232,49,47,0.02));">
+      <h1 class="hero-title" style="font-size: 34px; line-height: 1.25; margin-bottom: 8px;">QR Code <span class="accent">Scams</span></h1>
+      <p style="font-size:16px; opacity:0.85;">Learn how QR code scams work, how cybercriminals misuse QR codes, how to identify fake QR codes, and how to scan QR codes safely using real-world cyber security practices.</p>
+      <div class="premium-badge-strip">
+        <span class="meta-badge" style="color:#e8312f; background: rgba(232,49,47,0.06); font-weight:700;">Course 7 of 10</span>
+        <span class="meta-badge">📋 Difficulty: Beginner</span>
+        <span class="meta-badge">⏱️ Reading Time: 8–10 Minutes</span>
+        <span class="meta-badge">🏷️ Category: QR Security & Cyber Awareness</span>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>📱</span> Section 1: Understanding QR Architecture</h2>
+      <p>Quick Response (QR) codes are simple matrix barcodes that store machine-readable string data, such as a website link or payment coordinate.</p>
+      
+      <div class="quote-box">
+        <strong>GTU Exam-Friendly Definition:</strong>
+        <p style="margin-top: 6px; font-style: normal; font-size: 14.5px;"><em>"A QR Code Scam (technically known as Quishing or QR Phishing) is an exploit mechanism where an adversary alters or replaces authentic optical barcodes with a malicious variant to trick users into navigating to spoofed sites, executing unverified scripts, or performing unauthorized peer-to-peer financial transfers."</em></p>
+      </div>
+
+      <div class="success-accent-box">
+        <strong style="color:#1fa75a;">💡 Easy Trick to Remember: The "Digital Blindfold" Rule</strong>
+        <p style="font-size:14px; margin-top: 4px;">A QR code is just a hidden web link wrapped in a black-and-white grid pattern. Scanning a completely unknown QR code is exactly like clicking a random link with your eyes closed. <strong>Always inspect the destination preview first!</strong></p>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>⚙️</span> Section 2: Mechanics of a QR Exploit</h2>
+      <p>Because the human eye cannot decipher the data behind a QR pattern directly, adversaries use this visual blind spot to execute attacks.</p>
+      
+      <div class="timeline-wrapper">
+        <div class="timeline-step">
+          <strong>1. Substitution Phase</strong>
+          <p style="font-size:14px; opacity:0.8; margin-top:4px;">The attacker generates a custom QR code linked to a malicious server, prints it out, and sticks it over an authentic, public QR code.</p>
+        </div>
+        <div class="timeline-step">
+          <strong>2. Device Scanning Phase</strong>
+          <p style="font-size:14px; opacity:0.8; margin-top:4px;">An unsuspecting user scans the sticker expecting a regular menu, parking form, or payment portal.</p>
+        </div>
+        <div class="timeline-step">
+          <strong>3. Exploitation Output</strong>
+          <p style="font-size:14px; opacity:0.8; margin-top:4px;">The smartphone browser loads a clone site that harvests banking credentials, triggers a hidden file download, or initiates an unverified mobile payment transfer.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>⚠️</span> Section 3: Common Real-World Scenarios</h2>
+      <p>Cybercriminals rely on specific everyday situations where users are naturally in a hurry or distracted.</p>
+      
+      <div class="comparison-container">
+        <div class="comparison-item malicious">
+          <strong style="color:#e8312f;">🚗 Fake Parking & Restaurant Cards</strong>
+          <p style="margin-top: 6px; font-size:13.5px;">Attackers glue malicious stickers over official parking meters or restaurant table menus, leading to payment collection forms that steal credit card data.</p>
+        </div>
+        <div class="comparison-item malicious">
+          <strong style="color:#e8312f;">📶 Rogue Wi-Fi & Fake Login Prompts</strong>
+          <p style="margin-top: 6px; font-size:13.5px;">Codes placed in public spots claim to provide "Free Wi-Fi" but actually attempt to download tracking profiles or serve fake login popups that steal account details.</p>
+        </div>
+      </div>
+
+      <div class="warning-accent-box">
+        <strong style="color:#e8312f;">Critical Warning: The Fake Payment Scam</strong>
+        <p style="font-size:14px; margin-top: 4px;"><strong>Daily Life Example:</strong> A merchant or buyer sends you a QR code claiming it will "deposit money into your account." In reality, scanning a QR code is exclusively an outbound action used to **send** funds or open links. If a QR code prompts you to type your UPI PIN or confirm a transfer, you are paying money out, not receiving it.</p>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🛡️</span> Section 4: Safe Scanning and Verification Defenses</h2>
+      <p>Protecting your phone from QR attacks comes down to basic physical checks and checking information before interacting.</p>
+      
+      <div class="comparison-container">
+        <div class="comparison-item legit">
+          <strong style="color:#1fa75a;">🔎 Physical Check</strong>
+          <p style="margin-top: 4px; font-size:13px;">Feel the code surface. Official marketing boards feature smoothly integrated graphics. If the QR code feels like a thick sticker layered over a sign, step away.</p>
+        </div>
+        <div class="comparison-item legit">
+          <strong style="color:#1fa75a;">🌐 URL Review</strong>
+          <p style="margin-top: 4px; font-size:13px;">Use a scanner app that previews the target web address before opening it. If you see short links or strange spellings instead of the official vendor name, do not open it.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-card" style="border-color: rgba(232,49,47,0.12); background: rgba(232,49,47,0.005);">
+      <h2 style="font-size:20px; color:#e8312f;">🎯 Deep Dive Insights</h2>
+      
+      <p style="margin-top:12px;"><strong>✅ Learning Objectives:</strong> Understand the structure of QR barcodes, recognize "Quishing" social engineering tactics, inspect codes for physical tampering, and safely verify preview URLs before interacting.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Key Highlights:</strong> QR codes cannot be infected with malware themselves, but they act as a vehicle that can instantly route an unhardened browser to malicious scripts.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Quick Facts:</strong> The term "Quishing" combines "QR Code" and "Phishing", highlighting how attackers use physical items to run digital scams.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Did You Know?:</strong> QR codes were originally invented in 1994 to track vehicle parts across manufacturing facilities because they hold significantly more data than traditional linear barcodes.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Best Security Practices:</strong> Avoid scanning codes printed on random stickers, check the final web address carefully, use a camera app with link previews, and never type a transaction PIN after scanning a code.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Summary:</strong> QR code scams rely on users trusting what looks like a normal barcode. Inspecting the physical sign and verifying the destination address ensures you can use these digital shortcuts safely.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Key Takeaways:</strong> Treat unexpected QR codes like unverified email links. Take a second to look over the source to protect your device from digital fraud.</p>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>📝</span> Mini Knowledge Check</h2>
+      <p style="opacity:0.7; font-size:13px;">Test your knowledge on QR code safety mechanics before continuing to the next module.</p>
+      
+      <div class="mcq-node-block">
+        <p><strong>1. What security risk describes the core technical vulnerability of a standard public QR code?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) It can directly disable your smartphone hardware buttons.</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) The underlying link data cannot be read by the human eye, making it easy for attackers to swap links unnoticed.</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>2. An online buyer sends you a QR code, stating that scanning it will instantly deposit payment into your bank account. What is the correct response?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">A) Refuse to scan it. QR codes are used to make payments or open links, not to deposit money into your account.</button>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">B) Scan the code quickly before the transaction link window times out.</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>3. What industry term defines a phishing attack delivered via a malicious QR code sticker?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) Smishing</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) Quishing</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>4. While sitting at a local restaurant, you notice the table's menu QR code is printed on a glossy sticker pasted over the original printed sign. You should:</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">A) Do not scan the code. Report the physical tampering to the staff immediately.</button>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">B) Scan the code but use a private or incognito browser window to view the menu.</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>5. What is the safest way to handle a QR code link preview that uses a link shortener like bit.ly or tinyurl.com?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) Open the link immediately to see where it leads.</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) Avoid opening it. Shortened URLs hide the true destination domain, which is a common tactic for malicious sites.</button>
+      </div>
+    </div>
+
+    <div class="nav-btn-row">
+      <button class="btn btn-secondary" onclick="window.location.href='course-6.html'">&larr; Previous Lesson</button>
+      <button class="btn btn-secondary" onclick="window.location.href='../course.html'">Back To Courses</button>
+      <button class="btn btn-primary" onclick="window.location.href='course-8.html'">Next Lesson &rarr;</button>
+    </div>
+
+  </main>
+</div>
+
+<footer style="text-align: center; padding: 40px 24px; opacity: 0.5; font-size: 13px; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 80px;">
+  &copy; 2026 RBEH Multiverse Ecosystem. All Content Protection Bounds Applied.
+</footer>
+
+<script src="../js/theme.js"></script>
+<script src="../js/script.js"></script>
+<script>
+  // Dynamic Scroll Progress Calculation System
+  window.addEventListener('scroll', () => {
+    const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = Math.min(Math.max(Math.round((winScroll / height) * 100), 0), 100);
+    
+    document.getElementById('scrollBar').style.width = scrolled + '%';
+    document.getElementById('scrollPct').innerText = scrolled + '%';
+  });
+</script>
+</body>
+</html>

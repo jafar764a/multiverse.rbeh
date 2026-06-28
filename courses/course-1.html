@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction to Cyber Security | RBEH Multiverse</title>
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/light.css" id="light-theme">
+<link rel="stylesheet" href="../css/dark.css" id="dark-theme" disabled>
+<style>
+  /* --- Unified Context Extensions for Lesson Modules --- */
+  .course-layout-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  
+  @media(min-width: 992px) {
+    .course-layout-container {
+      grid-template-columns: 280px 1fr;
+    }
+  }
+
+  /* --- Premium Floating Scroll Indicator Bar --- */
+  .scroll-tracker-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+  }
+  body[data-theme="dark"] .scroll-tracker-container {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .scroll-tracker-fill {
+    height: 100%;
+    width: 0%;
+    background: #e8312f;
+    box-shadow: 0 0 10px rgba(232, 49, 47, 0.6);
+    transition: width 0.1s ease-out;
+  }
+  .scroll-percentage-badge {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 10px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #e8312f;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  body[data-theme="dark"] .scroll-percentage-badge {
+    background: rgba(20, 20, 25, 0.85);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  /* --- Sticky Side Course Matrix Control Panel --- */
+  .matrix-sidebar {
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+  }
+  .matrix-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.01);
+  }
+  body[data-theme="dark"] .matrix-card {
+    background: rgba(20, 20, 25, 0.6);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+  .matrix-title {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.75px;
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+  .matrix-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .matrix-node {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.4;
+    transition: opacity 0.25s ease;
+  }
+  .matrix-node.active {
+    opacity: 1;
+    font-weight: 700;
+  }
+  .matrix-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .matrix-node.active .matrix-circle {
+    background: #e8312f;
+    border-color: #e8312f;
+    color: #fff !important;
+    box-shadow: 0 0 12px rgba(232, 49, 47, 0.4);
+  }
+  body[data-theme="dark"] .matrix-node.active .matrix-circle {
+    background: #ff4d4d;
+    border-color: #ff4d4d;
+  }
+
+  /* --- Premium Component Content Architecture Cards --- */
+  .lesson-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.01);
+  }
+  body[data-theme="dark"] .lesson-card {
+    background: rgba(20, 20, 25, 0.5);
+    border-color: rgba(255, 255, 255, 0.04);
+  }
+  .lesson-card h2, .lesson-card h3 {
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .lesson-card p {
+    font-size: 15px;
+    line-height: 1.65;
+    opacity: 0.85;
+  }
+
+  /* Structural Sub-Components Blocks */
+  .premium-badge-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .meta-badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 30px;
+    background: rgba(0, 0, 0, 0.04);
+  }
+  body[data-theme="dark"] .meta-badge {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  
+  .quote-box {
+    background: rgba(232, 49, 47, 0.03);
+    border-left: 4px solid #e8312f;
+    padding: 18px;
+    border-radius: 0 14px 14px 0;
+    margin: 16px 0;
+  }
+  body[data-theme="dark"] .quote-box {
+    background: rgba(255, 77, 77, 0.03);
+    border-left-color: #ff4d4d;
+  }
+
+  .mapping-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 18px 0;
+  }
+  .mapping-item {
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 14px;
+  }
+  body[data-theme="dark"] .mapping-item {
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.04);
+  }
+
+  .warning-accent-box {
+    background: rgba(232, 49, 47, 0.05);
+    border: 1px solid rgba(232, 49, 47, 0.12);
+    border-radius: 12px;
+    padding: 18px;
+    margin: 16px 0;
+  }
+  .success-accent-box {
+    background: rgba(31, 167, 90, 0.06);
+    border: 1px solid rgba(31, 167, 90, 0.12);
+    border-radius: 12px;
+    padding: 18px;
+    margin: 16px 0;
+  }
+
+  /* Quiz Node Components */
+  .mcq-node-block {
+    border-top: 1px solid rgba(0,0,0,0.06);
+    padding-top: 20px;
+    margin-top: 20px;
+  }
+  body[data-theme="dark"] .mcq-node-block {
+    border-top-color: rgba(255,255,255,0.06);
+  }
+  .mcq-option-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 14px;
+    background: rgba(0,0,0,0.01);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 10px;
+    margin-top: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  body[data-theme="dark"] .mcq-option-btn {
+    background: rgba(255,255,255,0.01);
+    border-color: rgba(255,255,255,0.06);
+  }
+  .mcq-option-btn:hover {
+    background: rgba(232, 49, 47, 0.05);
+    border-color: rgba(232, 49, 47, 0.2);
+  }
+  body[data-theme="dark"] .mcq-option-btn:hover {
+    background: rgba(255, 77, 77, 0.05);
+    border-color: rgba(255, 77, 77, 0.2);
+  }
+
+  .nav-btn-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<div class="scroll-tracker-container"><div class="scroll-tracker-fill" id="scrollBar"></div></div>
+<div class="scroll-percentage-badge"><span>⚡</span> <span id="scrollPct">0%</span> Completed</div>
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='../index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+        <circle cx="12" cy="11" r="1.6" fill="#fff"/>
+        <rect x="11.2" y="11" width="1.6" height="3" fill="#fff"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+
+  <nav class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="../about.html">About</a>
+    <a href="../contact.html">Contact</a>
+  </nav>
+
+  <div class="nav-actions">
+    <button id="theme-toggle" class="icon-btn">
+      <svg id="theme-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+      </svg>
+    </button>
+    <div class="menu-wrap">
+      <button class="menu-btn" id="menu-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+        </svg>
+        <span>Menu</span>
+      </button>
+      <div class="menu-dropdown" id="menu-dropdown">
+        <a href="../tools.html"><span class="menu-icon">🛠</span> Tools</a>
+        <a href="../course.html" class="active"><span class="menu-icon">📚</span> Course</a>
+        <a href="../cyberlab.html"><span class="menu-icon">🧪</span> Cyber Lab</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="course-layout-container">
+  
+  <aside class="matrix-sidebar">
+    <div class="matrix-card">
+      <div class="matrix-title">Course Progress</div>
+      <div class="matrix-grid">
+        <div class="matrix-node active" style="color:#e8312f;"><div class="matrix-circle">1</div> Introduction to Cyber Security</div>
+        <div class="matrix-node"><div class="matrix-circle">2</div> Types of Cyber Attacks</div>
+        <div class="matrix-node"><div class="matrix-circle">3</div> Phishing Awareness</div>
+        <div class="matrix-node"><div class="matrix-circle">4</div> Password Security</div>
+        <div class="matrix-node"><div class="matrix-circle">5</div> Encryption Basics</div>
+        <div class="matrix-node"><div class="matrix-circle">6</div> Safe Browsing Practices</div>
+        <div class="matrix-node"><div class="matrix-circle">7</div> QR Code Scams</div>
+        <div class="matrix-node"><div class="matrix-circle">8</div> Website Security Basics</div>
+        <div class="matrix-node"><div class="matrix-circle">9</div> Social Engineering Attacks</div>
+        <div class="matrix-node"><div class="matrix-circle">10</div> Cyber Security Quiz</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="content-stream-workspace">
+
+    <div class="lesson-card" style="border-color: rgba(232, 49, 47, 0.15); background: linear-gradient(to bottom right, rgba(255,255,255,0.6), rgba(232,49,47,0.02));">
+      <h1 class="hero-title" style="font-size: 34px; line-height: 1.25; margin-bottom: 8px;">Introduction to <span class="accent">Cyber Security</span></h1>
+      <p style="font-size:16px; opacity:0.85;">Learn the fundamentals of Cyber Security through beginner-friendly explanations, practical examples, real-world scenarios, and interactive learning.</p>
+      <div class="premium-badge-strip">
+        <span class="meta-badge" style="color:#e8312f; background: rgba(232,49,47,0.06); font-weight:700;">Course 1 of 10</span>
+        <span class="meta-badge">📋 Difficulty: Beginner</span>
+        <span class="meta-badge">⏱️ Reading Time: 8–10 Minutes</span>
+        <span class="meta-badge">🏷️ Category: Cyber Security Fundamentals</span>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🛡️</span> Part 1: What is Cyber Security?</h2>
+      <p>Cyber Security is the practice of protecting computers, mobile devices, networks, software, and data from cyber attacks, unauthorized access, theft, and damage.</p>
+      
+      <div class="quote-box">
+        <h4 style="font-size: 14px; font-weight:700; margin-bottom: 4px; text-transform:uppercase; letter-spacing:0.5px; opacity:0.8;">Simple Definition</h4>
+        <p style="font-size:14.5px;">Cyber Security is like a security guard for the digital world. It protects our information and devices from hackers and online threats.</p>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🏠</span> Part 2: Real-Life Example</h2>
+      <p>Imagine your house.</p>
+      <div class="mapping-container">
+        <div class="mapping-item">🏢 <strong>House</strong> = Computer/Mobile</div>
+        <div class="mapping-item">🚪 <strong>Door</strong> = Login Screen</div>
+        <div class="mapping-item">🔑 <strong>Lock</strong> = Password</div>
+        <div class="mapping-item">📹 <strong>CCTV Camera</strong> = Antivirus</div>
+        <div class="mapping-item">💂 <strong>Security Guard</strong> = Firewall</div>
+        <div class="mapping-item">🥷 <strong>Thief</strong> = Hacker</div>
+      </div>
+      <p style="margin-top: 14px;">If the house has no lock, a thief can easily enter.</p>
+      <p style="margin-top: 6px;">Similarly, if a computer or phone has weak security, a hacker can easily access it.</p>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🌐</span> Part 3: Why is Cyber Security Important?</h2>
+      <p style="margin-bottom: 12px;">Today, almost everything is online:</p>
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 20px;">
+        <div style="padding:10px; background:rgba(0,0,0,0.015); border-radius:6px; font-size:14px;">🏦 Online Banking</div>
+        <div style="padding:10px; background:rgba(0,0,0,0.015); border-radius:6px; font-size:14px;">📲 UPI Payments</div>
+        <div style="padding:10px; background:rgba(0,0,0,0.015); border-radius:6px; font-size:14px;">💬 Social Media</div>
+        <div style="padding:10px; background:rgba(0,0,0,0.015); border-radius:6px; font-size:14px;">✉️ Email</div>
+        <div style="padding:10px; background:rgba(0,0,0,0.015); border-radius:6px; font-size:14px;">🛒 Shopping</div>
+        <div style="padding:10px; background:rgba(0,0,0,0.015); border-radius:6px; font-size:14px;">☁️ Cloud Storage</div>
+        <div style="padding:10px; background:rgba(0,0,0,0.015); border-radius:6px; font-size:14px;">🏛️ Government Services</div>
+      </div>
+
+      <div class="warning-accent-box">
+        <h4 style="font-size:14px; font-weight:700; color:#e8312f; margin-bottom:8px;">Without Cyber Security:</h4>
+        <p style="font-size: 14px; line-height: 1.6;">• Personal data can be stolen.<br>• Bank accounts can be hacked.<br>• Passwords can be leaked.<br>• Important files can be deleted.<br>• Businesses can suffer financial loss.</p>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🎯</span> Part 4: What Does Cyber Security Protect?</h2>
+      <p style="margin-bottom:12px;">Cyber Security protects:</p>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        <span class="meta-badge">💻 Computers</span>
+        <span class="meta-badge">📱 Mobile Phones</span>
+        <span class="meta-badge">📡 Networks</span>
+        <span class="meta-badge">☁️ Cloud Data</span>
+        <span class="meta-badge">👤 User Identity</span>
+        <span class="meta-badge">💳 Banking Information</span>
+        <span class="meta-badge">📊 Personal and Business Data</span>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>📸</span> Part 5: Online Example</h2>
+      <p>Suppose you create an Instagram account.</p>
+      
+      <div class="warning-accent-box">
+        <strong style="color:#e8312f;">Weak Security</strong><br>
+        <p style="font-size:14px; margin-top:4px;">Password: 123456<br>A hacker can guess it within seconds.</p>
+      </div>
+
+      <div class="success-accent-box">
+        <strong style="color:#1fa75a;">Strong Security</strong><br>
+        <p style="font-size:14px; margin-top:4px;">Password: Jafar@2026#IT</p>
+      </div>
+
+      <div class="quote-box" style="border-left-color: #3b5bdb; background: rgba(59, 91, 219, 0.03);">
+        <strong>Two-Factor Authentication (OTP)</strong>
+        <p style="font-size:14px; margin-top:4px;">Even if someone knows your password, they cannot log in without the OTP. This is an example of Cyber Security.</p>
+      </div>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>📱</span> Part 6: Daily Life Example</h2>
+      <p>You use:</p>
+      <p style="opacity:0.8; font-size:14px; margin: 4px 0 12px 14px;">• WhatsApp<br>• Telegram<br>• PhonePe<br>• Google Pay</p>
+      <p>If your phone has no screen lock, anyone who gets your phone can access your apps.</p>
+      <p style="margin-top:12px;">If you enable:</p>
+      <div class="mapping-container">
+        <div class="mapping-item">🔒 Screen Lock</div>
+        <div class="mapping-item">☝️ Fingerprint</div>
+        <div class="mapping-item">👤 Face Unlock</div>
+        <div class="mapping-item">📱 App Lock</div>
+      </div>
+      <p>your personal information remains protected.</p>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🏁</span> Part 7: Objectives of Cyber Security</h2>
+      <p style="margin-bottom:12px;">The main objectives are:</p>
+      <p style="font-size: 14.5px; line-height:1.8; padding-left:12px;">
+        🔒 Protect confidential data<br>
+        🚫 Prevent unauthorized access<br>
+        🛑 Stop cyber attacks<br>
+        💳 Ensure secure online transactions<br>
+        ⚙️ Maintain privacy and system safety
+      </p>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🏦</span> Part 8: Real-World Example</h2>
+      <p>A bank stores millions of customers' personal and financial records.</p>
+      <div class="warning-accent-box">
+        <strong style="color:#e8312f;">If hackers steal this data:</strong>
+        <p style="font-size:14px; margin-top:6px; line-height:1.65;">
+          • Customers lose trust.<br>
+          • The bank suffers financial loss.<br>
+          • Sensitive information is leaked.<br>
+          • Legal actions may be taken.
+        </p>
+      </div>
+      <p>Cyber Security helps prevent such incidents.</p>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>🔗</span> Part 9: Popular Cyber Security Websites</h2>
+      <div style="display:flex; flex-direction:column; gap:10px; margin-top:12px;">
+        <a href="https://owasp.org" target="_blank" style="color:#e8312f; font-weight:500; font-size:14.5px;">• OWASP – https://owasp.org &rarr;</a>
+        <a href="https://www.cisa.gov" target="_blank" style="color:#e8312f; font-weight:500; font-size:14.5px;">• CISA – https://www.cisa.gov &rarr;</a>
+        <a href="https://www.kaspersky.com/resource-center" target="_blank" style="color:#e8312f; font-weight:500; font-size:14.5px;">• Kaspersky Resource Center – https://www.kaspersky.com/resource-center &rarr;</a>
+        <a href="https://www.cisco.com/c/en/us/products/security/index.html" target="_blank" style="color:#e8312f; font-weight:500; font-size:14.5px;">• Cisco Cybersecurity – https://www.cisco.com/c/en/us/products/security/index.html &rarr;</a>
+      </div>
+    </div>
+
+    <div class="lesson-card" style="border-left: 4px solid #3b5bdb; background: rgba(59, 91, 219, 0.02);">
+      <h2><span>🎓</span> GTU Exam Definition</h2>
+      <p style="font-style: italic; font-size: 15px;">"Cyber Security is the practice of protecting computers, networks, systems, applications, and data from cyber attacks, unauthorized access, damage, theft, and disruption by using security technologies, policies, and best practices."</p>
+    </div>
+
+    <div class="lesson-card" style="background: #e8312f; color: #fff; text-align: center;">
+      <h3 style="color:#fff; justify-content:center; margin:0; font-size:18px;">💡 Easy Trick to Remember</h3>
+      <p style="color:#fff; font-size:16px; font-weight:600; opacity:1; margin-top:8px;">Cyber Security = Protecting the Digital World from Hackers. 🔐</p>
+    </div>
+
+    <div class="lesson-card" style="border-color: rgba(232,49,47,0.12); background: rgba(232,49,47,0.005);">
+      <h2 style="font-size:20px; color:#e8312f;">🎯 Deep Dive Insights</h2>
+      
+      <p style="margin-top:12px;"><strong>✅ Learning Objectives:</strong> Understand core infrastructure visibility metrics, recognize active system boundary perimeters, and isolate digital components from exploitation streams.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Key Highlights:</strong> Differentiating weak control vectors (like plain numbers) from layered access structures (like Multi-Factor parameters) forms the base of modern security strategies.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Quick Facts:</strong> Millions of perimeter intrusion attempts are recorded across public clouds daily. Most automated script sweep attacks fail when a configuration uses custom variable parameters.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Did You Know?:</strong> The security guard analogy works perfectly with network technology. Firewalls filter out bad data packets before they ever reach a machine's local storage.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Best Security Practices:</strong> Enforce mandatory app passwords, audit shared server ports regularly, change standard access strings quarterly, and use physical security verification methods where possible.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Summary:</strong> Cyber Security provides a complete defense framework that maps directly onto standard real-world protections. It keeps system platforms running safely and keeps organizational assets confidential.</p>
+      
+      <p style="margin-top:10px;"><strong>✅ Key Takeaways:</strong> Technology defenses are only as secure as their weakest endpoint link. Protecting simple user channels blocks the most common entry points for network attacks.</p>
+    </div>
+
+    <div class="lesson-card">
+      <h2><span>📝</span> Mini Knowledge Check</h2>
+      <p style="opacity:0.7; font-size:13px;">Test your knowledge below before continuing to the next module.</p>
+      
+      <div class="mcq-node-block">
+        <p><strong>1. Which option describes the digital equivalent of a physical CCTV camera?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) User Login Screen Profile</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) Antivirus Scanner Engine Module</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>2. Why is configuring Two-Factor Authentication (OTP) considered a secure practice?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">A) It stops access attempts even if your password gets leaked.</button>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">B) It reduces overall storage use on phone devices.</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>3. Which configuration string shows the best security design pattern?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) 123456</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) Jafar@2026#IT</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>4. Based on the GTU definition, what do secure technologies look to prevent?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">A) Cyber attacks, unauthorized data leaks, and operational disruption</button>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">B) Regular localized power grid updates</button>
+      </div>
+
+      <div class="mcq-node-block">
+        <p><strong>5. What is the easy formula pattern for remembering Cyber Security?</strong></p>
+        <button class="mcq-option-btn" onclick="alert('Try again!')">A) Reformatting core storage systems every month</button>
+        <button class="mcq-option-btn" onclick="alert('Correct!')">B) Protecting the Digital World from Hackers.</button>
+      </div>
+    </div>
+
+    <div class="nav-btn-row">
+      <button class="btn btn-secondary" disabled style="opacity:0.4; cursor:not-allowed;">&larr; Previous Lesson</button>
+      <button class="btn btn-secondary" onclick="window.location.href='../course.html'">Back To Courses</button>
+      <button class="btn btn-primary" onclick="window.location.href='course-2.html'">Next Lesson &rarr;</button>
+    </div>
+
+  </main>
+</div>
+
+<footer style="text-align: center; padding: 40px 24px; opacity: 0.5; font-size: 13px; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 80px;">
+  &copy; 2026 RBEH Multiverse Ecosystem. All Content Protection Bounds Applied.
+</footer>
+
+<script src="../js/theme.js"></script>
+<script src="../js/script.js"></script>
+<script>
+  // Dynamic Scroll Progress Calculation System
+  window.addEventListener('scroll', () => {
+    const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = Math.min(Math.max(Math.round((winScroll / height) * 100), 0), 100);
+    
+    document.getElementById('scrollBar').style.width = scrolled + '%';
+    document.getElementById('scrollPct').innerText = scrolled + '%';
+  });
+</script>
+</body>
+</html>

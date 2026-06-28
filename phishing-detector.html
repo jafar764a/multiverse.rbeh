@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phishing Link Detector | RBEH Multiverse</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/light.css" id="light-theme">
+<link rel="stylesheet" href="css/dark.css" id="dark-theme" disabled>
+<style>
+  /* Base structural layout parameters for compliance with existing layout theme rules */
+  .detector-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  @media(min-width: 992px) {
+    .detector-container {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .input-group-premium {
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .input-premium {
+    width: 100%;
+    padding: 16px 20px;
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+
+  body[data-theme="dark"] .input-premium {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #fff;
+  }
+
+  .input-premium:focus {
+    border-color: #e8312f;
+    box-shadow: 0 0 0 4px rgba(232, 49, 47, 0.1);
+  }
+
+  /* Animated Circular Loader Track Ring */
+  .rbeh-spinner {
+    width: 44px;
+    height: 44px;
+    border: 3.5px solid rgba(232, 49, 47, 0.15);
+    border-top-color: #e8312f;
+    border-radius: 50%;
+    animation: rbehRotation 0.85s linear infinite;
+    margin: 0 auto 16px auto;
+  }
+
+  @keyframes rbehRotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<header class="navbar">
+  <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+    <span class="logo-icon">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+        <path d="M12 2L4 5v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V5l-8-3z" fill="currentColor"/>
+        <circle cx="12" cy="11" r="1.6" fill="#fff"/>
+        <rect x="11.2" y="11" width="1.6" height="3" fill="#fff"/>
+      </svg>
+    </span>
+    <span class="logo-text">RBEH <strong>Multiverse</strong></span>
+  </div>
+
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="tools.html" class="active">Tools</a>
+    <a href="course.html">Courses</a>
+    <a href="cyberlab.html">Cyber Lab</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <div class="nav-actions">
+    <button class="icon-btn" id="theme-toggle" aria-label="Toggle Theme">
+      <svg id="theme-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main class="detector-container">
+  <section class="hero-left">
+    <div style="margin-bottom: 24px;">
+      <span style="color: #e8312f; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-bottom: 6px;">Advanced Diagnostic Systems</span>
+      <h1 style="font-size: 32px; font-weight: 800; letter-spacing: -0.8px; margin: 0; line-height: 1.2;">Phishing Link Detector</h1>
+      <p style="opacity: 0.7; font-size: 15px; margin-top: 8px; line-height: 1.5;">Cross-examine domain endpoints inside our hybrid parsing sandbox matrix correlated directly with live VirusTotal indicators.</p>
+    </div>
+
+    <div class="terminal" style="padding: 24px; border-radius: 16px; margin-bottom: 20px;">
+      <div class="input-group-premium">
+        <label for="target-url" style="font-size: 12px; font-weight: 700; opacity: 0.6; display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Enter Targeted Address string:</label>
+        <input type="text" id="target-url" class="input-premium" placeholder="example-malicious-domain.com/login" autocomplete="off">
+      </div>
+
+      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <button id="btn-trigger-scan" class="btn btn-primary" style="padding: 14px 28px; font-weight: 700; font-size: 14px; letter-spacing: 0.2px;">Scan URL</button>
+        <button id="btn-learn-phishing" class="btn btn-primary" onclick="window.location.href='courses/course-3.html'" style="padding: 14px 28px; font-weight: 700; font-size: 14px; letter-spacing: 0.2px; background: rgba(0, 0, 0, 0.05); border: 1px solid rgba(0, 0, 0, 0.1); color: inherit;">📘 Learn Phishing</button>
+      </div>
+
+      <div id="error-alert-handle" style="display: none; background: rgba(232,49,47,0.08); border: 1px solid rgba(232,49,47,0.2); border-radius: 8px; padding: 12px 16px; color: #e8312f; font-size: 13.5px; font-weight: 600; margin-top: 16px;"></div>
+
+      <div id="analysis-loader" style="display: none; text-align: center; padding: 32px 16px; margin-top: 20px; background: rgba(0,0,0,0.01); border-radius: 12px; border: 1px dashed rgba(0,0,0,0.06);">
+        <div class="rbeh-spinner"></div>
+        <div id="loader-status-msg" style="font-size: 13.5px; font-weight: 700; opacity: 0.8; letter-spacing: 0.2px; color: #e8312f;">Initializing Threat Vectors Core Execution Modules...</div>
+        <div style="font-size: 11px; opacity: 0.4; margin-top: 6px;">Processing telemetry. Please do not close or reload this dashboard frame.</div>
+      </div>
+    </div>
+    
+    <div id="dynamic-dashboard-mount-node"></div>
+  </section>
+
+  <section class="hero-right">
+    <div class="terminal" style="height: 100%; display: flex; flex-direction: column;">
+      <div class="terminal-header">
+        <div class="terminal-title">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4 17 10 11 4 5"></polyline>
+            <line x1="12" y1="19" x2="20" y2="19"></line>
+          </svg>
+          <span>Security Protocol Reference Manual</span>
+        </div>
+      </div>
+      <div class="terminal-body" style="flex: 1; padding: 24px; font-size: 13.5px; line-height: 1.6; opacity: 0.85;">
+        <p style="margin-bottom: 12px;"><strong style="color: #e8312f;">[SYSTEM NOTE]</strong> Is tool ka hybrid heuristic scanning system automatic local analysis execute karta hai aur sath hi system data streams ko real VirusTotal engine framework registry ke cross checks parameters ke sath match karta hai.</p>
+        <p style="margin-bottom: 12px;"><strong>Heuristics Tracking Variables Include:</strong></p>
+        <ul style="margin-left: 18px; margin-bottom: 16px;">
+          <li>Punycode International Domain Spoofing Matrices checks</li>
+          <li>Subdomain redirection and token routing threshold constraints mapping</li>
+          <li>Masking shortener signatures verification indexes matching arrays</li>
+          <li>Targeted identity theft vector text keyword verification matrices</li>
+        </ul>
+        <p style="font-size: 12px; opacity: 0.6; margin-top: auto; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 12px;">RBEH Security Core Platform Engine Bounds V3.6.0 | Production Release Integration Active.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer style="text-align: center; padding: 40px 24px; opacity: 0.5; font-size: 13px; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 80px;">
+  &copy; 2026 RBEH Multiverse Ecosystem. All Content Protection Bounds Applied.
+</footer>
+
+<script src="js/theme.js"></script>
+<script src="js/script.js"></script>
+<script src="api/phishing.js"></script>
+
+<script>
+  // Complete production-grade asynchronous runtime link connection pipeline
+  document.addEventListener('DOMContentLoaded', () => {
+    const scanBtn = document.getElementById('btn-trigger-scan');
+    const urlInput = document.getElementById('target-url');
+    const errorAlert = document.getElementById('error-alert-handle');
+    const loaderBox = document.getElementById('analysis-loader');
+    const statusMsg = document.getElementById('loader-status-msg');
+
+    if (scanBtn && urlInput) {
+      scanBtn.addEventListener('click', async () => {
+        // Clear previous diagnostic notifications completely
+        if (errorAlert) {
+          errorAlert.style.display = 'none';
+          errorAlert.innerText = '';
+        }
+
+        const rawInputString = urlInput.value.trim();
+
+        // Step A: Baseline Event Validation Check
+        if (!rawInputString) {
+          if (errorAlert) {
+            errorAlert.style.display = 'block';
+            errorAlert.innerText = "⚠️ Input string required. Please enter a URL to analyze.";
+          }
+          urlInput.focus();
+          return;
+        }
+
+        // Step B: Activate Premium Theme Loader Box Container States
+        if (loaderBox) loaderBox.style.display = 'block';
+        if (statusMsg) statusMsg.innerText = "Initializing Threat Vectors Core Execution Modules...";
+
+        // Step C: Execution handoff to window scope analysis core engine inside api/phishing.js
+        if (typeof window.executePhishingAnalysis === 'function') {
+          try {
+            await window.executePhishingAnalysis(rawInputString);
+          } catch (err) {
+            console.error("[Runtime Entry Error]", err);
+            if (loaderBox) loaderBox.style.display = 'none';
+            if (errorAlert) {
+              errorAlert.style.display = 'block';
+              errorAlert.innerText = "⚠️ Core framework script processing issue or network socket timeout.";
+            }
+          }
+        } else {
+          console.error("[Core System Fault] window.executePhishingAnalysis engine implementation missing inside api/phishing.js.");
+          if (loaderBox) loaderBox.style.display = 'none';
+          if (errorAlert) {
+            errorAlert.style.display = 'block';
+            errorAlert.innerText = "⚠️ Scanning engine file asset loading failure. Verify api/phishing.js inclusion link.";
+          }
+        }
+      });
+
+      // Allow triggering analysis with Enter key inside form layout container
+      urlInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          scanBtn.click();
+        }
+      });
+    }
+  });
+</script>
+</body>
+</html>
